@@ -5,16 +5,16 @@ Ajouter le dossier `Assets` avec la commande `git clone https://github.com/STudi
 # Architecture
 (essayer de tenir cette architechture à jour)
 ```
-	MiniStudio
-	  ├── Assets
-	  │   └── *voir https://github.com/STudio-Chorizo/Assets/blob/main/README.md*
-	  ├── dependencies
-	  │   └── dependencies_controler.py
-	  ├── librairies
-	  │   └── pygame_install.bat
-	  ├── moteur3d
-	  │   └── *work in progress*
-	  ├── main.py
-	  ├── .gitignore
-	  └── README.md
+MiniStudio
+    ├── Assets
+    │   └── *voir https://github.com/STudio-Chorizo/Assets/blob/main/README.md*
+    ├── dependencies
+    │   └── dependencies_controler.py
+    ├── librairies
+    │   └── pygame_install.bat
+    ├── moteur3d
+    │   └── *work in progress*
+    ├── main.py
+    ├── .gitignore
+    └── README.md
 ```
