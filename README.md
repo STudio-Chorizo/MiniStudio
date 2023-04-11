@@ -18,3 +18,18 @@ MiniStudio
     ├── .gitignore
     └── README.md
 ```
+
+# Credits
+## G.Buisness
+- `référent` CHARLES Vincent `vcharles@gaming.bs`
+- CHAUMAT Luka `lchaumat@gaming.bs`
+- GLOMET Quentin `qglomet@gaming.bs`
+## G.Art
+- `référent` FERREIRA Thomas `tferreira@gaming.art`
+## G.Tech
+- `référent` LABOURDETTE Arno `alabourdette@gaming.tech`
+- ACQUART--REYLANS Gwendal `contact@gwenitora.com`
+- CAMANDONA Alexandre `acamandona@gaming.tech`
+- FAYE Clément `cfaye@gaming.tech`
+- RENAUD Quentin `qrenaud@gaming.tech`
+- TOURNIER Lenny `ltournier@gaming.tech`
