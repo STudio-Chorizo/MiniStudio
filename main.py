@@ -1,16 +1,13 @@
-from Engine import Engine
-from Scripts.GUI import Menu
+from Engine.Engine import Engine
+from Scripts.GUI.Menu import Menu
 # Description: Main du projet
 def main():
-    Engine = Engine(800,800)
-    Menu = Menu(engine)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+    engine = Engine(800,800)
+    menu = Menu(engine)
+    engine.AddGameObject(menu)
+    engine.Update()
     
-    pygame.display.update()
+    
 
 #################################################
 
