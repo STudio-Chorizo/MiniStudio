@@ -5,7 +5,7 @@ def main():
 #################################################
 
 # Import des dépendances
-import dependencies.dependencies_controler
+from dependencies.dependencies_controler import *
 
 # Check si le projet se lance avec succès
 print("Start with sucess")
