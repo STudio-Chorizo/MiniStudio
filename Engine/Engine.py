@@ -17,6 +17,6 @@ class Engine:
     
     def Update(self):
         for obj in self.gameObjects:
-            self.gameObjects[obj].Update()
+            self.gameObjects[obj].Update(self)
         self.Update()
 
