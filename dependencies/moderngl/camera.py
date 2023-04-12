@@ -49,15 +49,15 @@ class Camera:
     def move(self):
         velocity = SPEED * self.app.delta_time
         keys = pg.key.get_pressed()
-        if keys[pg.K_w]:
+        if keys[pg.K_z]:
             self.position += self.forward * velocity
         if keys[pg.K_s]:
             self.position -= self.forward * velocity
-        if keys[pg.K_a]:
+        if keys[pg.K_q]:
             self.position -= self.right * velocity
         if keys[pg.K_d]:
             self.position += self.right * velocity
-        if keys[pg.K_q]:
+        if keys[pg.K_a]:
             self.position += self.up * velocity
         if keys[pg.K_e]:
             self.position -= self.up * velocity
