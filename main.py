@@ -1,17 +1,17 @@
 # Description: Main du projet
 def main():
-    pass
+    loadgl.app()
 
 #################################################
 
-# Import des dépendances
-from dependencies.dependencies_controler import *
+# Import des dependances
+import dependencies.moderngl.main as loadgl
 
-# Check si le projet se lance avec succès
+# Check si le projet se lance avec succes
 print("Start with sucess")
 
 # Lance le projet
 main()
 
-# Check si le projet se termine avec succès
+# Check si le projet se termine avec succzs
 print("Ended with sucess")
