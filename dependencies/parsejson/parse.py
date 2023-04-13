@@ -8,7 +8,7 @@ def parseJson(path: str) -> bool | list | dict:
     Inclue la variable `ASSETS` déjà parser pour récupérer les assets du projet"""
     global ASSETS
     try:
-        file = open(os.getcwd()+path, 'r')
+        file = open(os.getcwd().replace("\\Assets", "")+path, 'r')
         return json.loads(file.read())
     except:
         return False
