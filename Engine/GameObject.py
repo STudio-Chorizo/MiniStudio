@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 
 
 class GameObject:
@@ -6,6 +7,14 @@ class GameObject:
         self.rotation = rot
         self.scale = scale
         self.UID = "-1"
+        self.isCollide = False
+        self.collideBox = NULL
+
+    #Utiliser cette fonction pour avoir les collision
+    def Move(self, translation):
+        self.position += translation
+        if(self.isCollide == False) : return
+        #TO-DO test de colllision
 
     def Update(self, engine):
         pass
