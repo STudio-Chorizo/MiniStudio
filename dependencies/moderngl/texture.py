@@ -12,7 +12,7 @@ class Texture:
         self.textures[0] = self.get_texture(path=ASSETS["cube"]["textures"][0])
         self.textures[1] = self.get_texture(path=ASSETS["cube"]["textures"][1])
         self.textures[2] = self.get_texture(path=ASSETS["cube"]["textures"][2])
-        self.textures['eagle'] = self.get_texture(path=ASSETS["Cat"]["texture"])
+        self.textures['cat'] = self.get_texture(path=ASSETS["cat"]["texture"])
         self.textures['skybox'] = self.get_texture_cube(dir_path=ASSETS["skybox"]["dir"], ext=ASSETS["skybox"]["ext"])
         self.textures['depth_texture'] = self.get_depth_texture()
 
