@@ -1,7 +1,7 @@
 import numpy as np
 import moderngl as mgl
 import pywavefront
-from dependencies.Engine.Engine import Engine
+from dependencies.engine.engine import Engine
 from dependencies.parsejson.parse import *
 
 class VBO:

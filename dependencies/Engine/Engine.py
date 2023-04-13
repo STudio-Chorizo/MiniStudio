@@ -1,6 +1,8 @@
 from asyncio.windows_events import NULL
 import pygame as pg
 import dependencies.moderngl.main as loadgl
+from dependencies.engine.engine import *
+from dependencies.engine.gameobject import *
 
 class Engine:
     Instance = NULL
@@ -11,6 +13,7 @@ class Engine:
 
     def __init__(self, wW = 1200, wH = 800):
         if(Engine.Instance != NULL) : return
+        self.player = GameObject()
         self.wW = wW
         self.wH = wH
 
@@ -28,8 +31,8 @@ class Engine:
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
     
     def AddGameObject(self, gameObject):
-        gameObject.UID = self.objectCount.__str__()
-        self.gameObject[gameObject.UID] = gameObject
+        gameObject.UID = self.objectsCount.__str__()
+        self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
     
     def Start(self):
@@ -40,12 +43,14 @@ class Engine:
         while(self.run):
             self.time = pg.time.get_ticks()
             self.deltaTime = self.time - self.lastTime
+            self.lastTime = pg.time.get_ticks()
 
             self.event = pg.event.get()
             for e in self.event:
                 if e.type == pg.QUIT : self.run = False
 
             for obj in self.gameObjects:
+                # print(obj)
                 self.gameObjects[obj].Update()
 
             self.graphicEngine.get_time()
@@ -54,5 +59,4 @@ class Engine:
             self.graphicEngine.render()
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
             
-            self.lastTime = pg.time.get_ticks()
 
