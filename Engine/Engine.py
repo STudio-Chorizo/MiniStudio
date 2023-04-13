@@ -11,7 +11,7 @@ class Engine:
         self.objectsCount = 0
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
-        self.window.fill("black")
+        self.window.fill("white")
 
     def AddGameObject(self, obj):
         obj.UID = self.objectsCount.__str__()
@@ -19,15 +19,17 @@ class Engine:
         self.objectsCount += 1
     
     def Update(self):
-        for obj in self.gameObjects:
-            self.gameObjects[obj].Update(self)
+        while True:
+            for obj in self.gameObjects:
+                self.gameObjects[obj].Update(self)
 
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                pg.quit()
-                sys.exit()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    sys.exit()
 
-        pg.display.update()
-        time.sleep(0.1)
-        self.Update()
+            pg.display.update()
+            time.sleep(0.01)
+
+
 
