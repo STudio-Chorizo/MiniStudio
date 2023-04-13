@@ -9,10 +9,10 @@ class Texture:
         self.app = app
         self.ctx = app.ctx
         self.textures = {}
-        self.textures[0] = self.get_texture(path=ASSETS["Cube"]["textures"][0])
-        self.textures[1] = self.get_texture(path=ASSETS["Cube"]["textures"][1])
-        self.textures[2] = self.get_texture(path=ASSETS["Cube"]["textures"][2])
-        self.textures['cat'] = self.get_texture(path=ASSETS["Cat"]["texture"])
+        #self.textures[0] = self.get_texture(path=ASSETS["Cube"]["textures"][0])
+        #self.textures[1] = self.get_texture(path=ASSETS["Cube"]["textures"][1])
+        #self.textures[2] = self.get_texture(path=ASSETS["Cube"]["textures"][2])
+        #self.textures['cat'] = self.get_texture(path=ASSETS["Cat"]["texture"])
         self.textures['skybox'] = self.get_texture_cube(dir_path=ASSETS["skybox"]["dir"], ext=ASSETS["skybox"]["ext"])
         self.textures['depth_texture'] = self.get_depth_texture()
 

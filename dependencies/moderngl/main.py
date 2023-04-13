@@ -11,8 +11,6 @@ from dependencies.moderngl.scene_renderer import SceneRenderer
 
 class GraphicsEngine:
     def __init__(self, win_size=(1600, 900)):
-        # init pygame modules
-        pg.init()
         # window size
         self.WIN_SIZE = win_size
         # set opengl attr
