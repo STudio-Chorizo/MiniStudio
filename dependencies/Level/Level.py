@@ -11,9 +11,10 @@ class Level:
     def LoadNiveau(self,Ln):
         white = (255,255,255)
         window = pygame.display.set_mode((800, 666))
-        pygame.display.set_caption(("Dinosaur - waiting"))
+        pygame.display.set_caption(("waiting"))
         time.sleep(1)
         self.Ln = Ln
+        #faut rajouter l'argument si dessou qui est l'emplacement des asset
         self.data = json.loads()
         return self.data[Ln]
     

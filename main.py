@@ -1,8 +1,8 @@
-from dependencies.Level.Level import Level
+from dependencies.level.level import Level
 # Description: Main du projetdependencies/moderngl
 def main():
-    dino = Level()
-    dino.LoadNiveau(2)
+    maps = Level()
+    maps.LoadNiveau(2)
 
 #################################################
 
