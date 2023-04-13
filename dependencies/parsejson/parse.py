@@ -3,7 +3,7 @@ import os
 
 ASSETS = {}
 
-def parseJson(path: str) -> False | list | dict:
+def parseJson(path: str) -> bool | list | dict:
     """Parse le fichier json au chemin projet/`path` sous forme de liste ou de dictionnaire ou renvoie False si le fichier n'est pas trouver.\n
     Inclue la variable `ASSETS` déjà parser pour récupérer les assets du projet"""
     global ASSETS
