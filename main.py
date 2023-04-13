@@ -20,5 +20,5 @@ print("Start with sucess")
 # Lance le projet
 main()
 
-# Check si le projet se termine avec succzs
+# Check si le projet se termine avec succ�s
 print("Ended with sucess")
