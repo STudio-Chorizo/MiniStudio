@@ -3,9 +3,9 @@ import os
 
 ASSETS = {}
 
-def parseJson(path = "/Assets/assets.json"):
+def parseJson(path):
     global ASSETS
     file = open(os.getcwd()+path, 'r')
-    ASSETS = json.loads(file.read())
+    return json.loads(file.read())
 
-parseJson()
+ASSETS = parseJson("/Assets/assets.json")
