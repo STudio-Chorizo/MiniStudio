@@ -1,17 +1,23 @@
-# Description: Main du projet
+# Description: Main du projetdependencies/moderngl
 def main():
-    pass
+    app = loadgl.GraphicsEngine()
+    while True:
+        app.get_time()
+        app.check_events()
+        app.camera.update()
+        app.render()
+        app.delta_time = app.clock.tick(60)
 
 #################################################
 
-# Import des dépendances
-from dependencies.dependencies_controler import *
+# Import des dependances
+import dependencies.moderngl.main as loadgl
 
-# Check si le projet se lance avec succès
+# Check si le projet se lance avec succes
 print("Start with sucess")
 
 # Lance le projet
 main()
 
-# Check si le projet se termine avec succès
+# Check si le projet se termine avec succzs
 print("Ended with sucess")

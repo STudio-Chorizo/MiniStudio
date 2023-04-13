@@ -7,7 +7,7 @@ Ajouter le dossier `Assets` avec la commande `git clone https://github.com/STudi
 ```
 MiniStudio
     ├── Assets
-    │   └── *voir https://github.com/STudio-Chorizo/Assets/blob/main/README.md*
+    │   └── *voir https://github.com/STudio-Chorizo/blob/main/README.md*
     ├── dependencies
     │   └── dependencies_controler.py
     ├── librairies
