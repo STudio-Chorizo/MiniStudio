@@ -4,7 +4,7 @@
 def main():
     engine = Engine.CreateInstance()
     cube = GameObject()
-    cube.SetModel("Cat", rot=(-90, 0, 0))
+    cube.SetModel("cat", rot=(-90, 0, 0))
     Engine.Instance.Start()
 
 #################################################
