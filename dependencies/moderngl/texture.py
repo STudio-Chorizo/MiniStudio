@@ -1,6 +1,7 @@
 import pygame as pg
 import moderngl as mgl
 import glm
+from dependencies.parsejson.parse import *
 
 
 class Texture:
@@ -8,11 +9,11 @@ class Texture:
         self.app = app
         self.ctx = app.ctx
         self.textures = {}
-        self.textures[0] = self.get_texture(path='Assets/textures/img.png')
-        self.textures[1] = self.get_texture(path='Assets/textures/img_1.png')
-        self.textures[2] = self.get_texture(path='Assets/textures/img_2.png')
-        self.textures['cat'] = self.get_texture(path='Assets/objects/cat/20430_cat_diff_v1.jpg')
-        self.textures['skybox'] = self.get_texture_cube(dir_path='Assets/skybox/', ext='png')
+        self.textures[0] = self.get_texture(path=ASSETS["Cube"]["textures"][0])
+        self.textures[1] = self.get_texture(path=ASSETS["Cube"]["textures"][1])
+        self.textures[2] = self.get_texture(path=ASSETS["Cube"]["textures"][2])
+        self.textures['cat'] = self.get_texture(path=ASSETS["Cat"]["texture"])
+        self.textures['skybox'] = self.get_texture_cube(dir_path=ASSETS["skybox"]["dir"], ext=ASSETS["skybox"]["ext"])
         self.textures['depth_texture'] = self.get_depth_texture()
 
     def get_depth_texture(self):

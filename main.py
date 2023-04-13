@@ -11,6 +11,7 @@ def main():
 #################################################
 
 # Import des dependances
+from dependencies.parsejson.parse import *
 import dependencies.moderngl.main as loadgl
 
 # Check si le projet se lance avec succes
