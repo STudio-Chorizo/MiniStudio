@@ -1,4 +1,5 @@
 
+import json
 import time
 import pygame
 
@@ -12,10 +13,7 @@ class Level:
         window = pygame.display.set_mode((800, 666))
         pygame.display.set_caption(("Dinosaur - waiting"))
         time.sleep(1)
-        run = True
-        while run:
-            self.Ln = Ln
-            self.data = json.loads()
-            return self.data[Ln]
-            run = False
+        self.Ln = Ln
+        self.data = json.loads()
+        return self.data[Ln]
     
