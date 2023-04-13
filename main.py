@@ -1,12 +1,8 @@
+from dependencies.Level.Level import Level
 # Description: Main du projetdependencies/moderngl
 def main():
-    app = loadgl.GraphicsEngine()
-    while True:
-        app.get_time()
-        app.check_events()
-        app.camera.update()
-        app.render()
-        app.delta_time = app.clock.tick(60)
+    dino = Level()
+    dino.LoadNiveau(2)
 
 #################################################
 
