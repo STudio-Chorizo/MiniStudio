@@ -1,5 +1,5 @@
-from vao import VAO
-from texture import Texture
+from dependencies.moderngl.vao import VAO
+from dependencies.moderngl.texture import Texture
 
 
 class Mesh:

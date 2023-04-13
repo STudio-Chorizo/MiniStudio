@@ -8,11 +8,11 @@ class Texture:
         self.app = app
         self.ctx = app.ctx
         self.textures = {}
-        self.textures[0] = self.get_texture(path='dependencies/moderngl/textures/img.png')
-        self.textures[1] = self.get_texture(path='dependencies/moderngl/textures/img_1.png')
-        self.textures[2] = self.get_texture(path='dependencies/moderngl/textures/img_2.png')
-        self.textures['cat'] = self.get_texture(path='dependencies/moderngl/objects/cat/20430_cat_diff_v1.jpg')
-        self.textures['skybox'] = self.get_texture_cube(dir_path='dependencies/moderngl/textures/skybox1/', ext='png')
+        self.textures[0] = self.get_texture(path='Assets/textures/img.png')
+        self.textures[1] = self.get_texture(path='Assets/textures/img_1.png')
+        self.textures[2] = self.get_texture(path='Assets/textures/img_2.png')
+        self.textures['cat'] = self.get_texture(path='Assets/objects/cat/20430_cat_diff_v1.jpg')
+        self.textures['skybox'] = self.get_texture_cube(dir_path='Assets/skybox/', ext='png')
         self.textures['depth_texture'] = self.get_depth_texture()
 
     def get_depth_texture(self):

@@ -1,4 +1,4 @@
-from model import *
+from dependencies.moderngl.model import *
 import glm
 
 

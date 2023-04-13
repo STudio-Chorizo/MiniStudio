@@ -1,5 +1,5 @@
-from vbo import VBO
-from shader_program import ShaderProgram
+from dependencies.moderngl.vbo import VBO
+from dependencies.moderngl.shader_program import ShaderProgram
 
 
 class VAO:

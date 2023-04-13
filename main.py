@@ -1,6 +1,12 @@
-# Description: Main du projet
+# Description: Main du projetdependencies/moderngl
 def main():
-    loadgl.app()
+    app = loadgl.GraphicsEngine()
+    while True:
+        app.get_time()
+        app.check_events()
+        app.camera.update()
+        app.render()
+        app.delta_time = app.clock.tick(60)
 
 #################################################
 

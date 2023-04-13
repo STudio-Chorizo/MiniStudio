@@ -1,12 +1,12 @@
 import pygame as pg
 import moderngl as mgl
 import sys
-from model import *
-from camera import Camera
-from light import Light
-from mesh import Mesh
-from scene import Scene
-from scene_renderer import SceneRenderer
+from dependencies.moderngl.model import *
+from dependencies.moderngl.camera import Camera
+from dependencies.moderngl.light import Light
+from dependencies.moderngl.mesh import Mesh
+from dependencies.moderngl.scene import Scene
+from dependencies.moderngl.scene_renderer import SceneRenderer
 
 
 class GraphicsEngine:
@@ -61,14 +61,6 @@ class GraphicsEngine:
 
     def get_time(self):
         self.time = pg.time.get_ticks() * 0.001
-
-    def run(self):
-        while True:
-            self.get_time()
-            self.check_events()
-            self.camera.update()
-            self.render()
-            self.delta_time = self.clock.tick(60)
 
 
 if __name__ == '__main__':
