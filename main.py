@@ -4,7 +4,7 @@
 def main():
     engine = Engine()
     cube = GameObject()
-    cube.SetModel("Cube", ASSETS["name"]["object"], 2)
+    cube.SetModel("cube", ASSETS["name"]["object"], 2)
     engine.Start()
 
 #################################################
