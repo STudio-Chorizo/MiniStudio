@@ -10,24 +10,24 @@ class VAO:
         self.vaos = {}
 
         # cube vao
-        self.vaos['cube'] = self.get_vao(
-            program=self.program.programs['default'],
-            vbo = self.vbo.vbos['cube'])
+        #self.vaos['cube'] = self.get_vao(
+        #    program=self.program.programs['default'],
+        #    vbo = self.vbo.vbos['cube'])
 
         # shadow cube vao
-        self.vaos['shadow_cube'] = self.get_vao(
-            program=self.program.programs['shadow_map'],
-            vbo = self.vbo.vbos['cube'])
+        #self.vaos['shadow_cube'] = self.get_vao(
+        #    program=self.program.programs['shadow_map'],
+        #    vbo = self.vbo.vbos['cube'])
 
         # cat vao
-        self.vaos['cat'] = self.get_vao(
-            program=self.program.programs['default'],
-            vbo=self.vbo.vbos['cat'])
+        #self.vaos['cat'] = self.get_vao(
+        #    program=self.program.programs['default'],
+        #    vbo=self.vbo.vbos['cat'])
 
         # shadow cat vao
-        self.vaos['shadow_cat'] = self.get_vao(
-            program=self.program.programs['shadow_map'],
-            vbo=self.vbo.vbos['cat'])
+        #self.vaos['shadow_cat'] = self.get_vao(
+        #    program=self.program.programs['shadow_map'],
+        #    vbo=self.vbo.vbos['cat'])
 
         # skybox vao
         self.vaos['skybox'] = self.get_vao(
@@ -38,6 +38,14 @@ class VAO:
         self.vaos['advanced_skybox'] = self.get_vao(
             program=self.program.programs['advanced_skybox'],
             vbo=self.vbo.vbos['advanced_skybox'])
+
+    def AddVAO(self, name):
+        self.vaos[name] = self.get_vao(
+            program=self.program.programs['default'],
+            vbo=self.vbo.vbos[name])
+        self.vaos['shadow_' + name] = self.get_vao(
+            program=self.program.programs['shadow_map'],
+            vbo=self.vbo.vbos[name])
 
     def get_vao(self, program, vbo):
         vao = self.ctx.vertex_array(program, [(vbo.vbo, vbo.format, *vbo.attribs)], skip_errors=True)

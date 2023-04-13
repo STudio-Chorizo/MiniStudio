@@ -15,6 +15,12 @@ class Texture:
         #self.textures['cat'] = self.get_texture(path=ASSETS["Cat"]["texture"])
         self.textures['skybox'] = self.get_texture_cube(dir_path=ASSETS["skybox"]["dir"], ext=ASSETS["skybox"]["ext"])
         self.textures['depth_texture'] = self.get_depth_texture()
+        self.textureCount = 1
+
+    def AddTexture(self, name):
+        self.textureCount +=1
+        self.textures[self.textureCount] = self.get_texture(path=ASSETS[name]["texture"])
+        return self.textureCount
 
     def get_depth_texture(self):
         depth_texture = self.ctx.depth_texture(self.app.WIN_SIZE)

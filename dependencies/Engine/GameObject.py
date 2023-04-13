@@ -1,5 +1,5 @@
 from asyncio.windows_events import NULL
-from dependencies.Engine.Engine import ENGINE
+from dependencies.Engine.Engine import Engine
 
 from dependencies.moderngl.model import ExtendedBaseModel
 
@@ -16,11 +16,14 @@ class GameObject(ExtendedBaseModel):
 
         self.model = NULL
 
-    def SetModel(self, name, vbo, tex_id, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
-        if(ENGINE == NULL) : return
-        ENGINE.graphicEngine.mesh.vao.vbo.AddVBO(name, vbo)
-        self.model = ExtendedBaseModel(ENGINE.graphicEngine, name, tex_id, pos, rot, scale)
-        ENGINE.graphicEngine.scene.AddObject()
+    def SetModel(self, name, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
+        if(Engine.Instance == NULL) : return
+        
+        text_id = Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
+        Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
+        Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
+        self.model = ExtendedBaseModel(Engine.Instance.graphicEngine, name, text_id, pos, rot, scale)
+        Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
 
     #Utiliser cette fonction pour avoir les collision

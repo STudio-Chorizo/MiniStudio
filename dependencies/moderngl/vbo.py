@@ -1,6 +1,7 @@
 import numpy as np
 import moderngl as mgl
 import pywavefront
+from dependencies.Engine.Engine import Engine
 from dependencies.parsejson.parse import *
 
 class VBO:
@@ -11,8 +12,8 @@ class VBO:
         self.vbos['skybox'] = SkyBoxVBO(ctx)
         self.vbos['advanced_skybox'] = AdvancedSkyBoxVBO(ctx)
 
-    def AddVBO(self, name, vbo):
-        self.vbos[name] = vbo
+    def AddVBO(self, name):
+        self.vbos[name] = ComplexVBO(Engine.Instance.graphicEngine.ctx, name)
 
     def destroy(self):
         [vbo.destroy() for vbo in self.vbos.values()]
@@ -83,8 +84,8 @@ class CubeVBO(BaseVBO):
 
 class ComplexVBO(BaseVBO):
     def __init__(self, app, name):
-        super().__init__(app)
         self.name = name
+        super().__init__(app)
         self.format = '2f 3f 3f'
         self.attribs = ['in_texcoord_0', 'in_normal', 'in_position']
 
