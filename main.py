@@ -2,10 +2,10 @@
 
 
 def main():
-    engine = Engine()
+    engine = Engine.CreateInstance()
     cube = GameObject()
-    cube.SetModel("cube", ASSETS["name"]["object"], 2)
-    engine.Start()
+    cube.SetModel("Cat", rot=(-90, 0, 0))
+    Engine.Instance.Start()
 
 #################################################
 
