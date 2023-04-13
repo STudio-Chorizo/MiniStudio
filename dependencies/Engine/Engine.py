@@ -41,12 +41,12 @@ class Engine:
             self.time = pg.time.get_ticks()
             self.deltaTime = self.time - self.lastTime
 
-            for obj in self.gameObjects:
-                self.gameObjects[obj].Update()
-            
             self.event = pg.event.get()
             for e in self.event:
-                if e.type == pg.QUIT : self.run = False    
+                if e.type == pg.QUIT : self.run = False
+
+            for obj in self.gameObjects:
+                self.gameObjects[obj].Update()
 
             self.graphicEngine.get_time()
             self.graphicEngine.check_events()
