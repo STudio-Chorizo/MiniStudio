@@ -26,10 +26,9 @@ class GameObject(ExtendedBaseModel):
         self.model = ExtendedBaseModel(Eng.Engine.Instance.graphicEngine, name, text_id, pos, rot, scale)
         Eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
-
-    #Utiliser cette fonction pour avoir les collision
+    # Utiliser cette fonction pour avoir les collision
     def Move(self, translation: tuple) -> None:
-        """Fonction pour déplacer et permettre les collision
+        """Fonction pour déplacer l'objet et permettre les collision\n
         translation: (x, y, z) déplacement de l'objet"""
         self.position += translation
         self.velocity = translation
