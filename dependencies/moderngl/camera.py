@@ -1,5 +1,9 @@
+from asyncio.windows_events import NULL
 import glm
 import pygame as pg
+import math
+from dependencies.engine.engine import *
+from dependencies.engine.gameobject import *
 
 FOV = 50  # deg
 NEAR = 0.1
@@ -9,7 +13,8 @@ SENSITIVITY = 0.04
 
 
 class Camera:
-    def __init__(self, app, position=(0, 0, 4), yaw=-90, pitch=0):
+    def __init__(self, app, position=(0, 0.2, 0.5), yaw=-90, pitch=-10, roll=0):
+        self.target = NULL
         self.app = app
         self.aspect_ratio = app.WIN_SIZE[0] / app.WIN_SIZE[1]
         self.position = glm.vec3(position)
@@ -18,49 +23,56 @@ class Camera:
         self.forward = glm.vec3(0, 0, -1)
         self.yaw = yaw
         self.pitch = pitch
+        self.roll = roll
         # view matrix
         self.m_view = self.get_view_matrix()
         # projection matrix
         self.m_proj = self.get_projection_matrix()
 
-    def rotate(self):
-        rel_x, rel_y = pg.mouse.get_rel()
-        self.yaw += rel_x * SENSITIVITY
-        self.pitch -= rel_y * SENSITIVITY
-        self.pitch = max(-89, min(89, self.pitch))
-
     def update_camera_vectors(self):
-        yaw, pitch = glm.radians(self.yaw), glm.radians(self.pitch)
+        if eng.Engine.Instance.deltaTime > 0:
+            self.move_position = self.position - self.prev_position
+            if math.sqrt(self.move_position.x**2 + self.move_position.y**2 + self.move_position.z**2) <= 5:
+                self.position = self.prev_position
+            else:
+                self.position -= self.move_position * 0.5
+
+            self.move_yaw = self.yaw - self.prev_yaw
+            if abs(self.move_yaw) <= 0.01:
+                self.yaw = self.prev_yaw
+            else:
+                self.yaw -= self.move_yaw * 0.5
+
+            self.move_pitch = self.pitch - self.prev_pitch
+            if abs(self.move_pitch) <= 0.01:
+                self.pitch = self.prev_pitch
+            else:
+                self.pitch -= self.move_pitch * 0.5
+
+            self.move_roll = self.roll - self.prev_roll
+            if abs(self.move_roll) <= 0.01:
+                self.roll = self.prev_roll
+            else:
+                self.roll -= self.move_roll * 0.5
+
+        yaw, pitch, roll = glm.radians(self.yaw), glm.radians(self.pitch), glm.radians(self.roll)
 
         self.forward.x = glm.cos(yaw) * glm.cos(pitch)
         self.forward.y = glm.sin(pitch)
         self.forward.z = glm.sin(yaw) * glm.cos(pitch)
 
         self.forward = glm.normalize(self.forward)
-        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(0, 1, 0)))
+        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     def update(self):
-        self.move()
-        self.rotate()
+        self.prev_position = self.target.camera_pos
+        self.prev_yaw = self.target.camera_yaw
+        self.prev_pitch = self.target.camera_pitch
+        self.prev_roll = self.target.camera_roll
+
         self.update_camera_vectors()
         self.m_view = self.get_view_matrix()
-
-    def move(self):
-        velocity = SPEED * self.app.delta_time
-        keys = pg.key.get_pressed()
-        if keys[pg.K_z]:
-            self.position += self.forward * velocity
-        if keys[pg.K_s]:
-            self.position -= self.forward * velocity
-        if keys[pg.K_q]:
-            self.position -= self.right * velocity
-        if keys[pg.K_d]:
-            self.position += self.right * velocity
-        if keys[pg.K_a]:
-            self.position += self.up * velocity
-        if keys[pg.K_e]:
-            self.position -= self.up * velocity
 
     def get_view_matrix(self):
         return glm.lookAt(self.position, self.position + self.forward, self.up)

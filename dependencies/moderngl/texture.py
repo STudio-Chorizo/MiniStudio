@@ -1,6 +1,7 @@
 import pygame as pg
 import moderngl as mgl
 import glm
+from dependencies.parsejson.parse import *
 
 
 class Texture:
@@ -8,12 +9,18 @@ class Texture:
         self.app = app
         self.ctx = app.ctx
         self.textures = {}
-        self.textures[0] = self.get_texture(path='Assets/textures/img.png')
-        self.textures[1] = self.get_texture(path='Assets/textures/img_1.png')
-        self.textures[2] = self.get_texture(path='Assets/textures/img_2.png')
-        self.textures['cat'] = self.get_texture(path='Assets/objects/cat/20430_cat_diff_v1.jpg')
-        self.textures['skybox'] = self.get_texture_cube(dir_path='Assets/skybox/', ext='png')
+        #self.textures[0] = self.get_texture(path=ASSETS["cube"]["textures"][0])
+        #self.textures[1] = self.get_texture(path=ASSETS["cube"]["textures"][1])
+        #self.textures[2] = self.get_texture(path=ASSETS["cube"]["textures"][2])
+        #self.textures['cat'] = self.get_texture(path=ASSETS["cat"]["texture"])
+        self.textures['skybox'] = self.get_texture_cube(dir_path=ASSETS["skybox"]["dir"], ext=ASSETS["skybox"]["ext"])
         self.textures['depth_texture'] = self.get_depth_texture()
+        self.textureCount = 1
+
+    def AddTexture(self, name):
+        self.textureCount +=1
+        self.textures[self.textureCount] = self.get_texture(path=ASSETS[name]["texture"])
+        return self.textureCount
 
     def get_depth_texture(self):
         depth_texture = self.ctx.depth_texture(self.app.WIN_SIZE)

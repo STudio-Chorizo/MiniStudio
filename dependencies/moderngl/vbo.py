@@ -1,15 +1,19 @@
 import numpy as np
 import moderngl as mgl
 import pywavefront
-
+from dependencies.engine.engine import Engine
+from dependencies.parsejson.parse import *
 
 class VBO:
     def __init__(self, ctx):
         self.vbos = {}
-        self.vbos['cube'] = CubeVBO(ctx)
-        self.vbos['cat'] = CatVBO(ctx)
+        #self.vbos['cube'] = CubeVBO(ctx)
+        #self.vbos['cat'] = CatVBO(ctx)
         self.vbos['skybox'] = SkyBoxVBO(ctx)
         self.vbos['advanced_skybox'] = AdvancedSkyBoxVBO(ctx)
+
+    def AddVBO(self, name):
+        self.vbos[name] = ComplexVBO(Engine.Instance.graphicEngine.ctx, name)
 
     def destroy(self):
         [vbo.destroy() for vbo in self.vbos.values()]
@@ -78,14 +82,15 @@ class CubeVBO(BaseVBO):
         return vertex_data
 
 
-class CatVBO(BaseVBO):
-    def __init__(self, app):
+class ComplexVBO(BaseVBO):
+    def __init__(self, app, name):
+        self.name = name
         super().__init__(app)
         self.format = '2f 3f 3f'
         self.attribs = ['in_texcoord_0', 'in_normal', 'in_position']
 
     def get_vertex_data(self):
-        objs = pywavefront.Wavefront('Assets/objects/cat/20430_Cat_v1_NEW.obj', cache=True, parse=True)
+        objs = pywavefront.Wavefront(ASSETS[self.name]["object"], cache=True, parse=True)
         obj = objs.materials.popitem()[1]
         vertex_data = obj.vertices
         vertex_data = np.array(vertex_data, dtype='f4')
