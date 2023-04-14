@@ -52,7 +52,7 @@ class GameObject(ExtendedBaseModel):
         self.camera_roll += camRotation[2]
         
     # Utiliser cette fonction pour avoir les collision
-    def SetPos(self, position: tuple, camPosition: tuple = glm.vec3([0, 0.2, 0.5])) -> None:
+    def SetPos(self, position: tuple, camPosition: tuple = glm.vec3([0, 0.15, 0.2])) -> None:
         """Fonction pour définir un position de l'objet\n
         translation: (x, y, z) position de l'objet"""
         self.prev_position = position
@@ -67,7 +67,7 @@ class GameObject(ExtendedBaseModel):
         self.camera_pitch = camOrientation[1]
         self.camera_roll = camOrientation[2]
     
-    def SyncPosCamera(self, position: tuple = glm.vec3([0, 0.2, 0.5])) -> None:
+    def SyncPosCamera(self, position: tuple = glm.vec3([0, 0.15, 0.2])) -> None:
         self.camera_pos = glm.vec3(self.position) + position
     
     def SyncRotCamera(self, camOrientation: tuple = (-90, -10, 0)) -> None:
