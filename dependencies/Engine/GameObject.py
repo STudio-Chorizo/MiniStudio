@@ -8,9 +8,11 @@ from dependencies.moderngl.model import ExtendedBaseModel
 class GameObject(ExtendedBaseModel):
     def __init__(self, model_name = "cube", pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = pos
+        self.camera_pos = glm.vec3(self.position) + glm.vec3([0, 0.2, 0.5])
         self.rotation = rot
         self.camera_yaw = self.rotation[1] - 90
         self.camera_pitch = self.rotation[0] - 10
+        self.camera_roll = self.rotation[2]
         self.scale = scale
         self.UID = "-1"
 
@@ -30,37 +32,49 @@ class GameObject(ExtendedBaseModel):
         Eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     # Utiliser cette fonction pour avoir les collision
-    def Move(self, translation: tuple) -> None:
+    def Move(self, translation: tuple, camTranslation: tuple = glm.vec3([0, 0, 0])) -> None:
         """Fonction pour déplacer l'objet et permettre les collision\n
         translation: (x, y, z) déplacement de l'objet"""
         self.position += translation
         self.velocity = translation
         self.model.pos += translation
+        self.camera_pos += camTranslation
     
     # Utiliser cette fonction pour avoir la rotation
-    def Rotate(self, rotation: tuple, camRotation: tuple = glm.vec2([0, 0])) -> None:
+    def Rotate(self, rotation: tuple, camRotation: tuple = (0, 0, 0)) -> None:
         """Fonction pour touner l'objet\n
         rotation: (x, y, z) rotation de l'objet"""
         self.rotation += rotation
         self.model.rot += rotation
         self.camera_yaw += camRotation[0]
         self.camera_pitch += camRotation[1]
+        self.camera_roll += camRotation[2]
         
     # Utiliser cette fonction pour avoir les collision
-    def SetPos(self, position: tuple) -> None:
+    def SetPos(self, position: tuple, camPosition: tuple = glm.vec3([0, 0.2, 0.5])) -> None:
         """Fonction pour définir un position de l'objet\n
         translation: (x, y, z) position de l'objet"""
         self.position = position
         self.model.pos = position
+        self.camera_pos = camPosition
     
     # Utiliser cette fonction pour avoir la rotation
-    def SetRot(self, orientation: tuple, camOrientation: tuple = glm.vec2([-90, -10])) -> None:
+    def SetRot(self, orientation: tuple, camOrientation: tuple = (-90, -10, 0)) -> None:
         """Fonction pour définir une rotation de l'objet\n
         orientation: (x, y, z) orientation de l'objet"""
         self.rotation = orientation
         self.model.rot = orientation
         self.camera_yaw = camOrientation[0]
         self.camera_pitch = camOrientation[1]
+        self.camera_roll = camOrientation[2]
+    
+    def SyncPosCamera(self, position: tuple = glm.vec3([0, 0.2, 0.5])) -> None:
+        self.camera_pos = glm.vec3(self.position) + position
+    
+    def SyncRotCamera(self, camOrientation: tuple = (-90, -10, 0)) -> None:
+        self.camera_yaw = self.rotation[1]*10 + camOrientation[0]
+        self.camera_pitch = self.rotation[0]*10 + camOrientation[1]
+        self.camera_roll = self.rotation[2]*10 + camOrientation[2]
     
     def Update(self):
         pass
