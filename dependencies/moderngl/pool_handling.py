@@ -10,5 +10,5 @@ class pool:
     def Push(self, y):
         self.f.append(y)
 
-    def clear(self):
+    def Clear(self):
         self.f.clear()
