@@ -64,7 +64,7 @@ class Engine:
 
             self.event = pg.event.get()
             for e in self.event:
-                if e.type == pg.QUIT : self.run = False
+                if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
 
             for obj in self.gameObjects:
                 # print(obj)
