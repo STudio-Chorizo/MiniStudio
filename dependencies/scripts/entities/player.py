@@ -8,20 +8,29 @@ class Player(GameObject):
         self.up = glm.vec3(0, 1, 0)
         self.forward = glm.vec3(0, 0, -1)
         self.speed = 0.01
+        self.scrollSpeed = 0.03
         super().__init__(pos, rot, scale)
         Engine.Instance.graphicEngine.camera.target = self
 
     def Update(self):
         keys = pg.key.get_pressed()
+        rotX = 0
+        rotY = 0
+        rotZ = 0
         if keys[pg.K_z]:
             self.Move(self.up * self.speed * Engine.Instance.deltaTime)
-        elif keys[pg.K_s]:
+            rotX = 0.4
+        if keys[pg.K_s]:
             self.Move(-self.up * self.speed * Engine.Instance.deltaTime)
-        elif keys[pg.K_q]:
+            rotX = -0.4
+        if keys[pg.K_q]:
             self.Move(-self.right * self.speed * Engine.Instance.deltaTime)
-        elif keys[pg.K_d]:
+            rotZ = 0.4
+        if keys[pg.K_d]:
             self.Move(self.right * self.speed * Engine.Instance.deltaTime)
+            rotZ = -0.4
         
-        self.Move(self.forward * self.speed * Engine.Instance.deltaTime)
+        self.Move(self.forward * self.scrollSpeed * Engine.Instance.deltaTime)
+        self.SetRot(glm.vec3([rotX, rotY, rotZ]))
 
         self.model.m_model = self.model.get_model_matrix()

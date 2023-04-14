@@ -40,8 +40,8 @@ class Camera:
 
     def update(self):
         self.position = glm.vec3(self.target.position) + glm.vec3(0, 0.2, 0.5)
-        self.yaw = self.target.rotation[1] - 90
-        self.pitch = self.target.rotation[0] - 10
+        self.yaw = self.target.camera_yaw
+        self.pitch = self.target.camera_pitch
         self.update_camera_vectors()
         self.m_view = self.get_view_matrix()
 

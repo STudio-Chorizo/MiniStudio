@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
 import dependencies.engine.engine as Eng
+import glm
 
 from dependencies.moderngl.model import ExtendedBaseModel
 
@@ -8,6 +9,8 @@ class GameObject(ExtendedBaseModel):
     def __init__(self, model_name = "cube", pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = pos
         self.rotation = rot
+        self.camera_yaw = self.rotation[1] - 90
+        self.camera_pitch = self.rotation[0] - 10
         self.scale = scale
         self.UID = "-1"
 
@@ -33,6 +36,31 @@ class GameObject(ExtendedBaseModel):
         self.position += translation
         self.velocity = translation
         self.model.pos += translation
+    
+    # Utiliser cette fonction pour avoir la rotation
+    def Rotate(self, rotation: tuple, camRotation: tuple = glm.vec2([0, 0])) -> None:
+        """Fonction pour touner l'objet\n
+        rotation: (x, y, z) rotation de l'objet"""
+        self.rotation += rotation
+        self.model.rot += rotation
+        self.camera_yaw += camRotation[0]
+        self.camera_pitch += camRotation[1]
+        
+    # Utiliser cette fonction pour avoir les collision
+    def SetPos(self, position: tuple) -> None:
+        """Fonction pour définir un position de l'objet\n
+        translation: (x, y, z) position de l'objet"""
+        self.position = position
+        self.model.pos = position
+    
+    # Utiliser cette fonction pour avoir la rotation
+    def SetRot(self, orientation: tuple, camOrientation: tuple = glm.vec2([-90, -10])) -> None:
+        """Fonction pour définir une rotation de l'objet\n
+        orientation: (x, y, z) orientation de l'objet"""
+        self.rotation = orientation
+        self.model.rot = orientation
+        self.camera_yaw = camOrientation[0]
+        self.camera_pitch = camOrientation[1]
     
     def Update(self):
         pass
