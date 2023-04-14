@@ -48,4 +48,5 @@ class Player(GameObject):
             self.SyncPosCamera(glm.vec3([0, 0.0, -0.1]))
             self.SyncRotCamera((-90, 0, 0))
 
+        super().Update()
         self.model.m_model = self.model.get_model_matrix()
