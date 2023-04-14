@@ -38,6 +38,8 @@ class Player(GameObject):
             self.vue_pressed = 1
         elif not(keys[pg.K_e]) and self.vue_pressed == 1:
             self.vue_pressed = 0
+        if keys[pg.K_a] and self.vue_pressed == 0:
+            self.SetPos(glm.vec3([0, 0, 0]))
         
         self.Move(self.forward * self.scrollSpeed * eng.Engine.Instance.deltaTime)
         self.SetRot(glm.vec3([rotX, rotY, rotZ]))
