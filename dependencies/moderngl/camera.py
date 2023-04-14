@@ -31,29 +31,29 @@ class Camera:
 
     def update_camera_vectors(self):
         if eng.Engine.Instance.deltaTime > 0:
-            self.move_position = (self.position - self.prev_position)
-            if math.sqrt(self.move_position.x**2 + self.move_position.y**2 + self.move_position.z**2) <= 0.1:
+            self.move_position = self.position - self.prev_position
+            if math.sqrt(self.move_position.x**2 + self.move_position.y**2 + self.move_position.z**2) <= 5:
                 self.position = self.prev_position
             else:
-                self.position += self.move_position * min(eng.Engine.Instance.deltaTime*2, 1)
+                self.position -= self.move_position * 0.5
 
-            self.move_yaw = (self.yaw - self.prev_yaw)
-            if self.move_yaw <= 0.1:
+            self.move_yaw = self.yaw - self.prev_yaw
+            if abs(self.move_yaw) <= 0.01:
                 self.yaw = self.prev_yaw
             else:
-                self.yaw += self.move_yaw * min(eng.Engine.Instance.deltaTime*2, 1)
+                self.yaw -= self.move_yaw * 0.5
 
-            self.move_pitch = (self.pitch - self.prev_pitch)
-            if self.move_pitch <= 0.1:
+            self.move_pitch = self.pitch - self.prev_pitch
+            if abs(self.move_pitch) <= 0.01:
                 self.pitch = self.prev_pitch
             else:
-                self.pitch += self.move_pitch * min(eng.Engine.Instance.deltaTime*2, 1)
+                self.pitch -= self.move_pitch * 0.5
 
-            self.move_roll = (self.roll - self.prev_roll)
-            if self.move_roll <= 0.1:
+            self.move_roll = self.roll - self.prev_roll
+            if abs(self.move_roll) <= 0.01:
                 self.roll = self.prev_roll
             else:
-                self.roll += self.move_roll * min(eng.Engine.Instance.deltaTime*2, 1)
+                self.roll -= self.move_roll * 0.5
 
         yaw, pitch, roll = glm.radians(self.yaw), glm.radians(self.pitch), glm.radians(self.roll)
 
