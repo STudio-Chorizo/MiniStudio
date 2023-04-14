@@ -32,7 +32,7 @@ class GameObject(ExtendedBaseModel):
         Eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     # Utiliser cette fonction pour avoir les collision
-    def Move(self, translation: tuple, camTranslation: tuple = glm.vec3([0, 0, 0])) -> None:
+    def Move(self, translation: tuple, timing: int = 0, camTranslation: tuple = glm.vec3([0, 0, 0])) -> None:
         """Fonction pour déplacer l'objet et permettre les collision\n
         translation: (x, y, z) déplacement de l'objet"""
         self.position += translation
@@ -42,7 +42,7 @@ class GameObject(ExtendedBaseModel):
     
     # Utiliser cette fonction pour avoir la rotation
     def Rotate(self, rotation: tuple, camRotation: tuple = (0, 0, 0)) -> None:
-        """Fonction pour touner l'objet\n
+        """Fonction pour tourner l'objet\n
         rotation: (x, y, z) rotation de l'objet"""
         self.rotation += rotation
         self.model.rot += rotation
