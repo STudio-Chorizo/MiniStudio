@@ -12,7 +12,7 @@ SENSITIVITY = 0.04
 
 
 class Camera:
-    def __init__(self, app, position=(0, 0.2, 0.5), yaw=-90, pitch=-10):
+    def __init__(self, app, position=(0, 0.2, 0.5), yaw=-90, pitch=-10, roll=0):
         self.target = NULL
         self.app = app
         self.aspect_ratio = app.WIN_SIZE[0] / app.WIN_SIZE[1]
@@ -22,26 +22,28 @@ class Camera:
         self.forward = glm.vec3(0, 0, -1)
         self.yaw = yaw
         self.pitch = pitch
+        self.roll = roll
         # view matrix
         self.m_view = self.get_view_matrix()
         # projection matrix
         self.m_proj = self.get_projection_matrix()
 
     def update_camera_vectors(self):
-        yaw, pitch = glm.radians(self.yaw), glm.radians(self.pitch)
+        yaw, pitch, roll = glm.radians(self.yaw), glm.radians(self.pitch), glm.radians(self.roll)
 
         self.forward.x = glm.cos(yaw) * glm.cos(pitch)
         self.forward.y = glm.sin(pitch)
         self.forward.z = glm.sin(yaw) * glm.cos(pitch)
 
         self.forward = glm.normalize(self.forward)
-        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(0, 1, 0)))
+        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     def update(self):
-        self.position = glm.vec3(self.target.position) + glm.vec3(0, 0.2, 0.5)
-        self.yaw = self.target.rotation[1] - 90
-        self.pitch = self.target.rotation[0] - 10
+        self.position = self.target.camera_pos
+        self.yaw = self.target.camera_yaw
+        self.pitch = self.target.camera_pitch
+        self.roll = self.target.camera_roll
         self.update_camera_vectors()
         self.m_view = self.get_view_matrix()
 
