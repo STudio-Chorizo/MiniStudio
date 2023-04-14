@@ -1,6 +1,7 @@
 from asyncio.windows_events import NULL
 import glm
 import pygame as pg
+import math
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 
@@ -29,6 +30,31 @@ class Camera:
         self.m_proj = self.get_projection_matrix()
 
     def update_camera_vectors(self):
+        if eng.Engine.Instance.deltaTime > 0:
+            self.move_position = self.position - self.prev_position
+            if math.sqrt(self.move_position.x**2 + self.move_position.y**2 + self.move_position.z**2) <= 5:
+                self.position = self.prev_position
+            else:
+                self.position -= self.move_position * 0.5
+
+            self.move_yaw = self.yaw - self.prev_yaw
+            if abs(self.move_yaw) <= 0.01:
+                self.yaw = self.prev_yaw
+            else:
+                self.yaw -= self.move_yaw * 0.5
+
+            self.move_pitch = self.pitch - self.prev_pitch
+            if abs(self.move_pitch) <= 0.01:
+                self.pitch = self.prev_pitch
+            else:
+                self.pitch -= self.move_pitch * 0.5
+
+            self.move_roll = self.roll - self.prev_roll
+            if abs(self.move_roll) <= 0.01:
+                self.roll = self.prev_roll
+            else:
+                self.roll -= self.move_roll * 0.5
+
         yaw, pitch, roll = glm.radians(self.yaw), glm.radians(self.pitch), glm.radians(self.roll)
 
         self.forward.x = glm.cos(yaw) * glm.cos(pitch)
@@ -40,10 +66,11 @@ class Camera:
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     def update(self):
-        self.position = self.target.camera_pos
-        self.yaw = self.target.camera_yaw
-        self.pitch = self.target.camera_pitch
-        self.roll = self.target.camera_roll
+        self.prev_position = self.target.camera_pos
+        self.prev_yaw = self.target.camera_yaw
+        self.prev_pitch = self.target.camera_pitch
+        self.prev_roll = self.target.camera_roll
+
         self.update_camera_vectors()
         self.m_view = self.get_view_matrix()
 

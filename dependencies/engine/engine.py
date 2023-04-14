@@ -27,7 +27,7 @@ class Engine:
         self.event = NULL
         self.time = 0
         self.lastTime = 0
-        self.deltaTime = 0
+        self.deltaTime = 0.0
 
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
@@ -67,7 +67,6 @@ class Engine:
                 if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
 
             for obj in self.gameObjects:
-                # print(obj)
                 self.gameObjects[obj].Update()
 
             self.graphicEngine.get_time()
