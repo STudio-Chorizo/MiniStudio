@@ -7,5 +7,5 @@ class GameObject:
         self.scale = scale
         self.UID = "-1"
 
-    def Update(self, engine):
+    def Update(self):
         pass

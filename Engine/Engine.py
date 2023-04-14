@@ -21,7 +21,7 @@ class Engine:
     def Update(self):
         while True:
             for obj in self.gameObjects:
-                self.gameObjects[obj].Update(self)
+                self.gameObjects[obj].Update()
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
