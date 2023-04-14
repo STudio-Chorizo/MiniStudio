@@ -4,7 +4,7 @@ import glm
 
 class Player(GameObject):
     def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
-        self.person = 1
+        self.person = 3
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
         self.forward = glm.vec3(0, 0, -1)
