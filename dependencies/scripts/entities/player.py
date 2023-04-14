@@ -6,6 +6,7 @@ import pygame as pg
 class Player(GameObject):
     def __init__(self, model_name = "cube", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 3
+        self.vue_pressed = 0
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
         self.forward = glm.vec3(0, 0, -1)
@@ -31,6 +32,12 @@ class Player(GameObject):
         if keys[pg.K_d]:
             self.Move(self.right * self.speed * eng.Engine.Instance.deltaTime)
             rotZ = -0.4
+        if keys[pg.K_e] and self.vue_pressed == 0:
+            self.vue += 2
+            self.vue %= 4
+            self.vue_pressed = 1
+        elif not(keys[pg.K_e]) and self.vue_pressed == 1:
+            self.vue_pressed = 0
         
         self.Move(self.forward * self.scrollSpeed * eng.Engine.Instance.deltaTime)
         self.SetRot(glm.vec3([rotX, rotY, rotZ]))
