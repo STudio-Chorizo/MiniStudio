@@ -9,12 +9,29 @@ MiniStudio
     ├── Assets
     │   └── *voir https://github.com/STudio-Chorizo/blob/main/README.md*
     ├── dependencies
-    │   └── dependencies_controler.py
-    ├── librairies
-    │   └── pygame_install.bat
-    ├── moteur3d
-    │   └── *work in progress*
+    │   ├── engine
+    │   │   ├── engine.py *Contient le gui en jeu*
+    │   │   └── gameobject.py
+    │   ├── parsejson
+    │   │   └── parse.py
+    │   ├── scripts
+    │   │   └── entities
+    │   │       └── player.py
+    │   └── moderngl
+    │       ├── main.py
+    │       ├── camera.py
+    │       ├── light.py
+    │       ├── mesh.py
+    │       ├── model.py
+    │       ├── scene_rerender.py
+    │       ├── scene.py
+    │       ├── shader_program.py
+    │       ├── texture.py
+    │       ├── vao.py
+    │       └── vbo.py
     ├── main.py
+    ├── install_librairies.bat
+    ├── update_all_project.bat
     ├── .gitignore
     └── README.md
 ```

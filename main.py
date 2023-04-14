@@ -1,17 +1,21 @@
-from dependencies.object.guinfoperso import Guiplayer
-# Description: Main du projetdependencies/moderngl
 def main():
-    #maps = Level()
-    #maps.LoadNiveau(2)
 
-    infoplayer = Guiplayer()
-    infoplayer.LifePlayer()
+    eng = Engine()
+    Engine.CreateInstance()
+    
+    Engine.Instance.LoadScene("test")
+
+    Engine.Instance.Start()
 
 #################################################
 
 # Import des dependances
 from dependencies.parsejson.parse import *
 import dependencies.moderngl.main as loadgl
+from dependencies.engine.engine import *
+from dependencies.engine.gameobject import *
+from dependencies.scripts.entities.player import *
+from dependencies.level.level import Level
 
 # Check si le projet se lance avec succes
 print("Start with sucess")
@@ -19,5 +23,5 @@ print("Start with sucess")
 # Lance le projet
 main()
 
-# Check si le projet se termine avec succ�s
+# Check si le projet se termine avec succes
 print("Ended with sucess")
