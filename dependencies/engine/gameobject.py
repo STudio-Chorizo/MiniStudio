@@ -91,3 +91,5 @@ class GameObject(ExtendedBaseModel):
             else:
                 self.rotation -= self.move_rotation * 0.5
         self.model.rot = self.rotation
+        
+        self.model.m_model = self.model.get_model_matrix()

@@ -49,4 +49,3 @@ class Player(GameObject):
             self.SyncRotCamera((-90, 0, 0))
 
         super().Update()
-        self.model.m_model = self.model.get_model_matrix()
