@@ -1,8 +1,11 @@
-from dependencies.level.level import Level
+from dependencies.object.guinfoperso import Guiplayer
 # Description: Main du projetdependencies/moderngl
 def main():
-    maps = Level()
-    maps.LoadNiveau(2)
+    #maps = Level()
+    #maps.LoadNiveau(2)
+
+    infoplayer = Guiplayer()
+    infoplayer.LifePlayer()
 
 #################################################
 
