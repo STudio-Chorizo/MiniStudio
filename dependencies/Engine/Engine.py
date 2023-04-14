@@ -1,8 +1,10 @@
 from asyncio.windows_events import NULL
 import pygame as pg
 import dependencies.moderngl.main as loadgl
+from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
+from dependencies.scripts.entities.player import *
 
 class Engine:
     Instance = NULL
@@ -29,6 +31,21 @@ class Engine:
 
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
+    
+    def LoadScene(self, sceneName):
+        i = 0
+        j = len(SCENES[sceneName])
+        for obj in SCENES[sceneName]:
+            print("loaded: " + str(i) + "/" + str(j) + " | load object: \"" + obj["name"] + "\" of type: \"" + obj["type"] + "\"")
+            i += 1
+            match obj["type"]:
+                case "Player":
+                    player = Player(obj["name"], obj["pos"], obj["rot"], obj["scale"])
+                    self.AddGameObject(player)
+                case "GameObject":
+                    gameObject = GameObject(obj["name"], obj["pos"], obj["rot"], obj["scale"])
+                    self.AddGameObject(gameObject)
+        print("Load complete")
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
