@@ -4,16 +4,20 @@ import glm
 import pygame as pg
 
 class Player(GameObject):
-    def __init__(self, model_name = "cube", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
+    def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 3
         self.vue_pressed = 0
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
-        self.forward = glm.vec3(0, 0, -1)
+        self.forward = glm.vec3(0, 0, 1)
         self.speed = 0.01
         self.scrollSpeed = 0.03
-        super().__init__(model_name, pos, rot, scale)
+        super().__init__(pos, rot, scale)
         eng.Engine.Instance.graphicEngine.camera.target = self
+
+    def OnCollide(self, colider):
+        print("["+pg.time.get_ticks().__str__()+"] Lost")
+        return super().OnCollide(colider)
 
     def Update(self):
         keys = pg.key.get_pressed()
