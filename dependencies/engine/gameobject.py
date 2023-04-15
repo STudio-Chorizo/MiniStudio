@@ -45,7 +45,7 @@ class GameObject(ExtendedBaseModel):
     
     # Utiliser cette fonction pour définir la rotation
     def Rotate(self, angle: float, axis: tuple) -> None:
-        """Fonction pour définir une rotation de l'objet\n
+        """Fonction pour faire tourner l'objet\n
         orientation: (x, y, z) orientation de l'objet"""
         self.rotation += angle * axis
     

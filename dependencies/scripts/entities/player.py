@@ -5,23 +5,25 @@ import pygame as pg
 
 class Player(GameObject):
     def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
-        self.vue = 3
-        self.vue_pressed = 0
-        self.cameraOffset = glm.vec3([0, 0.2, -0.5])
+        self.vue = 0
+        self.lastTimeVueSwitch = 0
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
         self.forward = glm.vec3(0, 0, 1)
         self.speed = 0.01
-        self.rotSpeed = 0.01
+        self.rotSpeed = 0.003
         self.scrollSpeed = 0.03
         super().__init__(pos, rot, scale)
-        eng.Engine.Instance.graphicEngine.camera.target = self
+        self.cameraOffset = glm.vec3([0, 0.2, -0.5])
+        self.SetRotCamera((-10, 90, 0))
 
-    def SetRotCamera(self, camOrientation: tuple = (-10, 0, 0)) -> None:
+    def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
         cam = Eng.Engine.Instance.graphicEngine.camera
-        cam.pitch = self.rotation[1]#*10 + camOrientation[0]
-        cam.yaw = self.rotation[0]#*10 + camOrientation[1]
-        cam.roll = self.rotation[2]#*10 + camOrientation[2]
+        rot = camOrientation
+        if(local == True) : rot += self.rotation
+        cam.pitch = rot[0]
+        cam.yaw = rot[1]
+        cam.roll = rot[2]
 
     def OnCollide(self, colider):
         print("["+pg.time.get_ticks().__str__()+"] Lost")
@@ -39,22 +41,26 @@ class Player(GameObject):
         if keys[pg.K_s]:
             self.Move(-self.up * self.speed * eng.Engine.Instance.deltaTime)
             rotX = -1
-        if keys[pg.K_q]:
+        if keys[pg.K_d]:
             self.Move(-self.right * self.speed * eng.Engine.Instance.deltaTime)
             rotZ = 1
-        if keys[pg.K_d]:
+        if keys[pg.K_q]:
             self.Move(self.right * self.speed * eng.Engine.Instance.deltaTime)
             rotZ = -1
         #Caméra
-        if keys[pg.K_e] and self.vue_pressed == 0:
-            self.camera_offset = glm.vec3([0, 0, 0])
-            self.vue_pressed = 1
-        elif not(keys[pg.K_e]) and self.vue_pressed == 1:
-            self.camera_offset = glm.vec3([0, 0.2, -0.5])
-            self.SetRotCamera()
-            self.vue_pressed = 0
+        if(keys[pg.K_e] and self.lastTimeVueSwitch + 300 < eng.Engine.Instance.time):
+            self.lastTimeVueSwitch = eng.Engine.Instance.time
+            #1er personne
+            if (self.vue == 0):
+                self.cameraOffset = glm.vec3([0, 0, 0])
+                self.vue = 1
+            #3ème personne
+            elif (self.vue == 1):
+                self.cameraOffset = glm.vec3([0, 0.2, -0.5])
+                self.SetRotCamera((-10, 90,0), False)
+                self.vue = 0
         #Cheat code start
-        if keys[pg.K_a] and self.vue_pressed == 0:
+        if keys[pg.K_a]:
             self.position = glm.vec3([0, 0, 0])
         else:
         #Cheat code end
@@ -65,20 +71,20 @@ class Player(GameObject):
             if(self.rotation[2] > maxAngle or self.rotation[2] < -maxAngle) : rotZ = 0
             
             if(rotX == 0 and (keys[pg.K_z] or keys[pg.K_s]) == False):
-                if(self.rotation[0] > 0.08) : rotX = -1 
-                elif(self.rotation[0] > 0) : self.rotation[0] = 0
-                elif(self.rotation[0] < -0.08) : rotX = 1
-                else : self.rotation[0] = self.rotation[0] = 0
+                if(self.rotation[0] > 0.06) : rotX = -1 
+                #elif(self.rotation[0] > 0) : self.Rotate(-round(self.rotation[0], 2) * eng.Engine.Instance.deltaTime, (1, 0, 0))
+                elif(self.rotation[0] < -0.06) : rotX = 1
+                #else : self.Rotate(round(self.rotation[0], 2) * eng.Engine.Instance.deltaTime, (1, 0, 0))
             if(rotZ == 0 and (keys[pg.K_q] or keys[pg.K_d]) == False):
-                if(self.rotation[2] > 0.08) : rotZ = -1
-                elif(self.rotation[2] > 0) : self.rotation[2] = 0
-                elif(self.rotation[2] < -0.08) : rotZ = 1
-                else : self.rotation[2] = 0
+                if(self.rotation[2] > 0.06) : rotZ = -1
+                #elif(self.rotation[2] > 0) : self.Rotate(-round(self.rotation[2], 2) * eng.Engine.Instance.deltaTime, (0, 0, 1))
+                elif(self.rotation[2] < -0.06) : rotZ = 1
+                #else : self.Rotate(round(self.rotation[2], 2) * eng.Engine.Instance.deltaTime, (0, 0, 1))
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
 
+        print(self.cameraOffset)
         Eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
-        if self.vue == 1 :
-            self.SetRotCamera((self.rotation[0], self.rotation[1], self.rotation[2]))
+        if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
 
         super().Update()
