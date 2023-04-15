@@ -1,5 +1,4 @@
 from asyncio.windows_events import NULL
-import time
 import pygame as pg
 import dependencies.moderngl.main as loadgl
 from dependencies.parsejson.parse import *
@@ -7,6 +6,7 @@ from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.player import *
 import numpy
+import time
 
 class Engine:
     Instance = NULL
@@ -48,8 +48,6 @@ class Engine:
                     gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
             
             if(gameObject == None) : continue
-            print(obj["name"] != None)
-            print(obj["name"])
             if(obj["name"] != None) : gameObject.SetModel(obj["name"])
             if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
             self.AddGameObject(gameObject)
