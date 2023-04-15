@@ -15,7 +15,7 @@ class GameObject(ExtendedBaseModel):
 
         self.isCollide = False
         self.collideBox = NULL
-        self.velocity =  (0, 0, 0)
+        self.velocity = (0, 0, 0)
 
         self.forward = (0, 0, 1)
         self.right = (1, 0, 0)
@@ -29,7 +29,7 @@ class GameObject(ExtendedBaseModel):
         text_id = Eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
         Eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
         Eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
-        self.model = ExtendedBaseModel(Eng.Engine.Instance.graphicEngine, name, text_id, self.position, self.rotation, self.scale)
+        self.model = ExtendedBaseModel(Eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
         Eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     def SetCollider(self, size):
@@ -42,12 +42,10 @@ class GameObject(ExtendedBaseModel):
     def UpdateLocalAxis(self):
         pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])
 
-        self.forward.x = glm.cos(yaw) * glm.cos(pitch)
-        self.forward.y = glm.sin(pitch)
-        self.forward.z = glm.sin(yaw) * glm.cos(pitch)
+        self.forward = (glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), -glm.cos(yaw) * glm.cos(pitch))
 
         self.forward = glm.normalize(self.forward)
-        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
+        self.right = glm.normalize(-glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     # Utiliser cette fonction pour avoir les collision
@@ -67,5 +65,5 @@ class GameObject(ExtendedBaseModel):
         self.UpdateLocalAxis()
         if(self.model != NULL) : 
             self.model.pos = self.position
-            self.model.rot = self.rotation
+            self.model.rot = glm.radians(self.rotation)
             self.model.m_model = self.model.get_model_matrix()
