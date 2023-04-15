@@ -4,7 +4,7 @@ import glm
 import pygame as pg
 
 class Player(GameObject):
-    def __init__(self, model_name = "cube", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
+    def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 3
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
@@ -12,7 +12,6 @@ class Player(GameObject):
         self.speed = 0.01
         self.scrollSpeed = 0.03
         super().__init__(pos, rot, scale)
-        self.SetModel(model_name)
         eng.Engine.Instance.graphicEngine.camera.target = self
 
     def OnCollide(self, colider):

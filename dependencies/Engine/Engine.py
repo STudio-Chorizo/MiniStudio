@@ -40,14 +40,20 @@ class Engine:
         for obj in SCENES[sceneName]:
             print("loaded: " + str(i) + "/" + str(j) + " | load object: \"" + obj["name"] + "\" of type: \"" + obj["type"] + "\"")
             i += 1
+            gameObject = None
             match obj["type"]:
                 case "Player":
-                    player = Player(obj["name"], obj["pos"], obj["rot"], obj["scale"])
-                    self.AddGameObject(player)
+                    gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
                 case "GameObject":
                     gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
-                    if(obj["name"] != NULL) : gameObject.SetModel(obj["name"])
-                    self.AddGameObject(gameObject)
+            
+            if(gameObject == None) : continue
+            print(obj["name"] != None)
+            print(obj["name"])
+            if(obj["name"] != None) : gameObject.SetModel(obj["name"])
+            if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
+            self.AddGameObject(gameObject)
+
         print("Load complete")
     
     def AddGameObject(self, gameObject):
@@ -57,23 +63,14 @@ class Engine:
     
     def IsCollide(self, col1, col2):
         if(col1.UID == col2.UID) : return False
-        print("col1"+col1.position.__str__())
-        print(""+col1.collideBox.__str__())
-        print(""+col1.velocity.__str__())
         pos1 = col1.velocity + col1.collideBox + (col1.position[0], col1.position[1], col1.position[2])
         posn1 = col1.velocity - col1.collideBox + (col1.position[0], col1.position[1], col1.position[2])
-        print("pos1"+pos1.__str__())
-        print(posn1)
         axisIn = 0
         for i in range(3):
             pos2 = col2.position[i] + col2.collideBox[i]
             posn2 = col2.position[i] - col2.collideBox[i]
-            print("pos2"+pos2.__str__())
-            print(posn2)
-            print("_________________________")
             if(pos1[i] > posn2 and pos1[i] < pos2 or posn1[i] > posn2 and posn1[i] < pos2 or
                pos2 > posn1[i] and pos2 < pos1[i] or posn2 > posn1[i] and posn2 < pos1[i] ) : axisIn += 1
-        print("---------------------")
         if(axisIn < 3) : return False
         return True
 
@@ -82,7 +79,7 @@ class Engine:
         for col in self.gameObjects:
             if(self.gameObjects[col].isCollide == False or self.IsCollide(obj, self.gameObjects[col]) == False) : 
                 continue
-            obj.Move(-1 * obj.velocity)
+            obj.Move(-3 * obj.velocity)
             obj.OnCollide(self.gameObjects[col])
 
             self.gameObjects[col].OnCollide(obj)
