@@ -7,9 +7,6 @@ class Player(GameObject):
     def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 0
         self.lastTimeVueSwitch = 0
-        self.right = glm.vec3(1, 0, 0)
-        self.up = glm.vec3(0, 1, 0)
-        self.forward = glm.vec3(0, 0, 1)
         self.speed = 0.01
         self.rotSpeed = 0.003
         self.scrollSpeed = 0.03
@@ -18,7 +15,7 @@ class Player(GameObject):
         self.SetRotCamera((-10, 90, 0))
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
-        cam = Eng.Engine.Instance.graphicEngine.camera
+        cam = eng.Engine.Instance.graphicEngine.camera
         rot = camOrientation
         if(local == True) : rot += self.rotation
         cam.pitch = rot[0]
@@ -36,16 +33,16 @@ class Player(GameObject):
         rotZ = 0
         #Position
         if keys[pg.K_z]:
-            self.Move(self.up * self.speed * eng.Engine.Instance.deltaTime)
+            self.Move(eng.UP * self.speed * eng.Engine.Instance.deltaTime)
             rotX = 1
         if keys[pg.K_s]:
-            self.Move(-self.up * self.speed * eng.Engine.Instance.deltaTime)
+            self.Move(-eng.UP * self.speed * eng.Engine.Instance.deltaTime)
             rotX = -1
         if keys[pg.K_d]:
-            self.Move(-self.right * self.speed * eng.Engine.Instance.deltaTime)
+            self.Move(-eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
             rotZ = 1
         if keys[pg.K_q]:
-            self.Move(self.right * self.speed * eng.Engine.Instance.deltaTime)
+            self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
             rotZ = -1
         #Caméra
         if(keys[pg.K_e] and self.lastTimeVueSwitch + 300 < eng.Engine.Instance.time):
@@ -64,7 +61,7 @@ class Player(GameObject):
             self.position = glm.vec3([0, 0, 0])
         else:
         #Cheat code end
-            self.Move(self.forward * self.scrollSpeed * eng.Engine.Instance.deltaTime)
+            self.Move(eng.FORWARD * self.scrollSpeed * eng.Engine.Instance.deltaTime)
             
             maxAngle = math.pi / 4
             if(self.rotation[0] > maxAngle or self.rotation[0] < -maxAngle) : rotX = 0

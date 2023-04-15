@@ -8,6 +8,11 @@ from dependencies.scripts.entities.player import *
 import numpy
 import time
 
+
+RIGHT = glm.vec3(1, 0, 0)
+UP = glm.vec3(0, 1, 0)
+FORWARD = glm.vec3(0, 0, 1)
+
 class Engine:
     Instance = NULL
     @staticmethod
