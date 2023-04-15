@@ -8,11 +8,16 @@ class Player(GameObject):
         self.vue = 3
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
-        self.forward = glm.vec3(0, 0, -1)
+        self.forward = glm.vec3(0, 0, 1)
         self.speed = 0.01
         self.scrollSpeed = 0.03
-        super().__init__(model_name, pos, rot, scale)
+        super().__init__(pos, rot, scale)
+        self.SetModel(model_name)
         eng.Engine.Instance.graphicEngine.camera.target = self
+
+    def OnCollide(self, colider):
+        print("["+pg.time.get_ticks().__str__()+"] Lost")
+        return super().OnCollide(colider)
 
     def Update(self):
         keys = pg.key.get_pressed()
@@ -41,4 +46,4 @@ class Player(GameObject):
             self.SyncPosCamera(glm.vec3([0, 0.0, -0.1]))
             self.SyncRotCamera((-90, 0, 0))
 
-        self.model.m_model = self.model.get_model_matrix()
+        super().Update()

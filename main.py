@@ -1,9 +1,12 @@
 def main():
-
-    eng = Engine()
     Engine.CreateInstance()
     
     Engine.Instance.LoadScene("test")
+
+    for o in Engine.Instance.gameObjects:
+        Engine.Instance.gameObjects[o].SetCollider((5, 6, 5))
+
+
 
     Engine.Instance.Start()
 
