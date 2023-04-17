@@ -3,6 +3,7 @@ import os
 
 ASSETS = {}
 SCENES = {}
+DIALOG = []
 
 def parseJson(path: str) -> bool | list | dict:
     """Parse le fichier json au chemin projet/`path` sous forme de liste ou de dictionnaire ou renvoie False si le fichier n'est pas trouver.\n
@@ -16,3 +17,4 @@ def parseJson(path: str) -> bool | list | dict:
 
 ASSETS = parseJson("/Assets/assets.json")
 SCENES = parseJson("/Assets/scenes.json")
+DIALOG = parseJson("/Assets/dialog.json")

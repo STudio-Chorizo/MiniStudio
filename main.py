@@ -1,15 +1,15 @@
+from dependencies.language.language import Luanguage
 def main():
-    Engine.CreateInstance()
-    
-    Engine.Instance.LoadScene("test")
-
-
-
-    Engine.Instance.Start()
+   Engine.CreateInstance()
+   Engine.Instance.LoadScene("test")
+   Engine.Instance.Start()
+   Engine.Instance.Ln = 1
+   print(DIALOG[Engine.Instance.Ln][0])
 
 #################################################
 
 # Import des dependances
+
 from dependencies.parsejson.parse import *
 import dependencies.moderngl.main as loadgl
 from dependencies.engine.engine import *

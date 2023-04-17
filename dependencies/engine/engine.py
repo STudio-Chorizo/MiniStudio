@@ -15,7 +15,7 @@ class Engine:
         if(Engine.Instance != NULL) : return
         Engine.Instance = Engine(wW, wH)
 
-    def __init__(self, wW = 1200, wH = 800):
+    def __init__(self, wW = 1200, wH = 800, Ln = 0):
         if(Engine.Instance != NULL) : return
         self.player = GameObject()
         self.wW = wW
@@ -30,6 +30,8 @@ class Engine:
         self.time = 0
         self.lastTime = 0
         self.deltaTime = 0.0
+        self.Ln = Ln
+        #si Ln (qui veux dire languageNomber) est egale a 0 alors francais si c est egale a 1 alors anglais
 
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
@@ -109,5 +111,4 @@ class Engine:
             self.graphicEngine.camera.update()
             self.graphicEngine.render()
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
-            
 
