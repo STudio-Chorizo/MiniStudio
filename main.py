@@ -1,4 +1,3 @@
-from dependencies.language.language import Luanguage
 def main():
    Engine.CreateInstance()
    Engine.Instance.LoadScene("test")
