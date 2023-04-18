@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
-import dependencies.engine.engine as Eng
+from dependencies.engine.Untils.vector import Magnitude
+import dependencies.engine.engine as eng
 import glm
 import math
 
@@ -21,18 +22,17 @@ class GameObject(ExtendedBaseModel):
         self.right = (1, 0, 0)
         self.forward = (0, 1, 0)
         self.UpdateLocalAxis()
-        print(self.forward)
 
         self.model = NULL
 
     def SetModel(self, name):
-        if(Eng.Engine.Instance == NULL) : return
+        if(eng.Engine.Instance == NULL) : return
         
-        text_id = Eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
-        Eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
-        Eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
-        self.model = ExtendedBaseModel(Eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
-        Eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
+        text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
+        eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
+        eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
+        eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     def SetCollider(self, size):
         self.isCollide = True
@@ -40,6 +40,34 @@ class GameObject(ExtendedBaseModel):
 
     def OnCollide(self, colider):
         pass
+
+    def Raycast(self, dir, max = 150):
+        """Envoie un rayon depuis l'objet.
+        return (hitObj, hitPoint) || False"""
+        collider = col = eng.Engine.Instance.gameObjects
+        point = (self.position[0], self.position[1], self.position[2])
+        ray = dir * 0.1
+        #Optimisation sans prendre compte de l'intérieur de la collideBox
+        for i in range(0, max * 10, 1):
+            j = 0
+            for obj in collider:
+                o = eng.Engine.Instance.gameObjects[obj]
+                if(Magnitude(self.position - o.position) > max or Magnitude(self.position - o.position) < i or o.UID == self.UID) : 
+                    #col.pop(j)
+                    continue
+                point += ray
+                
+                axisIn = 0
+                for i in range(3):
+                    pos2 = o.position[i] + o.collideBox[i]
+                    posn2 = o.position[i] - o.collideBox[i]
+                    if(point[i] > posn2 and point[i] < pos2 or point[i] > posn2 and point[i] < pos2 or
+                    pos2 > point[i] and pos2 < point[i] or posn2 > point[i] and posn2 < point[i] ) : axisIn += 1
+                if(axisIn == 3) : return (o, point)
+                
+                j += 1
+            collider = col
+        return False
 
     def UpdateLocalAxis(self):
         pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])

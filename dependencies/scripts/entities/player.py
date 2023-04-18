@@ -77,7 +77,10 @@ class Player(GameObject):
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
 
-        Eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
+        eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, -90, 0))
-
+        
+        hit = self.Raycast(eng.FORWARD)
+        if(hit != False) : print("hit on: " + hit[0].UID.__str__() + " at " + hit[1].__str__())
+        
         super().Update()
