@@ -11,7 +11,7 @@ class Engine:
         self.objectsCount = 0
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
-        self.window.fill("white")
+        self.window.fill("black")
 
     def AddGameObject(self, obj):
         obj.UID = self.objectsCount.__str__()

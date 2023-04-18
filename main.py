@@ -2,7 +2,7 @@ from Engine.Engine import Engine
 from Scripts.GUI.Menu import Menu
 # Description: Main du projet
 def main():
-    engine = Engine(1280, 720)
+    engine = Engine(1000,580)
     menu = Menu(engine)
     engine.AddGameObject(menu)
     engine.Update()
