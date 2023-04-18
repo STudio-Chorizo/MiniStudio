@@ -11,8 +11,8 @@ class Player(GameObject):
         self.rotSpeed = 0.1
         self.scrollSpeed = 0.03
         super().__init__(pos, rot, scale)
-        self.cameraOffset = glm.vec3([0, 0.2, -0.5])
-        self.SetRotCamera((-10, 90, 0))
+        self.cameraOffset = glm.vec3([0, 0.2, 0.5])
+        self.SetRotCamera((-10, -90, 0))
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
         cam = eng.Engine.Instance.graphicEngine.camera
@@ -38,10 +38,10 @@ class Player(GameObject):
         if keys[pg.K_s]:
             self.Move(-eng.UP * self.speed * eng.Engine.Instance.deltaTime)
             rotX = -1
-        if keys[pg.K_d]:
+        if keys[pg.K_q]:
             self.Move(-eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
             rotZ = 1
-        if keys[pg.K_q]:
+        if keys[pg.K_d]:
             self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
             rotZ = -1
         #Caméra
@@ -53,8 +53,8 @@ class Player(GameObject):
                 self.vue = 1
             #3ème personne
             elif (self.vue == 1):
-                self.cameraOffset = glm.vec3([0, 0.2, -0.5])
-                self.SetRotCamera((-10, 90,0), False)
+                self.cameraOffset = glm.vec3([0, 0.2, 0.5])
+                self.SetRotCamera((-10, -90,0), False)
                 self.vue = 0
         #Cheat code start
         if keys[pg.K_a]:
@@ -78,6 +78,6 @@ class Player(GameObject):
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
 
         Eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
-        if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
+        if(self.vue == 1) : self.SetRotCamera((0, -90, 0))
 
         super().Update()

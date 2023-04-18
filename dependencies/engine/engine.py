@@ -11,7 +11,7 @@ import time
 
 RIGHT = glm.vec3(1, 0, 0)
 UP = glm.vec3(0, 1, 0)
-FORWARD = glm.vec3(0, 0, 1)
+FORWARD = glm.vec3(0, 0, -1)
 
 class Engine:
     Instance = NULL
@@ -48,9 +48,9 @@ class Engine:
             gameObject = None
             match obj["type"]:
                 case "Player":
-                    gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
+                    gameObject = Player((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
                 case "GameObject":
-                    gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
+                    gameObject = GameObject((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
             
             if(gameObject == None) : continue
             if(obj["name"] != None) : gameObject.SetModel(obj["name"])

@@ -20,6 +20,8 @@ class GameObject(ExtendedBaseModel):
         self.forward = (0, 0, 1)
         self.right = (1, 0, 0)
         self.forward = (0, 1, 0)
+        self.UpdateLocalAxis()
+        print(self.forward)
 
         self.model = NULL
 
@@ -42,10 +44,10 @@ class GameObject(ExtendedBaseModel):
     def UpdateLocalAxis(self):
         pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])
 
-        self.forward = (glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), -glm.cos(yaw) * glm.cos(pitch))
+        self.forward = (glm.cos(yaw) * glm.cos(pitch), glm.sin(pitch), -glm.sin(yaw) * glm.cos(pitch))
 
         self.forward = glm.normalize(self.forward)
-        self.right = glm.normalize(-glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
+        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     # Utiliser cette fonction pour avoir les collision
