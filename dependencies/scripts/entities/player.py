@@ -3,15 +3,12 @@ from dependencies.engine.gameobject import *
 import glm
 import pygame as pg
 
-class Player(GameObject):
+from dependencies.scripts.entities.entities import Entities
+
+class Player(Entities):
     def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 0
         self.lastTimeVueSwitch = 0
-        self.right = glm.vec3(1, 0, 0)
-        self.up = glm.vec3(0, 1, 0)
-        self.forward = glm.vec3(0, 0, 1)
-        self.speed = 0.01
-        self.rotSpeed = 0.003
         self.scrollSpeed = 0.03
         super().__init__(pos, rot, scale)
         self.cameraOffset = glm.vec3([0, 0.2, -0.5])
@@ -83,7 +80,6 @@ class Player(GameObject):
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
 
-        print(self.cameraOffset)
         Eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
 
