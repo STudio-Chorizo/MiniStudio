@@ -103,9 +103,8 @@ class Engine:
             for e in self.event:
                 if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
 
-            go = list(self.gameObjects)
-            for obj in go:
-                self.gameObjects[obj].Update()
+            for obj in self.gameObjects:
+                if(obj.isActive == True) : self.gameObjects[obj].Update()
                 
             for o in self.gameObjects:
                 if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
