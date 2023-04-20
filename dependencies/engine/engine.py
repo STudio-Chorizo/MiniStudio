@@ -4,6 +4,7 @@ import dependencies.moderngl.main as loadgl
 from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
+from dependencies.scripts.entities.cat import Cat
 from dependencies.scripts.entities.player import *
 import numpy
 import time
@@ -50,7 +51,7 @@ class Engine:
                 case "Player":
                     gameObject = Player((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
                 case "GameObject":
-                    gameObject = GameObject((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
+                    gameObject = Cat((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
             
             if(gameObject == None) : continue
             if(obj["name"] != None) : gameObject.SetModel(obj["name"])

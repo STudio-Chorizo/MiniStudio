@@ -20,7 +20,7 @@ class GameObject(ExtendedBaseModel):
 
         self.forward = (0, 0, 1)
         self.right = (1, 0, 0)
-        self.forward = (0, 1, 0)
+        self.up = (0, 1, 0)
         self.UpdateLocalAxis()
 
         self.model = NULL
@@ -72,7 +72,7 @@ class GameObject(ExtendedBaseModel):
     def UpdateLocalAxis(self):
         pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])
 
-        self.forward = (glm.cos(yaw) * glm.cos(pitch), glm.sin(pitch), -glm.sin(yaw) * glm.cos(pitch))
+        self.forward = (-glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), glm.cos(yaw) * glm.cos(pitch))
 
         self.forward = glm.normalize(self.forward)
         self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
@@ -91,8 +91,29 @@ class GameObject(ExtendedBaseModel):
         orientation: (x, y, z) orientation de l'objet"""
         self.rotation += angle * axis
     
+    def LookAt(self, target):
+        nForward = math.sqrt(self.forward[0] ** 2 + self.forward[1] ** 2 + self.forward[2] ** 2)
+        posTarget = target - self.position
+        nTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
+        if(nTarget == 0) : return
+        
+        angle = (self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (nForward * nTarget)
+        angle = math.acos(angle)
+        angle = math.degrees(angle)
+        angle = math.ceil(angle)
+        axis = glm.vec3(0, 0, 0)
+        if(angle != 180 and angle != 0 and angle != -180):
+            axis = -glm.vec3(self.forward[1] * posTarget[2] - self.forward[2] * posTarget[1]
+                    ,self.forward[2] * posTarget[0] - self.forward[0] * posTarget[2]
+                    ,self.forward[0] * posTarget[1] - self.forward[1] * posTarget[0])
+            axis /= math.sqrt(axis[0] ** 2 + axis[1] ** 2 + axis[2] ** 2)
+
+        self.Rotate(angle, axis)
+
+
     def Update(self):
         self.UpdateLocalAxis()
+        self.Update
         if(self.model != NULL) : 
             self.model.pos = self.position
             self.model.rot = glm.radians(self.rotation)
