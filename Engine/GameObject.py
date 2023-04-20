@@ -9,6 +9,7 @@ class GameObject:
         self.UID = "-1"
         self.isCollide = False
         self.collideBox = NULL
+        self.isActive = True
 
     #Utiliser cette fonction pour avoir les collision
     def Move(self, translation):

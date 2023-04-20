@@ -30,7 +30,7 @@ class Engine:
         self.deltaTime = self.time - self.lastTime
 
         for obj in self.gameObjects:
-            self.gameObjects[obj].Update()
+            if(obj.isActive) : self.gameObjects[obj].Update()
         
         self.event = pg.event.get()
         for e in self.event:
