@@ -64,6 +64,10 @@ class Engine:
         gameObject.UID = self.objectsCount.__str__()
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
+
+    def Destroy(self, UID):
+        self.gameObjects[UID].Destroy()
+        del self.gameObjects[UID]
     
     def IsCollide(self, col1, col2):
         if(col1.UID == col2.UID) : return False

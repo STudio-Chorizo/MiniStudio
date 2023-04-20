@@ -2,7 +2,7 @@ def main():
     Engine.CreateInstance()
     
     Engine.Instance.LoadScene("test")
-
+    
     Engine.Instance.Start()
        
 

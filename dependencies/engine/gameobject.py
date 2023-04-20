@@ -35,6 +35,9 @@ class GameObject(ExtendedBaseModel):
         self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
         eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
+    def Destroy(self):
+        eng.Engine.Instance.graphicEngine.scene.RemoveObject(self.model)
+
     def SetCollider(self, size):
         self.isCollide = True
         self.collideBox = size
@@ -114,7 +117,6 @@ class GameObject(ExtendedBaseModel):
 
     def Update(self):
         self.UpdateLocalAxis()
-        self.Update
         if(self.model != NULL) : 
             self.model.pos = self.position
             self.model.rot = glm.radians(self.rotation + self.modelRotation)
