@@ -8,6 +8,7 @@ class Pool:
         self.pool.append(obj)
 
     def Get(self):
+        if(len(self.pool) <= 0) : return False
         obj = self.pool[0]
         obj.isActive = True
         self.pool.pop(0)
