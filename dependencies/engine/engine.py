@@ -8,6 +8,8 @@ from dependencies.scripts.entities.player import *
 import numpy
 import time
 
+from dependencies.scripts.spawn import Spawn
+
 class Engine:
     Instance = NULL
     @staticmethod
@@ -46,9 +48,11 @@ class Engine:
                     gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
                 case "GameObject":
                     gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
+                case "Spawn":
+                    gameObject = Spawn(10, obj["pos"], obj["rot"], obj["scale"])
             
             if(gameObject == None) : continue
-            if(obj["name"] != None) : gameObject.SetModel(obj["name"])
+            if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
             if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
             self.AddGameObject(gameObject)
 
@@ -56,6 +60,7 @@ class Engine:
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
+        print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
     
@@ -98,7 +103,8 @@ class Engine:
             for e in self.event:
                 if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
 
-            for obj in self.gameObjects:
+            go = list(self.gameObjects)
+            for obj in go:
                 self.gameObjects[obj].Update()
                 
             for o in self.gameObjects:

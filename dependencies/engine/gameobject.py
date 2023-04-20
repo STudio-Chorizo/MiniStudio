@@ -1,5 +1,5 @@
 from asyncio.windows_events import NULL
-import dependencies.engine.engine as Eng
+import dependencies.engine.engine as eng
 import glm
 import math
 
@@ -13,6 +13,10 @@ class GameObject(ExtendedBaseModel):
         self.scale = scale
         self.UID = "-1"
 
+        self.forward = glm.vec3(0, 0, 1)
+        self.right = glm.vec3(1, 0, 0)
+        self.up = glm.vec3(0, 1, 0)
+
         self.isCollide = False
         self.collideBox = NULL
         self.velocity =  (0, 0, 0)
@@ -20,13 +24,13 @@ class GameObject(ExtendedBaseModel):
         self.model = NULL
 
     def SetModel(self, name):
-        if(Eng.Engine.Instance == NULL) : return
+        if(eng.Engine.Instance == NULL) : return
         
-        text_id = Eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
-        Eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
-        Eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
-        self.model = ExtendedBaseModel(Eng.Engine.Instance.graphicEngine, name, text_id, self.position, self.rotation, self.scale)
-        Eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
+        text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
+        eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
+        eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, self.rotation, self.scale)
+        eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     def SetCollider(self, size):
         self.isCollide = True

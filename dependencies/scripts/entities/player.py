@@ -15,7 +15,7 @@ class Player(Entities):
         self.SetRotCamera((-10, 90, 0))
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
-        cam = Eng.Engine.Instance.graphicEngine.camera
+        cam = eng.Engine.Instance.graphicEngine.camera
         rot = camOrientation
         if(local == True) : rot += self.rotation
         cam.pitch = rot[0]
@@ -80,7 +80,7 @@ class Player(Entities):
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
 
-        Eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
+        eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
 
         super().Update()
