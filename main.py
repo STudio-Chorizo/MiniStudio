@@ -3,16 +3,7 @@ def main():
     
     Engine.Instance.LoadScene("test")
 
-    Engine.Instance.gameObjects["1"].LookAt((0, 0, 0))
-    print(Engine.Instance.gameObjects["1"].UpdateLocalAxis())
-    print(Engine.Instance.gameObjects["1"].rotation)
-    print(Engine.Instance.gameObjects["1"].forward)
-    Engine.Instance.gameObjects["1"].LookAt((0, 0, 0))
-    print(Engine.Instance.gameObjects["1"].UpdateLocalAxis())
-    print(Engine.Instance.gameObjects["1"].rotation)
-    print(Engine.Instance.gameObjects["1"].forward)
-
-    #Engine.Instance.Start()
+    Engine.Instance.Start()
        
 
 #################################################

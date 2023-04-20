@@ -10,7 +10,8 @@ from dependencies.moderngl.model import ExtendedBaseModel
 class GameObject(ExtendedBaseModel):
     def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
-        self.rotation = glm.vec3(rot)
+        self.modelRotation = glm.vec3(rot)
+        self.rotation = glm.vec3(0, 0, 0)
         self.scale = scale
         self.UID = "-1"
 
@@ -116,5 +117,5 @@ class GameObject(ExtendedBaseModel):
         self.Update
         if(self.model != NULL) : 
             self.model.pos = self.position
-            self.model.rot = glm.radians(self.rotation)
+            self.model.rot = glm.radians(self.rotation + self.modelRotation)
             self.model.m_model = self.model.get_model_matrix()
