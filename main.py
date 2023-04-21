@@ -1,8 +1,8 @@
 def main():
     Engine.CreateInstance()
     
-    Engine.Instance.LoadScene("test")
-    
+    Engine.Instance.LoadScene(0)
+
     Engine.Instance.Start()
        
 

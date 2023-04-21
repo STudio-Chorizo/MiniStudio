@@ -6,6 +6,7 @@ from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.cat import Cat
 from dependencies.scripts.entities.player import *
+from dependencies.endobj import *
 import numpy
 import time
 
@@ -36,6 +37,7 @@ class Engine:
         self.time = 0
         self.lastTime = 0
         self.deltaTime = 0.0
+        self.lvl = 0
 
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
@@ -52,6 +54,8 @@ class Engine:
                     gameObject = Player((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
                 case "GameObject":
                     gameObject = Cat((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
+                case "EndObj":
+                    gameObject = EndObj((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
             
             if(gameObject == None) : continue
             if(obj["name"] != None) : gameObject.SetModel(obj["name"])
@@ -59,7 +63,7 @@ class Engine:
             self.AddGameObject(gameObject)
 
         print("Load complete")
-    
+
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
         self.gameObjects[gameObject.UID] = gameObject
@@ -110,9 +114,10 @@ class Engine:
 
             for obj in self.gameObjects:
                 self.gameObjects[obj].Update()
-                
-            for o in self.gameObjects:
-                if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
+
+            u = dict(self.gameObjects)
+            for o in u:
+                if(u[o].isCollide == True) : self.TestCollider(u[o])
 
             self.graphicEngine.get_time()
             self.graphicEngine.check_events()
