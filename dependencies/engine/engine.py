@@ -1,4 +1,4 @@
-from asyncio.windows_events import NULL
+
 import pygame as pg
 import dependencies.moderngl.main as loadgl
 from dependencies.parsejson.parse import *
@@ -15,14 +15,14 @@ UP = glm.vec3(0, 1, 0)
 FORWARD = glm.vec3(0, 0, -1)
 
 class Engine:
-    Instance = NULL
+    Instance = None
     @staticmethod
     def CreateInstance(wW = 1200, wH = 800):
-        if(Engine.Instance != NULL) : return
+        if(Engine.Instance != None) : return
         Engine.Instance = Engine(wW, wH)
 
     def __init__(self, wW = 1200, wH = 800):
-        if(Engine.Instance != NULL) : return
+        if(Engine.Instance != None) : return
         self.player = GameObject()
         self.wW = wW
         self.wH = wH
@@ -32,7 +32,7 @@ class Engine:
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
         self.run = True
-        self.event = NULL
+        self.event = None
         self.time = 0
         self.lastTime = 0
         self.deltaTime = 0.0

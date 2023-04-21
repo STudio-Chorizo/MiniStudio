@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from dependencies.engine.Untils.vector import Magnitude
 import dependencies.engine.engine as eng
 import glm
@@ -16,7 +15,7 @@ class GameObject(ExtendedBaseModel):
         self.UID = "-1"
 
         self.isCollide = False
-        self.collideBox = NULL
+        self.collideBox = None
         self.velocity = (0, 0, 0)
 
         self.forward = (0, 0, 1)
@@ -24,10 +23,10 @@ class GameObject(ExtendedBaseModel):
         self.up = (0, 1, 0)
         self.UpdateLocalAxis()
 
-        self.model = NULL
+        self.model = None
 
     def SetModel(self, name):
-        if(eng.Engine.Instance == NULL) : return
+        if(eng.Engine.Instance == None) : return
         
         text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
@@ -117,7 +116,7 @@ class GameObject(ExtendedBaseModel):
 
     def Update(self):
         self.UpdateLocalAxis()
-        if(self.model != NULL) : 
+        if(self.model != None) : 
             self.model.pos = self.position
             self.model.rot = glm.radians(self.rotation + self.modelRotation)
             self.model.m_model = self.model.get_model_matrix()
