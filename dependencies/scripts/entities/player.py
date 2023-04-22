@@ -14,7 +14,7 @@ class Player(GameObject):
         self.rotSpeed = 0.003
         self.scrollSpeed = 0.03
         super().__init__(pos, rot, scale)
-        self.cameraOffset = glm.vec3([0, 0.2, -0.5])
+        self.cameraOffset = glm.vec3([0, 0.15, -0.2])
         self.SetRotCamera((-10, 90, 0))
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
