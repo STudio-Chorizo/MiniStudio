@@ -3,7 +3,9 @@ from dependencies.engine.gameobject import *
 import glm
 import pygame as pg
 
-class Player(GameObject):
+from dependencies.scripts.entities.entities import Entities
+
+class Player(Entities):
     def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 0
         self.lastTimeVueSwitch = 0
@@ -78,9 +80,6 @@ class Player(GameObject):
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
 
         eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
-        if(self.vue == 1) : self.SetRotCamera((0, -90, 0))
-        
-        hit = self.Raycast(eng.FORWARD)
-        if(hit != False) : print("hit on: " + hit[0].UID.__str__() + " at " + hit[1].__str__())
-        
+        if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
+
         super().Update()

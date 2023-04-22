@@ -13,6 +13,11 @@ class GameObject(ExtendedBaseModel):
         self.rotation = glm.vec3(0, 0, 0)
         self.scale = scale
         self.UID = "-1"
+        self.isActive = True
+
+        self.forward = glm.vec3(0, 0, 1)
+        self.right = glm.vec3(1, 0, 0)
+        self.up = glm.vec3(0, 1, 0)
 
         self.isCollide = False
         self.collideBox = None

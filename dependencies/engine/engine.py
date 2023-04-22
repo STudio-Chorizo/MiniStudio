@@ -1,13 +1,16 @@
 
 import pygame as pg
+from dependencies.engine.Untils.pool import Pool
 import dependencies.moderngl.main as loadgl
 from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
-from dependencies.scripts.entities.cat import Cat
+from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.scripts.entities.player import *
 import numpy
 import time
+
+from dependencies.scripts.spawn import Spawn
 
 
 RIGHT = glm.vec3(1, 0, 0)
@@ -37,6 +40,8 @@ class Engine:
         self.lastTime = 0
         self.deltaTime = 0.0
 
+        self.pool = {}
+
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
     
@@ -44,24 +49,33 @@ class Engine:
         i = 0
         j = len(SCENES[sceneName])
         for obj in SCENES[sceneName]:
-            print("loaded: " + str(i) + "/" + str(j) + " | load object: \"" + obj["name"] + "\" of type: \"" + obj["type"] + "\"")
-            i += 1
-            gameObject = None
-            match obj["type"]:
-                case "Player":
-                    gameObject = Player((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
-                case "GameObject":
-                    gameObject = Cat((obj["pos"][0], obj["pos"][1], -obj["pos"][2]), obj["rot"], obj["scale"])
-            
-            if(gameObject == None) : continue
-            if(obj["name"] != None) : gameObject.SetModel(obj["name"])
-            if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
-            self.AddGameObject(gameObject)
+            if(obj["nb"] != 1) : self.pool[obj["name"]] = Pool()
+            for k in range(obj["nb"]) :
+                print("loaded: " + str(i) + "/" + str(j) + " | load object: \"" + obj["name"] + "\" of type: \"" + obj["type"] + "\"")
+                i += 1
+                gameObject = None
+                match obj["type"]:
+                    case "Player":
+                        gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
+                    case "GameObject":
+                        gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
+                    case "Spawn":
+                        gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
+                    case "Ennemie":
+                        gameObject = Ennemie(obj["pos"], obj["rot"], obj["scale"])
+                
+                if(gameObject == None) : continue
+                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
+                if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
+                self.AddGameObject(gameObject)
+                if(obj["nb"] != 1):
+                    self.pool[obj["name"]].Add(gameObject)
 
         print("Load complete")
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
+        print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
 
@@ -109,7 +123,7 @@ class Engine:
                 if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
 
             for obj in self.gameObjects:
-                self.gameObjects[obj].Update()
+                if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
                 
             for o in self.gameObjects:
                 if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
