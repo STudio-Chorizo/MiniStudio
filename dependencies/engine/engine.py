@@ -1,4 +1,5 @@
 from asyncio.windows_events import NULL
+import moderngl
 import pygame as pg
 import dependencies.moderngl.main as loadgl
 from dependencies.parsejson.parse import *
@@ -23,8 +24,11 @@ class Engine:
 
         self.gameObjects = {}
         self.objectsCount = 0
+
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
+        self.surface = pygame.Surface((self.wW, self.wH), flags=pygame.SRCALPHA)
+
         self.run = True
         self.event = NULL
         self.time = 0
@@ -53,7 +57,7 @@ class Engine:
         gameObject.UID = self.objectsCount.__str__()
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
-    
+
     def Start(self):
         self.lastTime = pg.time.get_ticks()
         self.Update()
@@ -74,8 +78,8 @@ class Engine:
             self.graphicEngine.get_time()
             self.graphicEngine.check_events()
             self.graphicEngine.camera.update()
-            self.graphicEngine.render()
             self.infoplayer.LifePlayer()
+            self.graphicEngine.render(self.surface)
             pygame.display.flip()
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
             
@@ -84,20 +88,7 @@ class Guiplayer:
         self.life = 3
         self.mun = 14
         
-    def LifePlayer(self):
-        white = (255, 255, 255)
-        bleu = (0, 0, 128)
-        Hr = 150
-        Wrp = Engine.Instance.wW*0.05
-        Hrp = Engine.Instance.wH*0.95 - Hr
-        Wt = Engine.Instance.wW * 0.95
-        Ht = Engine.Instance.wH * 0.95
-        cube = []
+    def LifePlayer(self):        
+        pygame.draw.rect(Engine.Instance.surface, (0, 255, 0), pygame.rect.Rect(0, 0, 50, 50))
         
-        for i in range(self.life):
-            cube.append(pygame.rect.Rect(Wrp + 60 * i, Hrp, 50, Hr))
-            pygame.draw.rect(Engine.Instance.window,(0,255,0),cube[i])
         
-        arial_font = pygame.font.SysFont("arial", 50)
-        hello_text_surface = arial_font.render(self.mun.__str__(),True,white)
-        Engine.Instance.window.blit(hello_text_surface,(Wt-50, Ht - 50))
