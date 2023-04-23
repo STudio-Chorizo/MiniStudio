@@ -6,7 +6,7 @@ import math
 from dependencies.moderngl.model import ExtendedBaseModel
 
 
-class GameObject(ExtendedBaseModel):
+class GameObject:
     def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
         self.modelRotation = glm.vec3(rot)
@@ -36,7 +36,8 @@ class GameObject(ExtendedBaseModel):
         text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name, shader)
-        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
+        metalic = shader == "metal"
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale, metalic)
         eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     def Destroy(self):
