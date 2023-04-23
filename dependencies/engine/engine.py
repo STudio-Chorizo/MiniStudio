@@ -65,7 +65,7 @@ class Engine:
                         gameObject = Ennemie(obj["pos"], obj["rot"], obj["scale"])
                 
                 if(gameObject == None) : continue
-                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
+                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"], obj["shader"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
                 self.AddGameObject(gameObject)
                 if(obj["nb"] != 1):
