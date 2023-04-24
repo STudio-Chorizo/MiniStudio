@@ -119,5 +119,18 @@ class Engine:
             self.graphicEngine.camera.update()
             self.graphicEngine.render()
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
+
+class Guiplayer():
+    
+    def __init__(self):
+        self.life = -1
+        self.mun = -1
+        self.wW = 1200
+        self.wH = 800
+
+    def updateGui(self,life = -2,mun = -2):
+        self.life = life
+        self.mun = mun
+        pg.draw.rect(Engine.Instance.s, (0, 255, 0), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, self.life*100, 50))
             
 

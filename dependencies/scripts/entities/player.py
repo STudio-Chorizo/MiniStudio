@@ -14,6 +14,10 @@ class Player(GameObject):
         self.cameraOffset = glm.vec3([0, 0.2, 0.5])
         self.SetRotCamera((-10, -90, 0))
 
+        self.life = 3
+        self.mun = 20
+        self.gui = eng.Guiplayer()
+
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
         cam = eng.Engine.Instance.graphicEngine.camera
         rot = camOrientation
@@ -24,6 +28,9 @@ class Player(GameObject):
 
     def OnCollide(self, colider):
         print("["+pg.time.get_ticks().__str__()+"] Lost")
+
+        self.life -= 1
+
         return super().OnCollide(colider)
 
     def Update(self):
@@ -82,5 +89,7 @@ class Player(GameObject):
         
         hit = self.Raycast(eng.FORWARD)
         if(hit != False) : print("hit on: " + hit[0].UID.__str__() + " at " + hit[1].__str__())
+        #la gui info player
+        self.gui.updateGui(self.life,self.mun)
         
         super().Update()
