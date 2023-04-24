@@ -1,4 +1,4 @@
-from dependencies.engine.Untils.vector import Magnitude
+from asyncio.windows_events import NULL
 import dependencies.engine.engine as eng
 import glm
 import math
@@ -9,8 +9,7 @@ from dependencies.moderngl.model import ExtendedBaseModel
 class GameObject(ExtendedBaseModel):
     def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
-        self.modelRotation = glm.vec3(rot)
-        self.rotation = glm.vec3(0, 0, 0)
+        self.rotation = glm.vec3(rot)
         self.scale = scale
         self.UID = "-1"
         self.isActive = True
@@ -20,28 +19,24 @@ class GameObject(ExtendedBaseModel):
         self.up = glm.vec3(0, 1, 0)
 
         self.isCollide = False
-        self.collideBox = None
-        self.velocity = (0, 0, 0)
+        self.collideBox = NULL
+        self.velocity =  (0, 0, 0)
 
         self.forward = glm.vec3(0, 0, 1)
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
         self.UpdateLocalAxis()
+        self.model = NULL
 
-        self.model = None
-
-    def SetModel(self, name, shader = "default"):
-        if(eng.Engine.Instance == None) : return
+    def SetModel(self, name):
+        if(eng.Engine.Instance == NULL) : return
         
         text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
-        eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name, shader)
-        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
+        eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, self.rotation, self.scale)
         eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
-    def Destroy(self):
-        eng.Engine.Instance.graphicEngine.scene.RemoveObject(self.model)
-
     def SetCollider(self, size):
         self.isCollide = True
         self.collideBox = size
@@ -104,29 +99,9 @@ class GameObject(ExtendedBaseModel):
         orientation: (x, y, z) orientation de l'objet"""
         self.rotation += angle * axis
     
-    def LookAt(self, target):
-        nForward = math.sqrt(self.forward[0] ** 2 + self.forward[1] ** 2 + self.forward[2] ** 2)
-        posTarget = target - self.position
-        nTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
-        if(nTarget == 0) : return
-        
-        angle = (self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (nForward * nTarget)
-        angle = math.acos(angle)
-        angle = math.degrees(angle)
-        angle = math.ceil(angle)
-        axis = glm.vec3(0, 0, 0)
-        if(angle != 180 and angle != 0 and angle != -180):
-            axis = -glm.vec3(self.forward[1] * posTarget[2] - self.forward[2] * posTarget[1]
-                    ,self.forward[2] * posTarget[0] - self.forward[0] * posTarget[2]
-                    ,self.forward[0] * posTarget[1] - self.forward[1] * posTarget[0])
-            axis /= math.sqrt(axis[0] ** 2 + axis[1] ** 2 + axis[2] ** 2)
-
-        self.Rotate(angle, axis)
-
-
     def Update(self):
-        self.UpdateLocalAxis()
-        if(self.model != None) : 
+        
+        if(self.model != NULL) : 
             self.model.pos = self.position
-            self.model.rot = glm.radians(self.rotation + self.modelRotation)
+            self.model.rot = self.rotation / 180 * math.pi
             self.model.m_model = self.model.get_model_matrix()

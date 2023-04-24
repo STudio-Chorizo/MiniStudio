@@ -1,4 +1,4 @@
-
+import moderngl
 import pygame as pg
 from dependencies.engine.Untils.pool import Pool
 import dependencies.moderngl.main as loadgl
@@ -32,16 +32,19 @@ class Engine:
 
         self.gameObjects = {}
         self.objectsCount = 0
+
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
+        self.surface = pg.Surface((self.wW, self.wH), flags=pg.SRCALPHA)
+
         self.run = True
         self.event = None
         self.time = 0
         self.lastTime = 0
         self.deltaTime = 0.0
-
+        
+        self.infoplayer = Guiplayer()
         self.pool = {}
-
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
     
@@ -65,16 +68,17 @@ class Engine:
                         gameObject = Ennemie(1, obj["pos"], obj["rot"], obj["scale"])
                 
                 if(gameObject == None) : continue
-                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"], obj["shader"])
+                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
                 self.AddGameObject(gameObject)
                 if(obj["nb"] != 1):
                     self.pool[obj["name"]].Add(gameObject)
-
+        
         print("Load complete")
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
+
         print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
@@ -131,7 +135,20 @@ class Engine:
             self.graphicEngine.get_time()
             self.graphicEngine.check_events()
             self.graphicEngine.camera.update()
-            self.graphicEngine.render()
+            self.infoplayer.LifePlayer()
+            self.graphicEngine.render(self.surface)
+            pg.display.flip()
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
             
+class Guiplayer():
+    def __init__(self, life = 3, sizeBar = 250):
+        
+        self.life = life
+        self.maxlife = self.life
+        self.sizeBar = sizeBar
+        self.wW = 1200
+        self.wH = 800
 
+    def LifePlayer(self):
+        pg.draw.rect(Engine.Instance.surface, (100, 100, 100), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, self.sizeBar, 50))
+        pg.draw.rect(Engine.Instance.surface, (0, 255, 0), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, int((self.sizeBar / self.maxlife) * self.life), 50))
