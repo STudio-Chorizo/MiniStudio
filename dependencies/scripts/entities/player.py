@@ -38,16 +38,16 @@ class Player(GameObject):
         #Position
         if keys[pg.K_z]:
             self.Move(self.up * self.speed * eng.Engine.Instance.deltaTime)
-            rotX = 1
+            rotX = 40
         if keys[pg.K_s]:
             self.Move(-self.up * self.speed * eng.Engine.Instance.deltaTime)
-            rotX = -1
+            rotX = -40
         if keys[pg.K_d]:
             self.Move(-self.right * self.speed * eng.Engine.Instance.deltaTime)
-            rotZ = 1
+            rotZ = 40
         if keys[pg.K_q]:
             self.Move(self.right * self.speed * eng.Engine.Instance.deltaTime)
-            rotZ = -1
+            rotZ = -40
         #Caméra
         if(keys[pg.K_e] and self.lastTimeVueSwitch + 300 < eng.Engine.Instance.time):
             self.lastTimeVueSwitch = eng.Engine.Instance.time
@@ -67,19 +67,19 @@ class Player(GameObject):
         #Cheat code end
             self.Move(self.forward * self.scrollSpeed * eng.Engine.Instance.deltaTime)
             
-            maxAngle = math.pi / 4
+            maxAngle = 30
             if(self.rotation[0] > maxAngle or self.rotation[0] < -maxAngle) : rotX = 0
             if(self.rotation[2] > maxAngle or self.rotation[2] < -maxAngle) : rotZ = 0
             
             if(rotX == 0 and (keys[pg.K_z] or keys[pg.K_s]) == False):
-                if(self.rotation[0] > 0.06) : rotX = -1 
+                if(self.rotation[0] > 1) : rotX = -40
                 #elif(self.rotation[0] > 0) : self.Rotate(-round(self.rotation[0], 2) * eng.Engine.Instance.deltaTime, (1, 0, 0))
-                elif(self.rotation[0] < -0.06) : rotX = 1
+                elif(self.rotation[0] < -1) : rotX = 40
                 #else : self.Rotate(round(self.rotation[0], 2) * eng.Engine.Instance.deltaTime, (1, 0, 0))
             if(rotZ == 0 and (keys[pg.K_q] or keys[pg.K_d]) == False):
-                if(self.rotation[2] > 0.06) : rotZ = -1
+                if(self.rotation[2] > 1) : rotZ = -40
                 #elif(self.rotation[2] > 0) : self.Rotate(-round(self.rotation[2], 2) * eng.Engine.Instance.deltaTime, (0, 0, 1))
-                elif(self.rotation[2] < -0.06) : rotZ = 1
+                elif(self.rotation[2] < -1) : rotZ = 40
                 #else : self.Rotate(round(self.rotation[2], 2) * eng.Engine.Instance.deltaTime, (0, 0, 1))
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
