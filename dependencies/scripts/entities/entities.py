@@ -4,14 +4,14 @@ import dependencies.scripts.entities.ennemie as enm
 import pygame as pg
 
 class Entities(GameObject):
-    def __init__(self, pos=..., rot=..., scale=...):
+    def __init__(self, reloadTime = 1, pos=..., rot=..., scale=...):
         super().__init__(pos, rot, scale)
         self.speed = 0.01
         self.rotSpeed = 0.003
         self.life = 3
         self.atkDistance = 100
         self.atk = 1
-        self.reload = 1000
+        self.reload = reloadTime
         self.lastAtk = 0
 
     def OnCollide(self, colider):
@@ -38,18 +38,18 @@ class Entities(GameObject):
 
     @staticmethod
     def IsEntities(obj):
-        return type(obj) == enm.Ennemie or type(obj) == plr.Player
+        return type(obj) == enm.Ennemie or type(obj) == Player
     
 
 
 class Player(Entities):
-    def __init__(self, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
+    def __init__(self, reloadTime = 1, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 0
         self.lastTimeVueSwitch = 0
         self.speed = 0.01
         self.rotSpeed = 0.1
         self.scrollSpeed = 0.03
-        super().__init__(pos, rot, scale)
+        super().__init__(reloadTime, pos, rot, scale)
         self.cameraOffset = glm.vec3([0, 0.2, -0.5])
         self.SetRotCamera((-10, 90, 0))
 

@@ -7,7 +7,6 @@ from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.scripts.entities.entities import Player
-from dependencies.scripts.entities.player import *
 import numpy
 import time
 
@@ -57,13 +56,13 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
                     case "GameObject":
                         gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
                         gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(1, obj["pos"], obj["rot"], obj["scale"])
                 
                 if(gameObject == None) : continue
                 if(obj["obj"] != None) : gameObject.SetModel(obj["obj"], obj["shader"])
