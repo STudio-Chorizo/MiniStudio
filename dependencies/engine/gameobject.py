@@ -58,5 +58,5 @@ class GameObject(ExtendedBaseModel):
         
         if(self.model != NULL) : 
             self.model.pos = self.position
-            self.model.rot = self.rotation
+            self.model.rot = self.rotation / 180 * math.pi
             self.model.m_model = self.model.get_model_matrix()

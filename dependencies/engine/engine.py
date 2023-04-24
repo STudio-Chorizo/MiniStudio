@@ -68,7 +68,7 @@ class Engine:
                         gameObject = Ennemie(obj["pos"], obj["rot"], obj["scale"])
                 
                 if(gameObject == None) : continue
-                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"], obj["shader"])
+                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
                 self.AddGameObject(gameObject)
                 if(obj["nb"] != 1):
@@ -141,12 +141,14 @@ class Engine:
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
             
 class Guiplayer():
-    def __init__(self,life = -1,mun = -1):
+    def __init__(self, life = 3, sizeBar = 250):
         
         self.life = life
-        self.mun = mun
+        self.maxlife = self.life
+        self.sizeBar = sizeBar
         self.wW = 1200
         self.wH = 800
 
     def LifePlayer(self):
-        pg.draw.rect(Engine.Instance.surface, (0, 255, 0), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, self.life*100, 50))
+        pg.draw.rect(Engine.Instance.surface, (100, 100, 100), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, self.sizeBar, 50))
+        pg.draw.rect(Engine.Instance.surface, (0, 255, 0), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, int((self.sizeBar / self.maxlife) * self.life), 50))
