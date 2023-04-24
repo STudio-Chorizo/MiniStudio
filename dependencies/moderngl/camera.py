@@ -1,4 +1,4 @@
-
+from asyncio.windows_events import NULL
 import glm
 import pygame as pg
 import math
@@ -48,23 +48,3 @@ class Camera:
 
     def get_projection_matrix(self):
         return glm.perspective(glm.radians(FOV), self.aspect_ratio, NEAR, FAR)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
