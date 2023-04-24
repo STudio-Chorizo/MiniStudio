@@ -1,4 +1,4 @@
-from asyncio.windows_events import NULL
+
 import pygame as pg
 from dependencies.engine.Untils.pool import Pool
 import dependencies.moderngl.main as loadgl
@@ -6,21 +6,26 @@ from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
-from dependencies.scripts.entities.player import *
+from dependencies.scripts.entities.entities import Player
 import numpy
 import time
 
 from dependencies.scripts.spawn import Spawn
 
+
+RIGHT = glm.vec3(1, 0, 0)
+UP = glm.vec3(0, 1, 0)
+FORWARD = glm.vec3(0, 0, 1)
+
 class Engine:
-    Instance = NULL
+    Instance = None
     @staticmethod
     def CreateInstance(wW = 1200, wH = 800):
-        if(Engine.Instance != NULL) : return
+        if(Engine.Instance != None) : return
         Engine.Instance = Engine(wW, wH)
 
     def __init__(self, wW = 1200, wH = 800):
-        if(Engine.Instance != NULL) : return
+        if(Engine.Instance != None) : return
         self.player = GameObject()
         self.wW = wW
         self.wH = wH
@@ -30,7 +35,7 @@ class Engine:
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
         self.run = True
-        self.event = NULL
+        self.event = None
         self.time = 0
         self.lastTime = 0
         self.deltaTime = 0.0
@@ -51,16 +56,16 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
                     case "GameObject":
                         gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
                         gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(1, obj["pos"], obj["rot"], obj["scale"])
                 
                 if(gameObject == None) : continue
-                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
+                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"], obj["shader"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
                 self.AddGameObject(gameObject)
                 if(obj["nb"] != 1):
@@ -73,6 +78,10 @@ class Engine:
         print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
+
+    def Destroy(self, UID):
+        self.gameObjects[UID].Destroy()
+        del self.gameObjects[UID]
     
     def IsCollide(self, col1, col2):
         if(col1.UID == col2.UID) : return False
