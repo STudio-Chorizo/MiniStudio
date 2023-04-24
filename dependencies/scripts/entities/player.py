@@ -12,8 +12,12 @@ class Player(GameObject):
         self.forward = glm.vec3(0, 0, -1)
         self.speed = 0.01
         self.scrollSpeed = 0.03
+        self.life = 3 
+        self.mun = 20 
         super().__init__(model_name, pos, rot, scale)
         eng.Engine.Instance.graphicEngine.camera.target = self
+
+    
 
     def Update(self):
         keys = pg.key.get_pressed()

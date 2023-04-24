@@ -83,12 +83,13 @@ class Engine:
             pygame.display.flip()
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
             
-class Guiplayer:
-    def __init__(self):
-        self.life = 3
-        self.mun = 14
+class Guiplayer():
+    def __init__(self,life = -1,mun = -1):
         
-    def LifePlayer(self):        
-        pygame.draw.rect(Engine.Instance.surface, (0, 255, 0), pygame.rect.Rect(0, 0, 50, 50))
-        
-        
+        self.life = life
+        self.mun = mun
+        self.wW = 1200
+        self.wH = 800
+
+    def update(self):
+        pygame.draw.rect(Engine.Instance.surface, (0, 255, 0), pygame.rect.Rect(self.wW*0.025, self.wH*0.0625, self.life*100, 50))
