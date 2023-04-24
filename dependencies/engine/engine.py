@@ -5,6 +5,8 @@ from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.player import *
+import numpy
+import time
 
 class Engine:
     Instance = NULL
@@ -38,13 +40,18 @@ class Engine:
         for obj in SCENES[sceneName]:
             print("loaded: " + str(i) + "/" + str(j) + " | load object: \"" + obj["name"] + "\" of type: \"" + obj["type"] + "\"")
             i += 1
+            gameObject = None
             match obj["type"]:
                 case "Player":
-                    player = Player(obj["name"], obj["pos"], obj["rot"], obj["scale"])
-                    self.AddGameObject(player)
+                    gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
                 case "GameObject":
-                    gameObject = GameObject(obj["name"], obj["pos"], obj["rot"], obj["scale"])
-                    self.AddGameObject(gameObject)
+                    gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
+            
+            if(gameObject == None) : continue
+            if(obj["name"] != None) : gameObject.SetModel(obj["name"])
+            if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
+            self.AddGameObject(gameObject)
+
         print("Load complete")
     
     def AddGameObject(self, gameObject):
@@ -52,6 +59,31 @@ class Engine:
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
     
+    def IsCollide(self, col1, col2):
+        if(col1.UID == col2.UID) : return False
+        pos1 = col1.velocity + col1.collideBox + (col1.position[0], col1.position[1], col1.position[2])
+        posn1 = col1.velocity - col1.collideBox + (col1.position[0], col1.position[1], col1.position[2])
+        axisIn = 0
+        for i in range(3):
+            pos2 = col2.position[i] + col2.collideBox[i]
+            posn2 = col2.position[i] - col2.collideBox[i]
+            if(pos1[i] > posn2 and pos1[i] < pos2 or posn1[i] > posn2 and posn1[i] < pos2 or
+               pos2 > posn1[i] and pos2 < pos1[i] or posn2 > posn1[i] and posn2 < pos1[i] ) : axisIn += 1
+        if(axisIn < 3) : return False
+        return True
+
+    def TestCollider(self, obj):
+        if(obj.isCollide == False or obj.velocity == (0, 0, 0)) : return False
+        for col in self.gameObjects:
+            if(self.gameObjects[col].isCollide == False or self.IsCollide(obj, self.gameObjects[col]) == False) : 
+                continue
+            obj.Move(-3 * obj.velocity)
+            obj.OnCollide(self.gameObjects[col])
+
+            self.gameObjects[col].OnCollide(obj)
+            break
+        obj.velocity = (0, 0, 0)
+
     def Start(self):
         self.lastTime = pg.time.get_ticks()
         self.Update()
@@ -68,6 +100,9 @@ class Engine:
 
             for obj in self.gameObjects:
                 self.gameObjects[obj].Update()
+                
+            for o in self.gameObjects:
+                if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
 
             self.graphicEngine.get_time()
             self.graphicEngine.check_events()
