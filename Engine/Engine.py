@@ -1,11 +1,17 @@
 import time
 import pygame as pg
 import sys
+from dependencies.parsejson.parse import *
 
 class Engine:
-    def __init__(self, wW, wH):
+    def __init__(self, wW, wH, Ln = "fr"):
         self.wW = wW
         self.wH = wH
+
+        self.Ln = Ln
+
+        
+        self.Dialog = loadDialog(Ln)
 
         self.gameObjects = {}
         self.objectsCount = 0
