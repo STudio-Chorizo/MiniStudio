@@ -6,7 +6,7 @@ from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
-from dependencies.scripts.entities.player import *
+from dependencies.scripts.entities.entities import Player
 import numpy
 import time
 
@@ -15,7 +15,7 @@ from dependencies.scripts.spawn import Spawn
 
 RIGHT = glm.vec3(1, 0, 0)
 UP = glm.vec3(0, 1, 0)
-FORWARD = glm.vec3(0, 0, -1)
+FORWARD = glm.vec3(0, 0, 1)
 
 class Engine:
     Instance = None
@@ -59,13 +59,13 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
                     case "GameObject":
                         gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
                         gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(1, obj["pos"], obj["rot"], obj["scale"])
                 
                 if(gameObject == None) : continue
                 if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])

@@ -22,6 +22,10 @@ class GameObject(ExtendedBaseModel):
         self.collideBox = NULL
         self.velocity =  (0, 0, 0)
 
+        self.forward = glm.vec3(0, 0, 1)
+        self.right = glm.vec3(1, 0, 0)
+        self.up = glm.vec3(0, 1, 0)
+        self.UpdateLocalAxis()
         self.model = NULL
 
     def SetModel(self, name):
@@ -40,6 +44,47 @@ class GameObject(ExtendedBaseModel):
     def OnCollide(self, colider):
         pass
 
+    def Raycast(self, dir, max = 150):
+        """Envoie un rayon depuis l'objet.
+        return (hitObj, hitPoint) || False"""
+        col = dict(eng.Engine.Instance.gameObjects)
+        point = (self.position[0], self.position[1], self.position[2])
+        ray = dir * 0.1
+        collider = dict(col)
+        for obj in collider:
+            o = eng.Engine.Instance.gameObjects[obj]
+            if(Magnitude(self.position - o.position) > max or o.UID == self.UID) : 
+                col.pop(obj)
+
+        collider = dict(col)
+        for i in range(0, max * 10, 1):
+            point += ray
+            for obj in collider:
+                o = eng.Engine.Instance.gameObjects[obj]
+                if(Magnitude(self.position - o.position) < i * 0.1) : 
+                    #col.pop(obj)
+                    continue
+
+                axisIn = 0
+                for k in range(3):
+                    pos2 = o.position[k] + o.collideBox[k]
+                    posn2 = o.position[k] - o.collideBox[k]
+                    #if(point[i] > posn2 and point[i] < pos2 or point[i] > posn2 and point[i] < pos2 or
+                    #pos2 > point[i] and pos2 < point[i] or posn2 > point[i] and posn2 < point[i] ) : axisIn += 1
+                    if(point[k] > posn2 and point[k] < pos2) : axisIn += 1
+                if(axisIn >= 3) : return (o, point)
+                
+            collider = dict(col)
+        return False
+
+    def UpdateLocalAxis(self):
+        pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])
+
+        self.forward = (-glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), glm.cos(yaw) * glm.cos(pitch))
+
+        self.forward = glm.normalize(self.forward)
+        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
+        self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     # Utiliser cette fonction pour avoir les collision
     def Move(self, translation: tuple) -> None:
