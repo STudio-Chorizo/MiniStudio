@@ -8,7 +8,6 @@ class VAO:
         self.vbo = VBO(ctx)
         self.program = ShaderProgram(ctx)
         self.vaos = {}
-
         # skybox vao
         self.vaos['skybox'] = self.get_vao(
             program=self.program.programs['skybox'],
@@ -19,9 +18,9 @@ class VAO:
             program=self.program.programs['advanced_skybox'],
             vbo=self.vbo.vbos['advanced_skybox'])
 
-    def AddVAO(self, name):
+    def AddVAO(self, name, shader = "default"):
         self.vaos[name] = self.get_vao(
-            program=self.program.programs['default'],
+            program=self.program.programs[shader],
             vbo=self.vbo.vbos[name])
         self.vaos['shadow_' + name] = self.get_vao(
             program=self.program.programs['shadow_map'],
