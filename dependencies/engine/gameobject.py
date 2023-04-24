@@ -23,9 +23,9 @@ class GameObject(ExtendedBaseModel):
         self.collideBox = None
         self.velocity = (0, 0, 0)
 
-        self.forward = (0, 0, 1)
-        self.right = (1, 0, 0)
-        self.up = (0, 1, 0)
+        self.forward = glm.vec3(0, 0, 1)
+        self.right = glm.vec3(1, 0, 0)
+        self.up = glm.vec3(0, 1, 0)
         self.UpdateLocalAxis()
 
         self.model = None
@@ -52,29 +52,34 @@ class GameObject(ExtendedBaseModel):
     def Raycast(self, dir, max = 150):
         """Envoie un rayon depuis l'objet.
         return (hitObj, hitPoint) || False"""
-        collider = col = eng.Engine.Instance.gameObjects
+        col = dict(eng.Engine.Instance.gameObjects)
         point = (self.position[0], self.position[1], self.position[2])
         ray = dir * 0.1
-        #Optimisation sans prendre compte de l'intérieur de la collideBox
+        collider = dict(col)
+        for obj in collider:
+            o = eng.Engine.Instance.gameObjects[obj]
+            if(Magnitude(self.position - o.position) > max or o.UID == self.UID) : 
+                col.pop(obj)
+
+        collider = dict(col)
         for i in range(0, max * 10, 1):
-            j = 0
+            point += ray
             for obj in collider:
                 o = eng.Engine.Instance.gameObjects[obj]
-                if(Magnitude(self.position - o.position) > max or Magnitude(self.position - o.position) < i or o.UID == self.UID) : 
-                    #col.pop(j)
+                if(Magnitude(self.position - o.position) < i * 0.1) : 
+                    #col.pop(obj)
                     continue
-                point += ray
-                
+
                 axisIn = 0
-                for i in range(3):
-                    pos2 = o.position[i] + o.collideBox[i]
-                    posn2 = o.position[i] - o.collideBox[i]
-                    if(point[i] > posn2 and point[i] < pos2 or point[i] > posn2 and point[i] < pos2 or
-                    pos2 > point[i] and pos2 < point[i] or posn2 > point[i] and posn2 < point[i] ) : axisIn += 1
-                if(axisIn == 3) : return (o, point)
+                for k in range(3):
+                    pos2 = o.position[k] + o.collideBox[k]
+                    posn2 = o.position[k] - o.collideBox[k]
+                    #if(point[i] > posn2 and point[i] < pos2 or point[i] > posn2 and point[i] < pos2 or
+                    #pos2 > point[i] and pos2 < point[i] or posn2 > point[i] and posn2 < point[i] ) : axisIn += 1
+                    if(point[k] > posn2 and point[k] < pos2) : axisIn += 1
+                if(axisIn >= 3) : return (o, point)
                 
-                j += 1
-            collider = col
+            collider = dict(col)
         return False
 
     def UpdateLocalAxis(self):

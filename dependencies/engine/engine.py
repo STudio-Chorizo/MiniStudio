@@ -6,6 +6,7 @@ from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
+from dependencies.scripts.entities.entities import Player
 from dependencies.scripts.entities.player import *
 import numpy
 import time
@@ -15,7 +16,7 @@ from dependencies.scripts.spawn import Spawn
 
 RIGHT = glm.vec3(1, 0, 0)
 UP = glm.vec3(0, 1, 0)
-FORWARD = glm.vec3(0, 0, -1)
+FORWARD = glm.vec3(0, 0, 1)
 
 class Engine:
     Instance = None
