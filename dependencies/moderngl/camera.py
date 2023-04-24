@@ -4,6 +4,9 @@ import pygame as pg
 import math
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
+import math
+from dependencies.engine.engine import *
+from dependencies.engine.gameobject import *
 
 FOV = 50  # deg
 NEAR = 0.1
@@ -23,6 +26,7 @@ class Camera:
         self.yaw = yaw
         self.pitch = pitch
         self.roll = roll
+        self.roll = roll
         # view matrix
         self.m_view = self.get_view_matrix()
         # projection matrix
@@ -36,6 +40,7 @@ class Camera:
         self.forward.z = glm.sin(yaw) * glm.cos(pitch)
 
         self.forward = glm.normalize(self.forward)
+        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 

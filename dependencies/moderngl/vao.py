@@ -47,6 +47,14 @@ class VAO:
             program=self.program.programs['shadow_map'],
             vbo=self.vbo.vbos[name])
 
+    def AddVAO(self, name):
+        self.vaos[name] = self.get_vao(
+            program=self.program.programs['default'],
+            vbo=self.vbo.vbos[name])
+        self.vaos['shadow_' + name] = self.get_vao(
+            program=self.program.programs['shadow_map'],
+            vbo=self.vbo.vbos[name])
+
     def get_vao(self, program, vbo):
         vao = self.ctx.vertex_array(program, [(vbo.vbo, vbo.format, *vbo.attribs)], skip_errors=True)
         return vao

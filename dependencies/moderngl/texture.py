@@ -17,6 +17,12 @@ class Texture:
         self.textureCount +=1
         self.textures[self.textureCount] = self.get_texture(path=ASSETS[name]["texture"])
         return self.textureCount
+        self.textureCount = 1
+
+    def AddTexture(self, name):
+        self.textureCount +=1
+        self.textures[self.textureCount] = self.get_texture(path=ASSETS[name]["texture"])
+        return self.textureCount
 
     def get_depth_texture(self):
         depth_texture = self.ctx.depth_texture(self.app.WIN_SIZE)

@@ -10,6 +10,7 @@ class Scene:
         self.skybox = AdvancedSkyBox(app)
 
     def AddObject(self, obj):
+    def AddObject(self, obj):
         self.objects.append(obj)
 
     def RemoveObject(self, obj):

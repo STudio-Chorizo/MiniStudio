@@ -10,6 +10,26 @@ MiniStudio
     │   └── *voir https://github.com/STudio-Chorizo/blob/main/README.md*
     ├── dependencies
     │   ├── engine
+    │   │   ├── engine.py *Contient le gui en jeu*
+    │   │   └── gameobject.py
+    │   ├── parsejson
+    │   │   └── parse.py
+    │   ├── scripts
+    │   │   └── entities
+    │   │       └── player.py
+    │   └── moderngl
+    │       ├── main.py
+    │       ├── camera.py
+    │       ├── light.py
+    │       ├── mesh.py
+    │       ├── model.py
+    │       ├── scene_rerender.py
+    │       ├── scene.py
+    │       ├── shader_program.py
+    │       ├── texture.py
+    │       ├── vao.py
+    │       └── vbo.py
+    │   ├── engine
     │   │   ├── engine.py
     │   │   └── gameobject.py
     │   ├── parsejson
