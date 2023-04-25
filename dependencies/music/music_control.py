@@ -3,20 +3,24 @@ import time
 from dependencies.parsejson.parse import *
 
 class Music:
-    def __init__(self, path: str, autoPause: bool = True) -> None:
+    def __init__(self, path: str, masterVolume: dict, typeSound: str = "music", autoPause: bool = True) -> None:
         """Création de la musique (se fait automatiquement avec la playlist)\n
         ======\n
         path: chemin vers le fichier audio\n
+        masterVolume: dictionnaire contenant les volumes des différents types de sons\n
+        typeSound: type du son (music, vfx)\n
         autoPause: si la musique doit se mettre en pause quand le volume est au minimum"""
         self.path = path
         self.misc = self.path.split("/")[-1]
         self.path.replace("/", "\\")
+        self.typeSound = typeSound
 
         self.music = pg.mixer.Sound(self.path)
         self.channel = pg.mixer.find_channel(True)
 
         self.vol = 100
         self.next_vol = 100
+        self.masterVolume = masterVolume
 
         self.played = False
         self.autoPause = [autoPause, False]
@@ -87,7 +91,7 @@ class Music:
                 self.vol += updateTime * 20
         if abs(self.vol - self.next_vol) < 1:
             self.vol = self.next_vol
-        self.channel.set_volume(self.vol / 100)
+        self.channel.set_volume(self.vol / 100 * self.masterVolume["master"] / 100 * self.masterVolume[self.typeSound] / 100)
 
         if self.vol == 0 and self.autoPause[0]:
             if self.autoPause[1] == False:
@@ -103,26 +107,28 @@ class Music:
 class Playlist:
     Instance = None
     @staticmethod
-    def CreateInstance():
+    def CreateInstance(MasterVolume):
         """Initialisation de l'instance de la playlist"""
         if(Playlist.Instance != None) : return
-        Playlist.Instance = Playlist()
+        Playlist.Instance = Playlist(MasterVolume)
     
-    def __init__(self) -> None:
+    def __init__(self, MasterVolume) -> None:
         """INTERDICTION D'APPELLER CETTE FONCTION !!!\n
         Utiliser CreateInstance() a la place\n
         ======\n
         Initialisation de la playlist"""
         pg.mixer.init()
         pg.mixer.set_num_channels(len(ASSETS["playlist"]))
+        self.masterVolume = MasterVolume
+
         self.miscs = {}
         for path in ASSETS["playlist"]:
-            self.miscs[path] = Music(ASSETS["playlist"][path])
+            self.miscs[path] = Music(ASSETS["playlist"][path]["dir"], self.masterVolume, ASSETS["playlist"][path]["type"])
             self.miscs[path].play(0)
             self.miscs[path].pause()
         
         for misc in self.miscs:
-            self.miscs[misc].stop() 
+            self.miscs[misc].stop()
     
     def update(self) -> None:
         """Update toute les musiques"""

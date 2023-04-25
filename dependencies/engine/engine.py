@@ -48,6 +48,8 @@ class Engine:
         self.pool = {}
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
+
+        self.MasterVolume = {"master": 100, "music": 100, "vfx": 100}
     
     def LoadScene(self, sceneName):
         i = 0
