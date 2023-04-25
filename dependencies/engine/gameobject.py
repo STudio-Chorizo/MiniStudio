@@ -1,95 +1,148 @@
 from asyncio.windows_events import NULL
-import dependencies.engine.engine as Eng
+from dependencies.engine.Untils.vector import Magnitude
+import dependencies.engine.engine as eng
 import glm
 import math
 
 from dependencies.moderngl.model import ExtendedBaseModel
 
 
-class GameObject(ExtendedBaseModel):
-    def __init__(self, model_name = "cube", pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
+class GameObject:
+    def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
-        self.prev_position = self.position
-        self.camera_pos = self.position + glm.vec3([0, 0.2, 0.5])
         self.rotation = glm.vec3(rot)
-        self.prev_rotation = self.rotation
-        self.camera_yaw = self.rotation[1] - 90
-        self.camera_pitch = self.rotation[0] - 10
-        self.camera_roll = self.rotation[2]
         self.scale = scale
         self.UID = "-1"
+        self.isActive = True
 
         self.isCollide = False
         self.collideBox = NULL
+        self.velocity =  (0, 0, 0)
 
+        self.lookConstraint = False
+        self.forward = glm.vec3(0, 0, 1)
+        self.right = glm.vec3(1, 0, 0)
+        self.up = glm.vec3(0, 1, 0)
+        self.UpdateLocalAxis()
         self.model = NULL
-        self.SetModel(model_name, pos, rot, scale)
+        self.modelRotation = glm.vec3(0, 0, 0)
 
-    def SetModel(self, name, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
-        if(Eng.Engine.Instance == NULL) : return
+    def SetModel(self, name, shader = "default"):
+        if(eng.Engine.Instance == NULL) : return
         
-        text_id = Eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
-        Eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
-        Eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name)
-        self.model = ExtendedBaseModel(Eng.Engine.Instance.graphicEngine, name, text_id, pos, rot, scale)
-        Eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
+        text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
+        eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
+        eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name, shader)
+        metalic = shader == "metal"
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale, metalic)
+        eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
+    def SetCollider(self, size):
+        self.isCollide = True
+        self.collideBox = size
+
+    def OnCollide(self, colider):
+        self.Destroy()
+
+    def Destroy(self):
+        self.position = glm.vec3([-100000, -100000, -100000])
+
+    def Raycast(self, dir, max = 150):
+        """Envoie un rayon depuis l'objet.
+        return (hitObj, hitPoint) || False"""
+        col = dict(eng.Engine.Instance.gameObjects)
+        point = (self.position[0], self.position[1], self.position[2])
+        ray = dir * 0.1
+        collider = dict(col)
+        for obj in collider:
+            o = eng.Engine.Instance.gameObjects[obj]
+            if(Magnitude(self.position - o.position) > max or o.UID == self.UID) : 
+                col.pop(obj)
+
+        collider = dict(col)
+        for i in range(0, max * 10, 1):
+            point += ray
+            for obj in collider:
+                o = eng.Engine.Instance.gameObjects[obj]
+                if(Magnitude(self.position - o.position) < i * 0.1) : 
+                    #col.pop(obj)
+                    continue
+
+                axisIn = 0
+                for k in range(3):
+                    pos2 = o.position[k] + o.collideBox[k]
+                    posn2 = o.position[k] - o.collideBox[k]
+                    #if(point[k] > posn2 and point[k] < pos2 or point[k] > posn2 and point[k] < pos2 or
+                    #pos2 > point[k] and pos2 < point[k] or posn2 > point[k] and posn2 < point[k] ) : axisIn += 1
+                    if(point[k] > posn2 and point[k] < pos2) : axisIn += 1
+                if(axisIn >= 3) : return (o, point)
+                
+            collider = dict(col)
+        return False
+
+    def UpdateLocalAxis(self):
+        pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])
+        
+
+        self.forward.z = glm.cos(yaw) * glm.cos(pitch)
+        self.forward.y = glm.sin(pitch)
+        self.forward.x = glm.sin(yaw) * glm.cos(pitch)
+
+        self.forward = glm.normalize(self.forward)
+        self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
+        self.up = glm.normalize(glm.cross(self.right, self.forward))
+
+
+        #self.forward = glm.vec3(-glm.sin(yaw), glm.sin(pitch), glm.cos(yaw))
+
+        #self.forward = (-glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), glm.cos(yaw) * glm.cos(pitch))
+
+        #self.forward = glm.normalize(self.forward)
+        #self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
+        #self.up = glm.normalize(glm.cross(self.right, self.forward))
+
     # Utiliser cette fonction pour avoir les collision
-    def Move(self, translation: tuple, timing: int = 0, camTranslation: tuple = glm.vec3([0, 0, 0])) -> None:
+    def Move(self, translation: tuple) -> None:
         """Fonction pour déplacer l'objet et permettre les collision\n
         translation: (x, y, z) déplacement de l'objet"""
-        self.prev_position += translation
+        self.position += translation
         self.velocity = translation
-        self.camera_pos += camTranslation
     
-    # Utiliser cette fonction pour avoir la rotation
-    def Rotate(self, rotation: tuple, camRotation: tuple = (0, 0, 0)) -> None:
-        """Fonction pour tourner l'objet\n
-        rotation: (x, y, z) rotation de l'objet"""
-        self.prev_rotation += rotation
-        self.camera_yaw += camRotation[0]
-        self.camera_pitch += camRotation[1]
-        self.camera_roll += camRotation[2]
-        
-    # Utiliser cette fonction pour avoir les collision
-    def SetPos(self, position: tuple, camPosition: tuple = glm.vec3([0, 0.2, 0.5])) -> None:
-        """Fonction pour définir un position de l'objet\n
-        translation: (x, y, z) position de l'objet"""
-        self.prev_position = position
-        self.camera_pos = camPosition
-    
-    # Utiliser cette fonction pour avoir la rotation
-    def SetRot(self, orientation: tuple, camOrientation: tuple = (-90, -10, 0)) -> None:
-        """Fonction pour définir une rotation de l'objet\n
+    # Utiliser cette fonction pour définir la rotation
+    def Rotate(self, angle: float, axis: tuple) -> None:
+        """Fonction pour faire tourner l'objet\n
         orientation: (x, y, z) orientation de l'objet"""
-        self.prev_rotation = orientation
-        self.camera_yaw = camOrientation[0]
-        self.camera_pitch = camOrientation[1]
-        self.camera_roll = camOrientation[2]
+        self.rotation += angle * axis
     
-    def SyncPosCamera(self, position: tuple = glm.vec3([0, 0.2, 0.5])) -> None:
-        self.camera_pos = glm.vec3(self.position) + position
-    
-    def SyncRotCamera(self, camOrientation: tuple = (-90, -10, 0)) -> None:
-        self.camera_yaw = self.rotation[1]*10 + camOrientation[0]
-        self.camera_pitch = self.rotation[0]*10 + camOrientation[1]
-        self.camera_roll = self.rotation[2]*10 + camOrientation[2]
-    
-    def Update(self):
-        if Eng.Engine.Instance.deltaTime > 0:
-            self.move_position = self.position - self.prev_position
-            if math.sqrt(self.move_position.x**2 + self.move_position.y**2 + self.move_position.z**2) <= 5:
-                self.position = self.prev_position
-            else:
-                self.position -= self.move_position * 0.5
-        self.model.pos = self.position
+    def LookAt(self, target):
+        self.UpdateLocalAxis()
 
-        if Eng.Engine.Instance.deltaTime > 0:
-            self.move_rotation = self.rotation - self.prev_rotation
-            if math.sqrt(self.move_rotation.x**2 + self.move_rotation.y**2 + self.move_rotation.z**2) <= 0.01:
-                self.rotation = self.prev_rotation
-            else:
-                self.rotation -= self.move_rotation * 0.5
-        self.model.rot = self.rotation
+        mForward = math.sqrt(self.forward[0] ** 2 + self.forward[1] ** 2 + self.forward[2] ** 2)
+        posTarget = target - self.position
+        mTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
+        if(mTarget == 0) : return
         
-        self.model.m_model = self.model.get_model_matrix()
+        angle = -(self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (mForward * mTarget)
+        angle = math.acos(angle)
+        angle = math.degrees(angle)
+        axis = glm.vec3(0, 0, 0)
+        if(angle != 180 and angle != 0 and angle != -180):
+            axis = glm.vec3(self.forward[1] * posTarget[2] - self.forward[2] * posTarget[1]
+                    ,-(self.forward[2] * posTarget[0] - self.forward[0] * posTarget[2])
+                    ,self.forward[0] * posTarget[1] - self.forward[1] * posTarget[0])
+            axis /= math.sqrt(axis[0] ** 2 + axis[1] ** 2 + axis[2] ** 2)
+            
+        print(angle)
+        print(axis)
+        self.Rotate(angle, axis)
+        self.lookConstraint = True
+
+    def Update(self):
+        self.UpdateLocalAxis()
+        if(self.model != None) : 
+            self.model.pos = self.position
+            self.model.rot = glm.radians(self.rotation + self.modelRotation)
+            if(self.lookConstraint == True) : 
+                self.model.rot.x *= -1
+                self.lookConstraint = False
+            self.model.m_model = self.model.get_model_matrix()

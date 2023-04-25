@@ -10,7 +10,7 @@ MiniStudio
     │   └── *voir https://github.com/STudio-Chorizo/blob/main/README.md*
     ├── dependencies
     │   ├── engine
-    │   │   ├── engine.py
+    │   │   ├── engine.py *Contient le gui en jeu*
     │   │   └── gameobject.py
     │   ├── parsejson
     │   │   └── parse.py
