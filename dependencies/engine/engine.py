@@ -126,6 +126,8 @@ class Engine:
             self.event = pg.event.get()
             for e in self.event:
                 if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
+            
+            self.surface.fill((0, 0, 0, 0))
 
             for obj in self.gameObjects:
                 if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update(self.infoplayer.life, self.infoplayer.maxlife)
