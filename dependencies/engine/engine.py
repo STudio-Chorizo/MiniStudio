@@ -43,7 +43,6 @@ class Engine:
         self.lastTime = 0
         self.deltaTime = 0.0
         
-        self.infoplayer = Guiplayer()
         self.pool = {}
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
@@ -115,53 +114,29 @@ class Engine:
 
     def Start(self):
         self.lastTime = pg.time.get_ticks()
-        self.Update()
+        while(self.run):
+            self.Update()
 
     def Update(self):
-        while(self.run):
-            self.time = pg.time.get_ticks()
-            self.deltaTime = self.time - self.lastTime
-            self.lastTime = pg.time.get_ticks()
+        self.time = pg.time.get_ticks()
+        self.deltaTime = self.time - self.lastTime
+        self.lastTime = pg.time.get_ticks()
 
-            self.event = pg.event.get()
-            for e in self.event:
-                if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
-            
-            self.surface.fill((0, 0, 0, 0))
-
-            for obj in self.gameObjects:
-                if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update(self.infoplayer.life, self.infoplayer.maxlife)
-                
-            for o in self.gameObjects:
-                if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
-
-            self.graphicEngine.get_time()
-            self.graphicEngine.check_events()
-            self.graphicEngine.camera.update()
-            self.graphicEngine.render(self.surface)
-            pg.display.flip()
-            self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
-            
-class Guiplayer():
-    def __init__(self):
-        self.wW = 1200
-        self.wH = 800
-        self.life = -1
-        self.mun = -1
-        self.maxlife = -1
-        self.sizeBar = 0.3*self.wW
-
-        self.RespwH = -1
-        self.RespwW = -1
-        self.RespSize = -1
+        self.event = pg.event.get()
+        for e in self.event:
+            if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
         
-    def LifePlayer(self,life = -2,mun = -2,maxlife = -2):
-        self.life = life
-        self.mun = mun
-        self.RespwH = self.wH*0.0625
-        self.RespwW = self.wW*0.025
-        self.maxlife = maxlife
-        self.RespSize = int((self.sizeBar / self.maxlife) * self.maxlife) 
-        self.RespLife = int(self.RespSize -((self.maxlife-self.life)*(self.sizeBar/self.maxlife)))
-        pg.draw.rect(Engine.Instance.surface, (100, 100, 100), pg.rect.Rect(self.RespwW, self.RespwH, self.RespSize, self.RespwH))
-        pg.draw.rect(Engine.Instance.surface, (0, 255, 0), pg.rect.Rect(self.RespwW, self.RespwH, self.RespLife, self.RespwH))
+        self.surface.fill((0, 0, 0, 0))
+
+        for obj in self.gameObjects:
+            if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
+            
+        for o in self.gameObjects:
+            if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
+
+        self.graphicEngine.get_time()
+        self.graphicEngine.check_events()
+        self.graphicEngine.camera.update()
+        self.graphicEngine.render(self.surface)
+        pg.display.flip()
+        self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
