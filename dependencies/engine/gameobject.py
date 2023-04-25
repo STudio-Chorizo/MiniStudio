@@ -44,7 +44,10 @@ class GameObject:
         self.collideBox = size
 
     def OnCollide(self, colider):
-        pass
+        self.Destroy()
+
+    def Destroy(self):
+        self.position = glm.vec3([-100000, -100000, -100000])
 
     def Raycast(self, dir, max = 150):
         """Envoie un rayon depuis l'objet.
