@@ -25,6 +25,7 @@ class GameObject:
         self.up = glm.vec3(0, 1, 0)
         self.UpdateLocalAxis()
         self.model = NULL
+        self.modelRotation = glm.vec3(0, 0, 0)
 
     def SetModel(self, name, shader = "default"):
         if(eng.Engine.Instance == NULL) : return

@@ -56,7 +56,6 @@ class Player(Entities):
         self.rotSpeed = 0.1
         self.scrollSpeed = 0.03
         self.breakWing = choice([-1,1])
-        rot[1] -= 180
         super().__init__(reloadTime, pos, rot, scale)
         self.cameraOffset = glm.vec3([0, 0.15, -0.26])
         self.SetRotCamera((-10, 90, 0))
@@ -64,6 +63,7 @@ class Player(Entities):
         self.life = 3
         self.Maxlife = self.life
         self.mun = 20
+        self.modelRotation = glm.vec3([0, 180, 0])
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
         cam = eng.Engine.Instance.graphicEngine.camera
@@ -157,7 +157,7 @@ class Player(Entities):
         #Cheat code start
         if keys[pg.K_a]:
             self.position = glm.vec3([0, 0, 0])
-            self.rotation = glm.vec3([0, -180, 0])
+            self.rotation = glm.vec3([0, 0, 0])
         else:
         #Cheat code end
             self.Move(eng.FORWARD * self.scrollSpeed * eng.Engine.Instance.deltaTime)
