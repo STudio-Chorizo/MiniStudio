@@ -62,8 +62,9 @@ class Engine:
                     case "Spawn":
                         gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(1, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(2, obj["pos"], obj["rot"], obj["scale"])
                 
+                print(gameObject.forward)
                 if(gameObject == None) : continue
                 if(obj["obj"] != None) : gameObject.SetModel(obj["obj"], obj["shader"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])

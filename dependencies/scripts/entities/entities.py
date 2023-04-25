@@ -11,7 +11,7 @@ class Entities(GameObject):
         self.life = 3
         self.atkDistance = 100
         self.atk = 1
-        self.reload = reloadTime
+        self.reload = reloadTime * 1000
         self.lastAtk = 0
 
     def OnCollide(self, colider):
@@ -22,14 +22,15 @@ class Entities(GameObject):
     
     def Atk(self):
         if(self.lastAtk + self.reload > eng.Engine.Instance.time) : return
-        hit = self.Raycast(eng.FORWARD, self.atkDistance)
+        self.UpdateLocalAxis()
+        hit = self.Raycast(eng.FORWARD * self.forward, self.atkDistance)
         if(hit == False or Entities.IsEntities(hit[0]) == False) : return
         hit[0].Dmg(self.atk)
         self.lastAtk = eng.Engine.Instance.time
         
     def Dmg(self, dmg):
         self.life -= dmg
-        print("pv: " + self.life.__str__())
+        print(self.UID + "pv: " + self.life.__str__())
         if(self.life <= 0) : self.Die()
 
     def Die(self):

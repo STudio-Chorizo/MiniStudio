@@ -15,10 +15,6 @@ class GameObject(ExtendedBaseModel):
         self.UID = "-1"
         self.isActive = True
 
-        self.forward = glm.vec3(0, 0, 1)
-        self.right = glm.vec3(1, 0, 0)
-        self.up = glm.vec3(0, 1, 0)
-
         self.isCollide = False
         self.collideBox = None
         self.velocity = (0, 0, 0)
@@ -74,8 +70,8 @@ class GameObject(ExtendedBaseModel):
                 for k in range(3):
                     pos2 = o.position[k] + o.collideBox[k]
                     posn2 = o.position[k] - o.collideBox[k]
-                    #if(point[i] > posn2 and point[i] < pos2 or point[i] > posn2 and point[i] < pos2 or
-                    #pos2 > point[i] and pos2 < point[i] or posn2 > point[i] and posn2 < point[i] ) : axisIn += 1
+                    #if(point[k] > posn2 and point[k] < pos2 or point[k] > posn2 and point[k] < pos2 or
+                    #pos2 > point[k] and pos2 < point[k] or posn2 > point[k] and posn2 < point[k] ) : axisIn += 1
                     if(point[k] > posn2 and point[k] < pos2) : axisIn += 1
                 if(axisIn >= 3) : return (o, point)
                 
@@ -84,12 +80,24 @@ class GameObject(ExtendedBaseModel):
 
     def UpdateLocalAxis(self):
         pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])
+        
 
-        self.forward = (-glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), glm.cos(yaw) * glm.cos(pitch))
+        self.forward.z = glm.cos(yaw) * glm.cos(pitch)
+        self.forward.y = glm.sin(pitch)
+        self.forward.x = glm.sin(yaw) * glm.cos(pitch)
 
         self.forward = glm.normalize(self.forward)
         self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.up = glm.normalize(glm.cross(self.right, self.forward))
+
+
+        #self.forward = glm.vec3(-glm.sin(yaw), glm.sin(pitch), glm.cos(yaw))
+
+        #self.forward = (-glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), glm.cos(yaw) * glm.cos(pitch))
+
+        #self.forward = glm.normalize(self.forward)
+        #self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
+        #self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     # Utiliser cette fonction pour avoir les collision
     def Move(self, translation: tuple) -> None:
