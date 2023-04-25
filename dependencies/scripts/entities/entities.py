@@ -34,7 +34,7 @@ class Entities(GameObject):
         
     def Dmg(self, dmg):
         self.life -= dmg
-        print(self.UID + "pv: " + self.life.__str__())
+        print("pv of entity n°" + str(self.UID) + ": " + str(self.life) + "/" + str(self.Maxlife))
         if(self.life <= 0) : self.Die()
     
     def Die(self):
@@ -145,12 +145,12 @@ class Player(Entities):
                 self.vue = 0
         #Cheat code life
         if keys[pg.K_p] and self.cheatLifeUp == 0:
-            self.life += 1
+            self.Dmg(-1)
             self.cheatLifeUp = 1
         elif keys[pg.K_p] == False and self.cheatLifeUp == 1:
             self.cheatLifeUp = 0
         if keys[pg.K_m] and self.cheatLifeDown == 0:
-            self.life -= 1
+            self.Dmg(1)
             self.cheatLifeDown = 1
         elif keys[pg.K_m] == False and self.cheatLifeDown == 1:
             self.cheatLifeDown = 0
