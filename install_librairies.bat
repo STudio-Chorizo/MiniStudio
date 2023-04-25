@@ -5,6 +5,8 @@ py -m pip install -U numpy --user
 py -m pip install -U pillow --user
 py -m pip install -U pygame --user
 py -m pip install -U pywavefront --user
+py -m pip install -U Tkinter --user
+py -m pip install -U tkSnack --user
 cls
 python -m moderngl
 timeout /t 5
