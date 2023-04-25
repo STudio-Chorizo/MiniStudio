@@ -6,6 +6,7 @@ from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
+from dependencies.music.music_control import Playlist
 from dependencies.scripts.entities.entities import Player
 import numpy
 import time
@@ -46,6 +47,8 @@ class Engine:
         self.pool = {}
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
+
+        self.MasterVolume = {"master": 100, "music": 100, "vfx": 100}
     
     def LoadScene(self, sceneName):
         i = 0
@@ -139,5 +142,6 @@ class Engine:
         self.graphicEngine.check_events()
         self.graphicEngine.camera.update()
         self.graphicEngine.render(self.surface)
+        Playlist.Instance.update()
         pg.display.flip()
         self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
