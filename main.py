@@ -3,7 +3,6 @@ def main():
     Engine.Instance.LoadScene("test")
 
     Playlist.CreateInstance(Engine.Instance.MasterVolume)
-    Playlist.Instance.miscs["game"].play()
     
     Engine.Instance.Start()
 

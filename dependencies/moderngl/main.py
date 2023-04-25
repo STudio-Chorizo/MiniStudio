@@ -20,9 +20,6 @@ class GraphicsEngine:
         pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
         # create opengl context
         pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF)
-        # mouse settings
-        pg.event.set_grab(True)
-        pg.mouse.set_visible(False)
         # detect and use existing opengl context
         self.ctx = mgl.create_context()
         # self.ctx.front_face = 'cw'
