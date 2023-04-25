@@ -4,7 +4,7 @@ def main():
 
     Playlist.CreateInstance(Engine.Instance.MasterVolume)
     Playlist.Instance.miscs["game"].play()
-
+    
     Engine.Instance.Start()
 
 #################################################
@@ -14,7 +14,6 @@ from dependencies.parsejson.parse import *
 import dependencies.moderngl.main as loadgl
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
-from dependencies.scripts.entities.player import *
 from dependencies.music.music_control import Playlist
 
 # Check si le projet se lance avec succes

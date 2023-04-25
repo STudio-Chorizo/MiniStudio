@@ -6,8 +6,8 @@ from dependencies.parsejson.parse import *
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
-from dependencies.scripts.entities.player import *
 from dependencies.music.music_control import Playlist
+from dependencies.scripts.entities.entities import Player
 import numpy
 import time
 
@@ -16,7 +16,7 @@ from dependencies.scripts.spawn import Spawn
 
 RIGHT = glm.vec3(1, 0, 0)
 UP = glm.vec3(0, 1, 0)
-FORWARD = glm.vec3(0, 0, -1)
+FORWARD = glm.vec3(0, 0, 1)
 
 class Engine:
     Instance = None
@@ -44,7 +44,6 @@ class Engine:
         self.lastTime = 0
         self.deltaTime = 0.0
         
-        self.infoplayer = Guiplayer()
         self.pool = {}
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
@@ -62,14 +61,16 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
+                        self.player = gameObject
                     case "GameObject":
                         gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
                         gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(2, obj["pos"], obj["rot"], obj["scale"])
                 
+                print(gameObject.forward)
                 if(gameObject == None) : continue
                 if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
@@ -117,42 +118,30 @@ class Engine:
 
     def Start(self):
         self.lastTime = pg.time.get_ticks()
-        self.Update()
+        while(self.run):
+            self.Update()
 
     def Update(self):
-        while(self.run):
-            self.time = pg.time.get_ticks()
-            self.deltaTime = self.time - self.lastTime
-            self.lastTime = pg.time.get_ticks()
+        self.time = pg.time.get_ticks()
+        self.deltaTime = self.time - self.lastTime
+        self.lastTime = pg.time.get_ticks()
 
-            self.event = pg.event.get()
-            for e in self.event:
-                if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
-
-            for obj in self.gameObjects:
-                if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
-                
-            for o in self.gameObjects:
-                if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
-
-            self.graphicEngine.get_time()
-            self.graphicEngine.check_events()
-            self.graphicEngine.camera.update()
-            self.infoplayer.LifePlayer()
-            self.graphicEngine.render(self.surface)
-            Playlist.Instance.update()
-            pg.display.flip()
-            self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
-            
-class Guiplayer():
-    def __init__(self, life = 3, sizeBar = 250):
+        self.event = pg.event.get()
+        for e in self.event:
+            if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
         
-        self.life = life
-        self.maxlife = self.life
-        self.sizeBar = sizeBar
-        self.wW = 1200
-        self.wH = 800
+        self.surface.fill((0, 0, 0, 0))
 
-    def LifePlayer(self):
-        pg.draw.rect(Engine.Instance.surface, (100, 100, 100), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, self.sizeBar, 50))
-        pg.draw.rect(Engine.Instance.surface, (0, 255, 0), pg.rect.Rect(self.wW*0.025, self.wH*0.0625, int((self.sizeBar / self.maxlife) * self.life), 50))
+        for obj in self.gameObjects:
+            if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
+            
+        for o in self.gameObjects:
+            if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
+
+        self.graphicEngine.get_time()
+        self.graphicEngine.check_events()
+        self.graphicEngine.camera.update()
+        self.graphicEngine.render(self.surface)
+        Playlist.Instance.update()
+        pg.display.flip()
+        self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
