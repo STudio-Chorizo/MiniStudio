@@ -1,4 +1,5 @@
 from asyncio.windows_events import NULL
+from dependencies.engine.Untils.vector import Magnitude
 import dependencies.engine.engine as eng
 import glm
 import math
