@@ -1,6 +1,7 @@
 
 from dependencies.engine.gameobject import *
 import dependencies.scripts.entities.ennemie as enm
+import dependencies.engine.engine as eng
 import pygame as pg
 
 class Entities(GameObject):
@@ -15,6 +16,7 @@ class Entities(GameObject):
         self.lastAtk = 0
 
     def OnCollide(self, colider):
+
         return super().OnCollide(colider)
     
     def Update(self):
@@ -53,6 +55,11 @@ class Player(Entities):
         self.cameraOffset = glm.vec3([0, 0.2, -0.5])
         self.SetRotCamera((-10, 90, 0))
 
+        self.life = 3
+        self.Maxlife = self.life
+        self.mun = 20
+        self.guiplayer = eng.Guiplayer()
+
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
         cam = eng.Engine.Instance.graphicEngine.camera
         rot = camOrientation
@@ -63,6 +70,9 @@ class Player(Entities):
 
     def OnCollide(self, colider):
         print("["+pg.time.get_ticks().__str__()+"] Lost")
+        if self.life > 0 :
+            self.life -= 1
+
         return super().OnCollide(colider)
 
     def Update(self):
@@ -120,5 +130,6 @@ class Player(Entities):
 
         eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
+        self.guiplayer.LifePlayer(self.life,self.mun,self.Maxlife)
 
         super().Update()
