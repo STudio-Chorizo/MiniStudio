@@ -85,7 +85,7 @@ class Player(Entities):
             rotZ -= problems * self.breakWing
 
             if (life <= int(maxLife / 3)):
-                nausea = pg.image.load(ASSETS["nausea"]["dir"]).convert_alpha()
+                nausea = pg.image.load(ASSETS["guiplayer"]["ScreenBorder"]).convert_alpha()
                 nausea = pg.transform.scale(nausea, (eng.Engine.Instance.wW, eng.Engine.Instance.wH))
                 eng.Engine.Instance.surface.blit(nausea, (0, 0))
         #Attaque

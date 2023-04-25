@@ -113,6 +113,7 @@ class GraphicsEngine:
 
     def render(self, GUI):
         self.ctx.clear()
+        GUI = pg.transform.flip(GUI, False, True)
 
         texture_data = GUI.get_view('1')
         self.pgTexture.write(texture_data)
