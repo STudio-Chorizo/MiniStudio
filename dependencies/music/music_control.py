@@ -122,7 +122,7 @@ class Playlist:
             self.miscs[path].pause()
         
         for misc in self.miscs:
-            self.miscs[misc].stop()
+            self.miscs[misc].stop() 
     
     def update(self) -> None:
         """Update toute les musiques"""
