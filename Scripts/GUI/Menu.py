@@ -74,7 +74,7 @@ class Menu(GameObject):
         super().__init__(position,rot,scale)
 
         self.onoff = "on"
-        self.statut = "pause"
+        self.statut = "main"
         self.engine = engine
         self.window = engine.window
 
