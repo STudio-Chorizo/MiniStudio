@@ -11,3 +11,6 @@ class Scene:
 
     def AddObject(self, obj):
         self.objects.append(obj)
+
+    def RemoveObject(self, obj):
+        self.objects.remove(obj)
