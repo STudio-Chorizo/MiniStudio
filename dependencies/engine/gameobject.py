@@ -19,6 +19,7 @@ class GameObject(ExtendedBaseModel):
         self.collideBox = None
         self.velocity = (0, 0, 0)
 
+        self.lookConstraint = False
         self.forward = glm.vec3(0, 0, 1)
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
@@ -113,28 +114,34 @@ class GameObject(ExtendedBaseModel):
         self.rotation += angle * axis
     
     def LookAt(self, target):
-        nForward = math.sqrt(self.forward[0] ** 2 + self.forward[1] ** 2 + self.forward[2] ** 2)
+        self.UpdateLocalAxis()
+
+        mForward = math.sqrt(self.forward[0] ** 2 + self.forward[1] ** 2 + self.forward[2] ** 2)
         posTarget = target - self.position
-        nTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
-        if(nTarget == 0) : return
+        mTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
+        if(mTarget == 0) : return
         
-        angle = (self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (nForward * nTarget)
+        angle = -(self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (mForward * mTarget)
         angle = math.acos(angle)
         angle = math.degrees(angle)
-        angle = math.ceil(angle)
         axis = glm.vec3(0, 0, 0)
         if(angle != 180 and angle != 0 and angle != -180):
-            axis = -glm.vec3(self.forward[1] * posTarget[2] - self.forward[2] * posTarget[1]
-                    ,self.forward[2] * posTarget[0] - self.forward[0] * posTarget[2]
+            axis = glm.vec3(self.forward[1] * posTarget[2] - self.forward[2] * posTarget[1]
+                    ,-(self.forward[2] * posTarget[0] - self.forward[0] * posTarget[2])
                     ,self.forward[0] * posTarget[1] - self.forward[1] * posTarget[0])
             axis /= math.sqrt(axis[0] ** 2 + axis[1] ** 2 + axis[2] ** 2)
-
+            
+        print(angle)
+        print(axis)
         self.Rotate(angle, axis)
-
+        self.lookConstraint = True
 
     def Update(self):
         self.UpdateLocalAxis()
         if(self.model != None) : 
             self.model.pos = self.position
             self.model.rot = glm.radians(self.rotation + self.modelRotation)
+            if(self.lookConstraint == True) : 
+                self.model.rot.x *= -1
+                self.lookConstraint = False
             self.model.m_model = self.model.get_model_matrix()

@@ -12,6 +12,7 @@ class Ennemie(Entities):
         return super().OnCollide(colider)
     
     def Update(self):
+        self.LookAt(eng.Engine.Instance.gameObjects["0"].position)
         if(self.lastAtk + self.reload < eng.Engine.Instance.time) :
             self.Atk()
         return super().Update()
