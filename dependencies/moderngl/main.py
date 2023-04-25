@@ -125,6 +125,7 @@ class GraphicsEngine:
         self.quad_fs.render(mode=mgl.TRIANGLE_STRIP)
 
         self.ctx.disable(mgl.BLEND)
+        GUI.fill((0, 0, 0, 0))
 
 
     def get_time(self):

@@ -1,6 +1,8 @@
 
+from random import *
 from dependencies.engine.gameobject import *
 import dependencies.scripts.entities.ennemie as enm
+from dependencies.parsejson.parse import *
 import pygame as pg
 
 class Entities(GameObject):
@@ -17,7 +19,7 @@ class Entities(GameObject):
     def OnCollide(self, colider):
         return super().OnCollide(colider)
     
-    def Update(self):
+    def Update(self, life = 0, maxLife = 0):
         return super().Update()
     
     def Atk(self):
@@ -45,12 +47,15 @@ class Entities(GameObject):
 class Player(Entities):
     def __init__(self, reloadTime = 1, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 0
+        self.cheatLifeUp = 0
+        self.cheatLifeDown = 0
         self.lastTimeVueSwitch = 0
         self.speed = 0.01
         self.rotSpeed = 0.1
         self.scrollSpeed = 0.03
+        self.breakWing = choice([-1,1])
         super().__init__(reloadTime, pos, rot, scale)
-        self.cameraOffset = glm.vec3([0, 0.2, -0.5])
+        self.cameraOffset = glm.vec3([0, 0.15, -0.26])
         self.SetRotCamera((-10, 90, 0))
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
@@ -65,26 +70,40 @@ class Player(Entities):
         print("["+pg.time.get_ticks().__str__()+"] Lost")
         return super().OnCollide(colider)
 
-    def Update(self):
+    def Update(self, life = 0, maxLife = 0):
+        if(life == 0 or maxLife == 0):
+            return
+        
         keys = pg.key.get_pressed()
         rotX = 0
         rotY = 0
         rotZ = 0
+        #Influence de la vie sur le gamplay
+        if (life <= int(maxLife * 2 / 3)):
+            problems = random() *1.2
+            self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime * self.breakWing * problems)
+            rotZ -= problems * self.breakWing
+
+            if (life <= int(maxLife / 3)):
+                nausea = pg.image.load(ASSETS["nausea"]["dir"]).convert_alpha()
+                nausea = pg.transform.scale(nausea, (eng.Engine.Instance.wW, eng.Engine.Instance.wH))
+                eng.Engine.Instance.surface.blit(nausea, (0, 0))
+        #Attaque
         if keys[pg.K_SPACE]:
             self.Atk()
         #Position
         if keys[pg.K_z]:
             self.Move(eng.UP * self.speed * eng.Engine.Instance.deltaTime)
-            rotX = 1
+            rotX += -1
         if keys[pg.K_s]:
             self.Move(-eng.UP * self.speed * eng.Engine.Instance.deltaTime)
-            rotX = -1
+            rotX += 1
         if keys[pg.K_d]:
             self.Move(-eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
-            rotZ = 1
+            rotZ += 1
         if keys[pg.K_q]:
             self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
-            rotZ = -1
+            rotZ += -1
         #Caméra
         if(keys[pg.K_e] and self.lastTimeVueSwitch + 300 < eng.Engine.Instance.time):
             self.lastTimeVueSwitch = eng.Engine.Instance.time
@@ -97,6 +116,17 @@ class Player(Entities):
                 self.cameraOffset = glm.vec3([0, 0.2, -0.5])
                 self.SetRotCamera((-10, 90,0), False)
                 self.vue = 0
+        #Cheat code life
+        if keys[pg.K_p] and self.cheatLifeUp == 0:
+            eng.Engine.Instance.infoplayer.life += 1
+            self.cheatLifeUp = 1
+        elif keys[pg.K_p] == False and self.cheatLifeUp == 1:
+            self.cheatLifeUp = 0
+        if keys[pg.K_m] and self.cheatLifeDown == 0:
+            eng.Engine.Instance.infoplayer.life -= 1
+            self.cheatLifeDown = 1
+        elif keys[pg.K_m] == False and self.cheatLifeDown == 1:
+            self.cheatLifeDown = 0
         #Cheat code start
         if keys[pg.K_a]:
             self.position = glm.vec3([0, 0, 0])
@@ -109,12 +139,12 @@ class Player(Entities):
             if(self.rotation[0] > maxAngle or self.rotation[0] < -maxAngle) : rotX = 0
             if(self.rotation[2] > maxAngle or self.rotation[2] < -maxAngle) : rotZ = 0
             
-            if(rotX == 0 and (keys[pg.K_z] or keys[pg.K_s]) == False):
-                if(self.rotation[0] > 0.2) : rotX = -1
-                elif(self.rotation[0] < -0.2) : rotX = 1
-            if(rotZ == 0 and (keys[pg.K_q] or keys[pg.K_d]) == False):
-                if(self.rotation[2] > 0.2) : rotZ = -1
-                elif(self.rotation[2] < -0.2) : rotZ = 1
+            if(rotX == 0):
+                if(self.rotation[0] > 2 and keys[pg.K_s] == False) : rotX += -1
+                elif(self.rotation[0] < -2 and keys[pg.K_z] == False) : rotX += 1
+            if(rotZ == 0):
+                if(self.rotation[2] > 2 and keys[pg.K_d] == False) : rotZ += -1
+                elif(self.rotation[2] < -2 and keys[pg.K_q] == False) : rotZ += 1
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
 
