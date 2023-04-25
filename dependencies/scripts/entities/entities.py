@@ -9,17 +9,18 @@ class Entities(GameObject):
         super().__init__(pos, rot, scale)
         self.speed = 0.01
         self.rotSpeed = 0.3
-        self.life = 3
+        self.life = 1
         self.atkDistance = 100
         self.atk = 1
         self.reload = reloadTime
         self.lastAtk = 0
 
     def OnCollide(self, colider):
-
-        return super().OnCollide(colider)
+        self.Dmg(1)
     
     def Update(self):
+        if self.life == 0:
+            self.Die()
         return super().Update()
     
     def Atk(self):
@@ -33,10 +34,9 @@ class Entities(GameObject):
         self.life -= dmg
         print("pv: " + self.life.__str__())
         if(self.life <= 0) : self.Die()
-
+    
     def Die(self):
-        #self.Destroy()
-        pass
+        self.Destroy()
 
     @staticmethod
     def IsEntities(obj):
@@ -67,15 +67,18 @@ class Player(Entities):
         cam.pitch = rot[0]
         cam.yaw = rot[1]
         cam.roll = rot[2]
+    
+    def Die(self):
+        # dernière mise à jour de la GUI
+        self.life = math.exp(-16)
+        self.Update()
+        self.life = 0
 
-    def OnCollide(self, colider):
-        print("["+pg.time.get_ticks().__str__()+"] Lost")
-        if self.life > 0 :
-            self.life -= 1
-
-        return super().OnCollide(colider)
+        # Annonce de la mort du joueur
+        print("Vous êtes mort")
 
     def Update(self):
+        if self.life == 0: return
         keys = pg.key.get_pressed()
         rotX = 0
         rotY = 0

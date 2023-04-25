@@ -151,7 +151,7 @@ class Guiplayer():
         self.RespwH = -1
         self.RespwW = -1
         self.RespSize = -1
-        print("4 5NORAMELEMENT -1",self.life)
+        
     def LifePlayer(self,life = -2,mun = -2,maxlife = -2):
         self.life = life
         self.mun = mun
