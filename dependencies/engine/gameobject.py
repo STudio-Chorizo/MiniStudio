@@ -104,7 +104,7 @@ class GameObject:
         orientation: (x, y, z) orientation de l'objet"""
         self.rotation += angle * axis
     
-    def Update(self):
+    def Update(self, life = 0, maxLife = 0):
         
         if(self.model != NULL) : 
             self.model.pos = self.position

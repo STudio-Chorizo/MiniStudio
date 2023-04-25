@@ -60,6 +60,7 @@ class Engine:
                 match obj["type"]:
                     case "Player":
                         gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
+                        self.player = gameObject
                     case "GameObject":
                         gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
@@ -125,9 +126,11 @@ class Engine:
             self.event = pg.event.get()
             for e in self.event:
                 if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
+            
+            self.surface.fill((0, 0, 0, 0))
 
             for obj in self.gameObjects:
-                if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
+                if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update(self.infoplayer.life, self.infoplayer.maxlife)
                 
             for o in self.gameObjects:
                 if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
