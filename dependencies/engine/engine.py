@@ -7,6 +7,7 @@ from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.scripts.entities.player import *
+from dependencies.music.music_control import Playlist
 import numpy
 import time
 
@@ -137,6 +138,7 @@ class Engine:
             self.graphicEngine.camera.update()
             self.infoplayer.LifePlayer()
             self.graphicEngine.render(self.surface)
+            Playlist.Instance.update()
             pg.display.flip()
             self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
             

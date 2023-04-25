@@ -1,10 +1,12 @@
 import pygame as pg
 import time
+from dependencies.parsejson.parse import *
 
 class Music:
-    def __init__(self, path: str = "dependencies\\music\\BATIMS.mp3", autoPause: bool = True) -> None:
+    def __init__(self, path: str, autoPause: bool = True) -> None:
         self.path = path
-        self.misc = self.path.split("\\")[-1]
+        self.misc = self.path.split("/")[-1]
+        self.path.replace("/", "\\")
 
         self.music = pg.mixer.Sound(self.path)
         self.channel = pg.mixer.find_channel(True)
@@ -76,32 +78,25 @@ class Music:
                 self.channel.unpause()
                 self.autoPause[1] = False
 
-
-pg.init()
-pg.mixer.init()
-pg.mixer.set_num_channels(20)
-i = 0
-
-bendy = Music("dependencies\\music\\BATIMS.mp3")
-bendy.play(0)
-bendy.set_volume(100)
-
-dwarf = Music("dependencies\\music\\DDH.mp3")
-dwarf.play(0)
-dwarf.set_volume(0)
-
-while True:
-    i += 1
-    bendy.update()
-    dwarf.update()
-    if i % 100000 == 0:
-        bendy.smooth_volume(100 if bendy.vol == 0 else 0)
-        dwarf.smooth_volume(100 if dwarf.vol == 0 else 0)
-    # print(bendy.autoPause, dwarf.autoPause)
-    print("".join(["-" for i in range(int((100000 - i % 100000) / 5000))]))
+class Playlist:
+    Instance = None
+    @staticmethod
+    def CreateInstance():
+        if(Playlist.Instance != None) : return
+        Playlist.Instance = Playlist()
     
-    # event = pg.event.wait()
-    # if event.type == pg.QUIT: 
-    #     break
-
-pg.quit() 
+    def __init__(self) -> None:
+        pg.mixer.init()
+        pg.mixer.set_num_channels(len(ASSETS["playlist"]))
+        self.miscs = {}
+        for path in ASSETS["playlist"]:
+            self.miscs[path] = Music(ASSETS["playlist"][path])
+            self.miscs[path].play(0)
+            self.miscs[path].pause()
+        
+        for misc in self.miscs:
+            self.miscs[misc].stop()
+    
+    def update(self) -> None:
+        for misc in self.miscs:
+            self.miscs[misc].update()
