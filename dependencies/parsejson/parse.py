@@ -19,8 +19,10 @@ def parseJson(path: str) -> bool | list | dict:
 ASSETS = parseJson("/Assets/assets.json")
 SCENES = parseJson("/Assets/scenes.json")
 
-def loadDialog(Lang: str = "fr") -> None:
+def loadDialog(Lang: str = "fr") -> dict:
     """Load le fichier langue avec comme parametre la langue, récupérable dans la variable DIALOG\n
     `fr`\n
     `en`"""
-    return parseJson("/Assets/dialog/" + Lang + ".json")
+    global DIALOG
+    DIALOG = parseJson("/Assets/dialog/" + Lang + ".json")
+    return DIALOG

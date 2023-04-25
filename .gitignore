@@ -133,6 +133,8 @@ dmypy.json
 
 # .vs
 .vs/
+.vscode/
 
 # Assets
 Assets/
+.vscode/launch.json
