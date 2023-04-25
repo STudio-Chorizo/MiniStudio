@@ -7,7 +7,7 @@ class Entities(GameObject):
     def __init__(self, reloadTime = 1, pos=..., rot=..., scale=...):
         super().__init__(pos, rot, scale)
         self.speed = 0.01
-        self.rotSpeed = 0.003
+        self.rotSpeed = 0.3
         self.life = 3
         self.atkDistance = 100
         self.atk = 1
@@ -105,12 +105,12 @@ class Player(Entities):
         #Cheat code end
             self.Move(eng.FORWARD * self.scrollSpeed * eng.Engine.Instance.deltaTime)
             
-            maxAngle = 45
+            maxAngle = 25
             if(self.rotation[0] > maxAngle or self.rotation[0] < -maxAngle) : rotX = 0
             if(self.rotation[2] > maxAngle or self.rotation[2] < -maxAngle) : rotZ = 0
             
             if(rotX == 0 and (keys[pg.K_z] or keys[pg.K_s]) == False):
-                if(self.rotation[0] > 0.2) : rotX = -1 
+                if(self.rotation[0] > 0.2) : rotX = -1
                 elif(self.rotation[0] < -0.2) : rotX = 1
             if(rotZ == 0 and (keys[pg.K_q] or keys[pg.K_d]) == False):
                 if(self.rotation[2] > 0.2) : rotZ = -1
