@@ -28,7 +28,7 @@ class GameObject:
         self.UpdateLocalAxis()
         self.model = NULL
 
-    def SetModel(self, name):
+    def SetModel(self, name, shader = "default"):
         if(eng.Engine.Instance == NULL) : return
         
         text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
