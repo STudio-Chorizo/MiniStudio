@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from dependencies.engine.Untils.vector import Magnitude
 import dependencies.engine.engine as eng
 import glm
@@ -6,45 +7,44 @@ import math
 from dependencies.moderngl.model import ExtendedBaseModel
 
 
-class GameObject(ExtendedBaseModel):
+class GameObject:
     def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
-        self.modelRotation = glm.vec3(rot)
-        self.rotation = glm.vec3(0, 0, 0)
+        self.rotation = glm.vec3(rot)
         self.scale = scale
         self.UID = "-1"
         self.isActive = True
 
         self.isCollide = False
-        self.collideBox = None
-        self.velocity = (0, 0, 0)
+        self.collideBox = NULL
+        self.velocity =  (0, 0, 0)
 
         self.lookConstraint = False
         self.forward = glm.vec3(0, 0, 1)
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
         self.UpdateLocalAxis()
-
-        self.model = None
+        self.model = NULL
 
     def SetModel(self, name, shader = "default"):
-        if(eng.Engine.Instance == None) : return
+        if(eng.Engine.Instance == NULL) : return
         
         text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name, shader)
-        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
+        metalic = shader == "metal"
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale, metalic)
         eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
-    def Destroy(self):
-        eng.Engine.Instance.graphicEngine.scene.RemoveObject(self.model)
-
     def SetCollider(self, size):
         self.isCollide = True
         self.collideBox = size
 
     def OnCollide(self, colider):
-        pass
+        self.Destroy()
+
+    def Destroy(self):
+        self.position = glm.vec3([-100000, -100000, -100000])
 
     def Raycast(self, dir, max = 150):
         """Envoie un rayon depuis l'objet.

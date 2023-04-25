@@ -1,4 +1,4 @@
-
+import moderngl
 import pygame as pg
 from dependencies.engine.Untils.pool import Pool
 import dependencies.moderngl.main as loadgl
@@ -32,16 +32,18 @@ class Engine:
 
         self.gameObjects = {}
         self.objectsCount = 0
+
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
+        self.surface = pg.Surface((self.wW, self.wH), flags=pg.SRCALPHA)
+
         self.run = True
         self.event = None
         self.time = 0
         self.lastTime = 0
         self.deltaTime = 0.0
-
+        
         self.pool = {}
-
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
     
@@ -57,6 +59,7 @@ class Engine:
                 match obj["type"]:
                     case "Player":
                         gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
+                        self.player = gameObject
                     case "GameObject":
                         gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
@@ -66,16 +69,17 @@ class Engine:
                 
                 print(gameObject.forward)
                 if(gameObject == None) : continue
-                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"], obj["shader"])
+                if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
                 self.AddGameObject(gameObject)
                 if(obj["nb"] != 1):
                     self.pool[obj["name"]].Add(gameObject)
-
+        
         print("Load complete")
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
+
         print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
@@ -111,28 +115,29 @@ class Engine:
 
     def Start(self):
         self.lastTime = pg.time.get_ticks()
-        self.Update()
+        while(self.run):
+            self.Update()
 
     def Update(self):
-        while(self.run):
-            self.time = pg.time.get_ticks()
-            self.deltaTime = self.time - self.lastTime
-            self.lastTime = pg.time.get_ticks()
+        self.time = pg.time.get_ticks()
+        self.deltaTime = self.time - self.lastTime
+        self.lastTime = pg.time.get_ticks()
 
-            self.event = pg.event.get()
-            for e in self.event:
-                if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
+        self.event = pg.event.get()
+        for e in self.event:
+            if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
+        
+        self.surface.fill((0, 0, 0, 0))
 
-            for obj in self.gameObjects:
-                if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
-                
-            for o in self.gameObjects:
-                if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
-
-            self.graphicEngine.get_time()
-            self.graphicEngine.check_events()
-            self.graphicEngine.camera.update()
-            self.graphicEngine.render()
-            self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
+        for obj in self.gameObjects:
+            if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
             
+        for o in self.gameObjects:
+            if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
 
+        self.graphicEngine.get_time()
+        self.graphicEngine.check_events()
+        self.graphicEngine.camera.update()
+        self.graphicEngine.render(self.surface)
+        pg.display.flip()
+        self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
