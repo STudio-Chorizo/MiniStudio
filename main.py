@@ -10,7 +10,6 @@ from dependencies.parsejson.parse import *
 import dependencies.moderngl.main as loadgl
 from dependencies.engine.engine import *
 from dependencies.engine.gameobject import *
-from dependencies.scripts.entities.player import *
 
 # Lance le projet
 main()
