@@ -5,7 +5,7 @@ from dependencies.scripts.entities.entities import Entities
 
 
 class Ennemie(Entities):
-    def __init__(self, reloadTime = 1, pos=..., rot=..., scale=...):
+    def __init__(self, name, reloadTime = 1, pos=..., rot=..., scale=...):
         super().__init__(reloadTime, pos, rot, scale)
 
     def OnCollide(self, colider):

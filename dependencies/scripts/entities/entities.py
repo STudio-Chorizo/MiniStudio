@@ -6,8 +6,8 @@ import pygame as pg
 from dependencies.parsejson.parse import *
 
 class Entities(GameObject):
-    def __init__(self, reloadTime = 1, pos=..., rot=..., scale=...):
-        super().__init__(pos, rot, scale)
+    def __init__(self, name, reloadTime = 1, pos=..., rot=..., scale=...):
+        super().__init__(name, pos, rot, scale)
         self.speed = 0.01
         self.rotSpeed = 0.3
         self.life = 1
@@ -27,11 +27,7 @@ class Entities(GameObject):
     def Atk(self):
         if(self.lastAtk + self.reload > eng.Engine.Instance.time) : return
         print("atk", self.lastAtk, "reload", self.reload, "time", eng.Engine.Instance.time)
-        self.UpdateLocalAxis()
-        hit = self.Raycast(eng.FORWARD * self.forward, self.atkDistance)
-        self.lastAtk = eng.Engine.Instance.time
-        if(hit == False or Entities.IsEntities(hit[0]) == False) : return
-        hit[0].Dmg(self.atk)
+        eng.Engine.Instance.gameObjects["bullet"].Get().position = self.position + glm.vec3([0, 0, 0.1])
         
     def Dmg(self, dmg):
         self.life -= dmg
@@ -48,7 +44,7 @@ class Entities(GameObject):
 
 
 class Player(Entities):
-    def __init__(self, reloadTime = 1, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
+    def __init__(self, name, reloadTime = 1, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 0
         self.cheatLifeUp = 0
         self.cheatLifeDown = 0
@@ -57,7 +53,7 @@ class Player(Entities):
         self.rotSpeed = 0.1
         self.scrollSpeed = 0.03
         self.breakWing = choice([-1,1])
-        super().__init__(reloadTime, pos, rot, scale)
+        super().__init__(name, reloadTime, pos, rot, scale)
         self.cameraOffset = glm.vec3([0, 0.15, -0.26])
         self.SetRotCamera((-10, 90, 0))
 

@@ -20,7 +20,7 @@ class VAO:
 
     def AddVAO(self, name, shader = "default"):
         self.vaos[name] = self.get_vao(
-            program=self.program.programs[shader],
+            program=self.program.programs["default"],
             vbo=self.vbo.vbos[name])
         self.vaos['shadow_' + name] = self.get_vao(
             program=self.program.programs['shadow_map'],

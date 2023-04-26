@@ -8,6 +8,7 @@ from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.music.music_control import Playlist
 from dependencies.scripts.entities.entities import Player
+from dependencies.scripts.entities.bullets import Bullet
 import dependencies.scripts.utilitaries.joystick as js
 import numpy
 import time
@@ -28,7 +29,7 @@ class Engine:
 
     def __init__(self, wW = 1200, wH = 800):
         if(Engine.Instance != None) : return
-        self.player = GameObject()
+        self.player = GameObject("player")
         self.wW = wW
         self.wH = wH
 
@@ -79,16 +80,17 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(1, obj["name"], obj["pos"], obj["rot"], obj["scale"])
                         self.player = gameObject
                     case "GameObject":
-                        gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = GameObject(obj["name"], obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
-                        gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Spawn(obj["name"], obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(2, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(2, obj["name"], obj["pos"], obj["rot"], obj["scale"])
+                    case "Bullet":
+                        gameObject = Bullet(obj["name"], obj["pos"], obj["rot"], obj["scale"])
                 
-                print(gameObject.forward)
                 if(gameObject == None) : continue
                 if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])

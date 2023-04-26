@@ -1,6 +1,7 @@
 from asyncio.windows_events import NULL
 from dependencies.engine.Untils.vector import Magnitude
 import dependencies.engine.engine as eng
+from dependencies.engine.Untils.pool import Pool
 import glm
 import math
 
@@ -8,12 +9,13 @@ from dependencies.moderngl.model import ExtendedBaseModel
 
 
 class GameObject:
-    def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
+    def __init__(self, name, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
         self.rotation = glm.vec3(rot)
         self.scale = scale
         self.UID = "-1"
         self.isActive = True
+        self.name = name
 
         self.isCollide = False
         self.collideBox = NULL
@@ -45,7 +47,11 @@ class GameObject:
         self.Destroy()
 
     def Destroy(self):
-        self.position = glm.vec3([-100000, -100000, -100000])
+        try:
+            eng.Engine.Instance.pool[self.name].Add(self)
+        except:
+            eng.Engine.Instance.pool[self.name] = Pool()
+            eng.Engine.Instance.pool[self.name].Add(self)
 
     def Raycast(self, dir, max = 150):
         """Envoie un rayon depuis l'objet.
