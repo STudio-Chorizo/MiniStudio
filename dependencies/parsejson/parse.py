@@ -5,6 +5,7 @@ ASSETS = {}
 SCENES = {}
 DIALOG = {}
 
+
 def parseJson(path: str) -> bool | list | dict:
     """Parse le fichier json au chemin projet/`path` sous forme de liste ou de dictionnaire ou renvoie False si le fichier n'est pas trouver.\n
     Inclue la variable `ASSETS` et `SCENES` déjà parser pour récupérer les assets et scenes du projet"""
@@ -17,6 +18,7 @@ def parseJson(path: str) -> bool | list | dict:
         return False
 
 ASSETS = parseJson("/Assets/assets.json")
+
 SCENES = parseJson("/Assets/scenes.json")
 
 def loadDialog(Lang: str = "fr") -> dict:
@@ -26,3 +28,4 @@ def loadDialog(Lang: str = "fr") -> dict:
     global DIALOG
     DIALOG = parseJson("/Assets/dialog/" + Lang + ".json")
     return DIALOG
+

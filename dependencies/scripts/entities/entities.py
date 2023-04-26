@@ -26,11 +26,13 @@ class Entities(GameObject):
     
     def Atk(self):
         if(self.lastAtk + self.reload > eng.Engine.Instance.time) : return
+
+        print("atk", self.lastAtk, "reload", self.reload, "time", eng.Engine.Instance.time)
         self.UpdateLocalAxis()
         hit = self.Raycast(eng.FORWARD * self.forward, self.atkDistance)
+        self.lastAtk = eng.Engine.Instance.time
         if(hit == False or Entities.IsEntities(hit[0]) == False) : return
         hit[0].Dmg(self.atk)
-        self.lastAtk = eng.Engine.Instance.time
         
     def Dmg(self, dmg):
         self.life -= dmg
@@ -64,6 +66,8 @@ class Player(Entities):
         self.Maxlife = self.life
         self.mun = 20
         self.modelRotation = glm.vec3([0, 180, 0])
+
+        self.joystick = eng.Engine.Instance.joystick
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
         cam = eng.Engine.Instance.graphicEngine.camera
@@ -102,9 +106,14 @@ class Player(Entities):
     def Update(self):
         if self.life == 0: return
         keys = pg.key.get_pressed()
-        rotX = 0
+
+        # print()
+        rotX = -self.joystick.get_axis(1) if self.joystick.get_axis(1) > 0.1 or self.joystick.get_axis(1) < -0.1 else 0
+        self.Move(eng.UP * self.speed * eng.Engine.Instance.deltaTime * rotX)
         rotY = 0
-        rotZ = 0
+        rotZ = self.joystick.get_axis(0) if self.joystick.get_axis(0) > 0.1 or self.joystick.get_axis(0) < -0.1 else 0
+        self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime * -rotZ)
+
         #Influence de la vie sur le gamplay
         if (self.life <= int(self.Maxlife * 2 / 3)):
             problems = random() *1.2
@@ -116,7 +125,8 @@ class Player(Entities):
                 nausea = pg.transform.scale(nausea, (eng.Engine.Instance.wW, eng.Engine.Instance.wH))
                 eng.Engine.Instance.surface.blit(nausea, (0, 0))
         #Attaque
-        if keys[pg.K_SPACE]:
+
+        if keys[pg.K_SPACE] or self.joystick.get_button(0):
             self.Atk()
         #Position
         if keys[pg.K_z]:
@@ -132,7 +142,8 @@ class Player(Entities):
             self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
             rotZ += -1
         #Caméra
-        if(keys[pg.K_e] and self.lastTimeVueSwitch + 300 < eng.Engine.Instance.time):
+
+        if((keys[pg.K_e] or self.joystick.get_button(1)) and self.lastTimeVueSwitch + 300 < eng.Engine.Instance.time):
             self.lastTimeVueSwitch = eng.Engine.Instance.time
             #1er personne
             if (self.vue == 0):
@@ -156,7 +167,8 @@ class Player(Entities):
             self.cheatLifeDown = 0
         #Cheat code start
         if keys[pg.K_a]:
-            self.position = glm.vec3([0, 0, 0])
+
+            self.position.z = 0
             self.rotation = glm.vec3([0, 0, 0])
         else:
         #Cheat code end
@@ -167,13 +179,23 @@ class Player(Entities):
             if(self.rotation[2] > maxAngle or self.rotation[2] < -maxAngle) : rotZ = 0
             
             if(rotX == 0):
-                if(self.rotation[0] > 3 and keys[pg.K_z] == False) : rotX += -1
-                elif(self.rotation[0] < -3 and keys[pg.K_s] == False) : rotX += 1
+                if(self.rotation[0] > 3 and keys[pg.K_z] == False and self.joystick.get_axis(1) > -0.1) :rotX += -1
+                elif(self.rotation[0] < -3 and keys[pg.K_s] == False and self.joystick.get_axis(1) < 0.1) : rotX += 1
             if(rotZ == 0):
-                if(self.rotation[2] > 3 and keys[pg.K_d] == False) : rotZ += -1
-                elif(self.rotation[2] < -3 and keys[pg.K_q] == False) : rotZ += 1
+                if(self.rotation[2] > 3 and keys[pg.K_d] == False and self.joystick.get_axis(0) < 0.1) : rotZ += -1
+                elif(self.rotation[2] < -3 and keys[pg.K_q] == False and self.joystick.get_axis(0) > -0.1) : rotZ += 1
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
+        
+        if self.position.x >= 100:
+            self.position.x = 100
+        elif self.position.x <= -100:
+            self.position.x = -100
+        
+        if self.position.y >= 100:
+            self.position.y = 100
+        elif self.position.y <= -100:
+            self.position.y = -100
 
         eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))

@@ -9,6 +9,7 @@ from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.music.music_control import Playlist
 from dependencies.scripts.entities.entities import Player
 from dependencies.scripts.gui.menu import Menu
+import dependencies.scripts.utilitaries.joystick as js
 import numpy
 import time
 
@@ -22,11 +23,13 @@ FORWARD = glm.vec3(0, 0, 1)
 class Engine:
     Instance = None
     @staticmethod
+
     def CreateInstance(wW = 1920, wH = 1080, Lang = "fr"):
         if(Engine.Instance != None) : return
         Engine.Instance = Engine(wW, wH, Lang)
 
     def __init__(self, wW = 1920, wH = 1080, Lang = "fr"):
+
         if(Engine.Instance != None) : return
         self.player = GameObject()
         self.wW = wW
@@ -48,6 +51,7 @@ class Engine:
         self.lastTime = 0
         self.deltaTime = 0.0
         self.speedTime = 0
+
         
         self.pool = {}
         
@@ -58,6 +62,24 @@ class Engine:
         self.lang = Lang
         self.Dialog = loadDialog(self.lang)
         self.menu = Menu(self)
+        self.MasterVolume = {"master": 100, "music": 100, "vfx": 100}
+
+        pg.joystick.init()
+        self.numJoystick = 0
+        self.joystick = js.MyJoysitck()
+        self.joystick.init()
+        self.JoystickInit()
+
+    def JoystickInit(self):
+        if pg.joystick.get_count() > self.numJoystick :
+            print("new joystick detected, the active joystick is: " + pg.joystick.Joystick(0).get_name())
+        elif pg.joystick.get_count() < self.numJoystick :
+            print("joystick disconnected")
+        else: return
+
+        self.numJoystick = pg.joystick.get_count()
+        self.joystick = js.MyJoysitck()
+        self.joystick.init()
     
     def LoadScene(self, sceneName):
         i = 0
@@ -131,11 +153,15 @@ class Engine:
             self.Update()
 
     def Update(self):
+
+        self.JoystickInit()
+
         self.time = pg.time.get_ticks()
         self.deltaTime = (self.time - self.lastTime) * self.speedTime
         self.lastTime = pg.time.get_ticks()
 
         self.event = pg.event.get()
+        
         for e in self.event:
             if (e.type == pg.QUIT) : self.run = False
         

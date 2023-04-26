@@ -74,8 +74,10 @@ class ExtendedBaseModel(BaseModel):
         self.shadow_program['m_model'].write(self.m_model)
         # texture
         self.texture = self.app.mesh.texture.textures[self.tex_id]
+
         self.program['base_color'] = 0
         self.texture.use(location=0)
+
         # mvp
         self.program['m_proj'].write(self.camera.m_proj)
         self.program['m_view'].write(self.camera.m_view)
