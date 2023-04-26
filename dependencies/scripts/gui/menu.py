@@ -3,6 +3,7 @@ import sys
 from PIL import Image
 from dependencies.engine.gameobject import *
 from dependencies.parsejson.parse import *
+from dependencies.music.music_control import Playlist
 
 main_buttons = pg.sprite.Group()
 pause_buttons = pg.sprite.Group()
@@ -81,6 +82,8 @@ class Menu:
         self.option_buttons = options_buttons
 
         #----------------Main menu-------------------
+        Playlist.Instance.miscs["menu"].play()
+
         self.backgroundPath = ASSETS["guiMenu"]["main"]["background"]
         self.loadBackground = pg.image.load(self.backgroundPath).convert_alpha()
         self.main_backgroudRect = pg.Rect(0, 0, self.engine.wW, self.engine.wH)
@@ -192,31 +195,59 @@ class Menu:
         for x in self.option_buttons:
             x.text = self.engine.Dialog[x.path_txt[0]][x.path_txt[1]][x.path_txt[2]]
             x.update()
+    
+    def switchOn(self):
+        if self.onoff == "off":
+            Playlist.Instance.miscs["menu"].set_volume(0)
+        Playlist.Instance.miscs["menu"].smooth_volume(100)
+        Playlist.Instance.miscs["menu"].play()
+        Playlist.Instance.miscs["game"].smooth_volume(0)
 
+        self.onoff = "on"
+        self.engine.speedTime = 0.0
+        
+        pg.event.set_grab(False)
+        pg.mouse.set_visible(True)
+    
+    def switchOff(self):
+        if self.onoff == "on":
+            Playlist.Instance.miscs["game"].set_volume(0)
+        Playlist.Instance.miscs["game"].smooth_volume(100)
+        Playlist.Instance.miscs["game"].play()
+        Playlist.Instance.miscs["menu"].smooth_volume(0)
+
+        self.onoff = "off"
+        self.engine.speedTime = 1.0
+
+        pg.event.set_grab(True)
+        pg.mouse.set_visible(False)
+    
+    def switchOnOff(self):
+        if self.onoff == "off":
+            self.switchOn()
+        elif self.onoff == "on":
+            self.switchOff()
 
     def Update(self):
 
         keys = pg.key.get_pressed()
         mouse = pg.mouse.get_pressed()
         mousePos = pg.mouse.get_pos()
-        if keys[pg.K_ESCAPE] and self.keyPressed == False:
-            if self.onoff == "off":
-                self.onoff = "on"
-            elif self.onoff == "on":
-                self.onoff = "off"
+        if keys[pg.K_ESCAPE] and self.keyPressed == False and self.statut == "pause":
+            self.switchOnOff()
             self.keyPressed = True
-        elif not keys[pg.K_ESCAPE] and self.keyPressed == True:
+        elif not keys[pg.K_ESCAPE] and self.keyPressed == True and self.statut == "pause":
             self.keyPressed = False
 
         if (self.onoff == "on"):
-            self.engine.speedTime = 0.0
 
             if self.statut == "main":
 
                 self.engine.surface.blit(self.main_loadBackground,self.main_backgroudRect)
 
                 if self.main_play.rect.collidepoint(mousePos) and mouse[0]:
-                    pass
+                    self.switchOnOff()
+                    self.statut = "pause"
                 
                 elif self.main_newGame.rect.collidepoint(mousePos) and mouse[0]:
                     pass
@@ -256,6 +287,13 @@ class Menu:
                 self.engine.surface.blit(self.pause_loadWindow,self.pause_windowRect)
 
                 self.pause_not_hover()
+
+                if self.pause_resume.rectTexture.collidepoint(mousePos) and mouse[0]:
+                    self.switchOnOff()
+                if self.pause_menu.rectTexture.collidepoint(mousePos) and mouse[0]:
+                    pass
+                if self.pause_exit.rectTexture.collidepoint(mousePos) and mouse[0]:
+                    self.statut = "main"
 
                 if self.pause_resume.rectTexture.collidepoint(mousePos):
                     self.pause_hover(self.pause_resume)
@@ -297,5 +335,3 @@ class Menu:
 
             #     self.option_buttons.update()
             #     self.option_buttons.draw(self.engine.surface)
-        else:
-            self.engine.speedTime = 1.0

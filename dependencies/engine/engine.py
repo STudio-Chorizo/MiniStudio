@@ -50,7 +50,7 @@ class Engine:
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
 
-        self.MasterVolume = {"master": 100, "music": 100, "vfx": 100}
+        self.MasterVolume = Playlist.Instance.masterVolume
 
         self.lang = Lang
         self.Dialog = loadDialog(self.lang)
