@@ -8,6 +8,7 @@ from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.music.music_control import Playlist
 from dependencies.scripts.entities.entities import Player
+from dependencies.scripts.gui.menu import Menu
 import dependencies.scripts.utilitaries.joystick as js
 import numpy
 import time
@@ -22,11 +23,13 @@ FORWARD = glm.vec3(0, 0, 1)
 class Engine:
     Instance = None
     @staticmethod
-    def CreateInstance(wW = 1200, wH = 800):
-        if(Engine.Instance != None) : return
-        Engine.Instance = Engine(wW, wH)
 
-    def __init__(self, wW = 1200, wH = 800):
+    def CreateInstance(wW = 1920, wH = 1080, Lang = "fr"):
+        if(Engine.Instance != None) : return
+        Engine.Instance = Engine(wW, wH, Lang)
+
+    def __init__(self, wW = 1920, wH = 1080, Lang = "fr"):
+
         if(Engine.Instance != None) : return
         self.player = GameObject()
         self.wW = wW
@@ -34,6 +37,9 @@ class Engine:
 
         self.gameObjects = {}
         self.objectsCount = 0
+
+        self.allLangs = ["fr","en"]
+        self.selectLang = 0
 
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
@@ -44,11 +50,18 @@ class Engine:
         self.time = 0
         self.lastTime = 0
         self.deltaTime = 0.0
+        self.speedTime = 0
+
         
         self.pool = {}
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
 
+        self.MasterVolume = Playlist.Instance.masterVolume
+
+        self.lang = Lang
+        self.Dialog = loadDialog(self.lang)
+        self.menu = Menu(self)
         self.MasterVolume = {"master": 100, "music": 100, "vfx": 100}
 
         pg.joystick.init()
@@ -140,15 +153,17 @@ class Engine:
             self.Update()
 
     def Update(self):
+
         self.JoystickInit()
 
         self.time = pg.time.get_ticks()
-        self.deltaTime = self.time - self.lastTime
+        self.deltaTime = (self.time - self.lastTime) * self.speedTime
         self.lastTime = pg.time.get_ticks()
 
         self.event = pg.event.get()
+        
         for e in self.event:
-            if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE or self.joystick.get_button(7)) : self.run = False
+            if (e.type == pg.QUIT) : self.run = False
         
         self.surface.fill((0, 0, 0, 0))
 
@@ -161,6 +176,7 @@ class Engine:
         self.graphicEngine.get_time()
         self.graphicEngine.check_events()
         self.graphicEngine.camera.update()
+        self.menu.Update()
         self.graphicEngine.render(self.surface)
         Playlist.Instance.update()
         pg.display.flip()

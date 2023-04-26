@@ -26,6 +26,7 @@ class Entities(GameObject):
     
     def Atk(self):
         if(self.lastAtk + self.reload > eng.Engine.Instance.time) : return
+
         print("atk", self.lastAtk, "reload", self.reload, "time", eng.Engine.Instance.time)
         self.UpdateLocalAxis()
         hit = self.Raycast(eng.FORWARD * self.forward, self.atkDistance)
@@ -65,6 +66,7 @@ class Player(Entities):
         self.Maxlife = self.life
         self.mun = 20
         self.modelRotation = glm.vec3([0, 180, 0])
+
         self.joystick = eng.Engine.Instance.joystick
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
@@ -104,12 +106,14 @@ class Player(Entities):
     def Update(self):
         if self.life == 0: return
         keys = pg.key.get_pressed()
+
         # print()
         rotX = -self.joystick.get_axis(1) if self.joystick.get_axis(1) > 0.1 or self.joystick.get_axis(1) < -0.1 else 0
         self.Move(eng.UP * self.speed * eng.Engine.Instance.deltaTime * rotX)
         rotY = 0
         rotZ = self.joystick.get_axis(0) if self.joystick.get_axis(0) > 0.1 or self.joystick.get_axis(0) < -0.1 else 0
         self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime * -rotZ)
+
         #Influence de la vie sur le gamplay
         if (self.life <= int(self.Maxlife * 2 / 3)):
             problems = random() *1.2
@@ -121,6 +125,7 @@ class Player(Entities):
                 nausea = pg.transform.scale(nausea, (eng.Engine.Instance.wW, eng.Engine.Instance.wH))
                 eng.Engine.Instance.surface.blit(nausea, (0, 0))
         #Attaque
+
         if keys[pg.K_SPACE] or self.joystick.get_button(0):
             self.Atk()
         #Position
@@ -137,6 +142,7 @@ class Player(Entities):
             self.Move(eng.RIGHT * self.speed * eng.Engine.Instance.deltaTime)
             rotZ += -1
         #Caméra
+
         if((keys[pg.K_e] or self.joystick.get_button(1)) and self.lastTimeVueSwitch + 300 < eng.Engine.Instance.time):
             self.lastTimeVueSwitch = eng.Engine.Instance.time
             #1er personne
@@ -161,6 +167,7 @@ class Player(Entities):
             self.cheatLifeDown = 0
         #Cheat code start
         if keys[pg.K_a]:
+
             self.position.z = 0
             self.rotation = glm.vec3([0, 0, 0])
         else:
