@@ -49,6 +49,10 @@ class Engine:
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
 
         self.MasterVolume = {"master": 0, "music": 100, "vfx": 100}
+
+        pg.joystick.init()
+        self.joystick = pg.joystick.Joystick(0)
+        self.joystick.init()
     
     def LoadScene(self, sceneName):
         i = 0
@@ -128,7 +132,7 @@ class Engine:
 
         self.event = pg.event.get()
         for e in self.event:
-            if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE) : self.run = False
+            if (e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE or self.joystick.get_button(7)) : self.run = False
         
         self.surface.fill((0, 0, 0, 0))
 
