@@ -21,6 +21,7 @@ class Music:
         self.vol = 100
         self.next_vol = 100
         self.masterVolume = masterVolume
+        self.smoothSpeed = 50
 
         self.played = False
         self.autoPause = [autoPause, False]
@@ -86,9 +87,9 @@ class Music:
         self.lastUpdate = time.time()
         if self.vol != self.next_vol:
             if self.vol > self.next_vol:
-                self.vol -= updateTime * 20
+                self.vol -= updateTime * self.smoothSpeed
             else:
-                self.vol += updateTime * 20
+                self.vol += updateTime * self.smoothSpeed
         if abs(self.vol - self.next_vol) < 1:
             self.vol = self.next_vol
         self.channel.set_volume(self.vol / 100 * self.masterVolume["master"] / 100 * self.masterVolume[self.typeSound] / 100)

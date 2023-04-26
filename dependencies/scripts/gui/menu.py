@@ -119,7 +119,7 @@ class Menu:
         self.optionsText = optionsText
 
         #----------------Main menu-------------------
-        Playlist.Instance.miscs["menu"].play()
+        Playlist.Instance.miscs["menu"].play(2**15)
 
         self.backgroundPath = ASSETS["guiMenu"]["main"]["background"]
         self.loadBackground = pg.image.load(self.backgroundPath).convert_alpha()
@@ -275,12 +275,12 @@ class Menu:
         if self.onoff == "off":
             Playlist.Instance.miscs["menu"].set_volume(0)
         Playlist.Instance.miscs["menu"].smooth_volume(100)
-        Playlist.Instance.miscs["menu"].play()
+        Playlist.Instance.miscs["menu"].play(2**15)
         Playlist.Instance.miscs["game"].smooth_volume(0)
 
         self.onoff = "on"
         self.engine.speedTime = 0.0
-        
+
         pg.event.set_grab(False)
         pg.mouse.set_visible(True)
     
@@ -288,7 +288,7 @@ class Menu:
         if self.onoff == "on":
             Playlist.Instance.miscs["game"].set_volume(0)
         Playlist.Instance.miscs["game"].smooth_volume(100)
-        Playlist.Instance.miscs["game"].play()
+        Playlist.Instance.miscs["game"].play(2**15)
         Playlist.Instance.miscs["menu"].smooth_volume(0)
 
         self.onoff = "off"

@@ -22,9 +22,9 @@ FORWARD = glm.vec3(0, 0, 1)
 class Engine:
     Instance = None
     @staticmethod
-    def CreateInstance(wW = 1920, wH = 1080, lang = "fr"):
+    def CreateInstance(wW = 1920, wH = 1080, Lang = "fr"):
         if(Engine.Instance != None) : return
-        Engine.Instance = Engine(wW, wH)
+        Engine.Instance = Engine(wW, wH, Lang)
 
     def __init__(self, wW = 1920, wH = 1080, Lang = "fr"):
         if(Engine.Instance != None) : return
