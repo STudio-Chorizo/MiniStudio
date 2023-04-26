@@ -74,15 +74,8 @@ class ExtendedBaseModel(BaseModel):
         self.shadow_program['m_model'].write(self.m_model)
         # texture
         self.texture = self.app.mesh.texture.textures[self.tex_id]
-        self.program['u_texture_0'] = 0
+        self.program['base_color'] = 0
         self.texture.use(location=0)
-        if(self.metalic == True):
-            self.noise = self.app.mesh.texture.textures["noise"]
-            self.program['texture_noise'] = 8
-            self.noise.use(location=8)
-            self.iridescence = self.app.mesh.texture.textures["iridescence"]
-            self.program['texture_iridescence'] = 9
-            self.iridescence.use(location=9)
         # mvp
         self.program['m_proj'].write(self.camera.m_proj)
         self.program['m_view'].write(self.camera.m_view)

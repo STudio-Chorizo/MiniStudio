@@ -214,7 +214,6 @@ class Menu:
         self.quest_loadBackground = pg.image.load(self.quest_BackgroundPath).convert_alpha()
         self.quest_BackgroundRect = pg.Rect(0, 0, self.engine.wW, self.engine.wH)
         self.quest_loadBackground = pg.transform.scale(self.quest_loadBackground, (self.engine.wW,self.engine.wH))
-        self.engine.surface.blit(self.quest_loadBackground,self.quest_BackgroundRect)
 
 
         #key
@@ -311,7 +310,6 @@ class Menu:
         mousePos = pg.mouse.get_pos()
 
         if keys[pg.K_ESCAPE] and self.keyDown == False and self.statut == "pause":
-            print("test")
             self.switchOnOff()
             self.keyDown = True
             self.keyPressed = "Escape"
@@ -329,18 +327,27 @@ class Menu:
                     self.statut = "pause"
 
                 elif (self.main_leaderboard.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_leaderboard.id and keys[pg.K_b] and self.keyDown == False):
+                    
                     self.statut = "quest"
+                    self.keyDown == True
+                    self.keyPressed == "main_leaderboard"
+                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "main_leaderboard":
+                    self.keyDown = False
 
                 elif (self.main_options.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_options.id and keys[pg.K_b] and self.keyDown == False):
                     self.statut = "options"
+                    self.keyDown == True
+                    self.keyPressed == "main_options"
+                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "main_options":
+                    self.keyDown = False
 
                 elif (self.main_exit.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_exit.id and keys[pg.K_b] and self.keyDown == False):
                     self.engine.run = False
 
-                elif mouse[0] and self.keyDown == False:
+                elif (mouse[0] or keys[pg.K_b]) and self.keyDown == False:
                     self.keyDown = True
                     self.keyPressed = "debug"
-                elif not mouse[0] and self.keyDown == True and self.keyPressed == "debug":
+                elif (not mouse[0] or not keys[pg.K_b]) and self.keyDown == True and self.keyPressed == "debug":
                     self.keyDown = False
 
                 if keys[pg.K_z] and self.keyDown == False:
@@ -383,10 +390,25 @@ class Menu:
 
                 if (self.pause_resume.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_resume.id and keys[pg.K_b] and self.keyDown == False):
                     self.switchOnOff()
-                if (self.pause_menu.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_menu.id and keys[pg.K_b] and self.keyDown == False):
+                    self.keyDown == True
+                    self.keyPressed == "pause_resume"
+                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "pause_resume":
+                    self.keyDown = False
+
+                elif (self.pause_menu.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_menu.id and keys[pg.K_b] and self.keyDown == False):
                     self.statut = "quest"
-                if (self.pause_exit.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_exit.id and keys[pg.K_b] and self.keyDown == False):
+                    self.keyDown == True
+                    self.keyPressed == "pause_menu"
+                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "pause_menu":
+                    self.keyDown = False
+
+                elif (self.pause_exit.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_exit.id and keys[pg.K_b] and self.keyDown == False):
+                    self.selected = 9
                     self.statut = "main"
+                    self.keyDown == True
+                    self.keyPressed == "pause_exit"
+                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "pause_exit":
+                    self.keyDown = False
 
                 if keys[pg.K_z] and self.keyDown == False:
                     self.selected = (self.selected - 1) % 3
@@ -399,6 +421,12 @@ class Menu:
                     self.keyDown = True
                     self.keyPressed = "s"
                 elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                    self.keyDown = False
+
+                elif (mouse[0] or keys[pg.K_b]) and self.keyDown == False:
+                    self.keyDown = True
+                    self.keyPressed = "debug"
+                elif (not mouse[0] or not keys[pg.K_b]) and self.keyDown == True and self.keyPressed == "debug":
                     self.keyDown = False
 
                 if self.pause_resume.rectTexture.collidepoint(mousePos):
@@ -426,7 +454,7 @@ class Menu:
                     self.engine.selectLang = (self.engine.selectLang + 1) % 2
                     self.engine.Dialog = loadDialog(self.engine.allLangs[self.engine.selectLang])
                     self.keyDown = True
-                elif not mouse[0] and self.keyDown == True and self.keyPressed == "ClickLang":
+                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "ClickLang":
                     self.keyDown = False
 
                 if (self.optionsBackBtn.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.optionsBackBtn.id and keys[pg.K_b] and self.keyDown == False):
@@ -443,6 +471,12 @@ class Menu:
                     self.keyDown = True
                     self.keyPressed = "s"
                 elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                    self.keyDown = False
+
+                elif (mouse[0] or keys[pg.K_b]) and self.keyDown == False:
+                    self.keyDown = True
+                    self.keyPressed = "debug"
+                elif (not mouse[0] or not keys[pg.K_b]) and self.keyDown == True and self.keyPressed == "debug":
                     self.keyDown = False
 
                 if self.optionsLangBtn.rectTexture.collidepoint(mousePos):
