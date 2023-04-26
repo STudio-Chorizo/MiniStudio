@@ -35,6 +35,9 @@ class Engine:
         self.gameObjects = {}
         self.objectsCount = 0
 
+        self.allLangs = ["fr","en"]
+        self.selectLang = 0
+
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
         self.surface = pg.Surface((self.wW, self.wH), flags=pg.SRCALPHA)

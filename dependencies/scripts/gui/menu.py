@@ -8,6 +8,7 @@ from dependencies.music.music_control import Playlist
 main_buttons = pg.sprite.Group()
 pause_buttons = pg.sprite.Group()
 options_buttons = pg.sprite.Group()
+optionsText = pg.sprite.Group()
 
 class Button(pg.sprite.Sprite):
             def __init__(self, x, y, h, path_txt, txtSize, Engine, list, jsonPath):
@@ -45,8 +46,6 @@ class Button(pg.sprite.Sprite):
 
                 self.rect = pg.Rect(self.x + (self.w - self.txt_w) / 2, self.y + (self.h - self.txt_h) / 2, self.w, self.h)
                 self.rectTexture = pg.Rect(self.x, self.y, self.w, self.h)
-
-                self.engine.surface.blit(self.loadTexture,self.rectTexture)
                 
                 self.update()
                 list.add(self)
@@ -54,6 +53,10 @@ class Button(pg.sprite.Sprite):
                 
 
             def update(self):
+                if self.path_txt != "":
+                    self.text = self.engine.Dialog[self.path_txt[0]][self.path_txt[1]][self.path_txt[2]]
+                else :
+                    self.text = ""
                 self.texturePath = ASSETS[self.jsonPath[0]][self.jsonPath[1]][self.jsonPath[2]][self.jsonPath[3]]
                 self.loadTexture = pg.image.load(self.texturePath).convert_alpha()
                 self.loadTexture = pg.transform.scale(self.loadTexture, (self.w,self.h))
@@ -64,6 +67,39 @@ class Button(pg.sprite.Sprite):
                 self.rect = pg.Rect(self.x + (self.w - self.txt_w) / 2, self.y + (self.h - self.txt_h) / 2, self.w, self.h)
                 self.rectTexture = pg.Rect(self.x, self.y, self.w, self.h)
                 self.engine.surface.blit(self.loadTexture,self.rectTexture)
+
+class Text(pg.sprite.Sprite):
+            def __init__(self, x, y, w, h, path_txt, txtSize, Engine, list):
+                super().__init__()
+
+                self.engine = Engine
+
+                self.x = x
+                self.y = y
+                self.w = w
+                self.h = h
+                self.path_txt = path_txt
+                self.text = self.engine.Dialog[self.path_txt[0]][self.path_txt[1]][self.path_txt[2]]
+
+                self.txtSize = txtSize
+                self.colors = "black"
+                self.font = pg.font.Font("Assets/font/Orbitron-Black.ttf", self.txtSize)
+                self.text_render = self.font.render(self.text, 1, "white")
+                self.image = self.text_render
+                self.txt_x, self.txt_y, self.txt_w , self.txt_h = self.text_render.get_rect()
+
+                self.rect = pg.Rect(self.x + (self.w - self.txt_w) / 2, self.y + (self.h - self.txt_h) / 2, self.w, self.h)
+                
+                self.update()
+                list.add(self)
+
+            def update(self):
+                self.text = self.engine.Dialog[self.path_txt[0]][self.path_txt[1]][self.path_txt[2]]
+                self.font = pg.font.Font("Assets/font/Orbitron-Black.ttf", self.txtSize)
+                self.text_render = self.font.render(self.text, 1, "white")
+                self.image = self.text_render
+                self.txt_x, self.txt_y, self.txt_w , self.txt_h = self.text_render.get_rect()
+                self.rect = pg.Rect(self.x + (self.w - self.txt_w) / 2, self.y + (self.h - self.txt_h) / 2, self.w, self.h)
                 
 
 
@@ -79,7 +115,8 @@ class Menu:
 
         self.main_buttons = main_buttons
         self.pause_buttons = pause_buttons
-        self.option_buttons = options_buttons
+        self.options_buttons = options_buttons
+        self.optionsText = optionsText
 
         #----------------Main menu-------------------
         Playlist.Instance.miscs["menu"].play()
@@ -108,14 +145,14 @@ class Menu:
 
         #----------------Pause menu-------------------
         #Background Filter
-        self.pause_BgFilterPath = ASSETS["guiMenu"]["pause"]["background"]
+        self.pause_BgFilterPath = ASSETS["guiMenu"]["allMenu"]["backgroundFilter"]
         self.pause_loadBgFilter = pg.image.load(self.pause_BgFilterPath).convert_alpha()
         self.pause_BgFilterRect = pg.Rect(0, 0, self.engine.wW, self.engine.wH)
         self.pause_loadBgFilter = pg.transform.scale(self.pause_loadBgFilter, (self.engine.wW,self.engine.wH))
         self.engine.surface.blit(self.pause_loadBgFilter,self.pause_BgFilterRect)
 
         #Window skin
-        self.pause_windowPath = ASSETS["guiMenu"]["pause"]["window"]
+        self.pause_windowPath = ASSETS["guiMenu"]["allMenu"]["window"]
         self.pause_loadWindow = pg.image.load(self.pause_windowPath).convert_alpha()
         pause_window = Image.open(self.pause_windowPath)
         window_w, window_h = pause_window.size
@@ -137,15 +174,52 @@ class Menu:
         self.pause_menu = Button(pauseBtn_x + self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.04)*3 + (pauseBtn_h + pause_spaceBetween)* 1, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "menuButton", "normal"])
         self.pause_exit = Button(pauseBtn_x +  self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.04)*3 + (pauseBtn_h + pause_spaceBetween)* 2, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "exitButton", "normal"])
 
+
+        #----------------options menu-------------------
+        #Background Filter
+        self.options_BgFilterPath = ASSETS["guiMenu"]["allMenu"]["backgroundFilter"]
+        self.options_loadBgFilter = pg.image.load(self.options_BgFilterPath).convert_alpha()
+        self.options_BgFilterRect = pg.Rect(0, 0, self.engine.wW, self.engine.wH)
+        self.options_loadBgFilter = pg.transform.scale(self.options_loadBgFilter, (self.engine.wW,self.engine.wH))
+        self.engine.surface.blit(self.options_loadBgFilter,self.options_BgFilterRect)
+
+        #Window skin
+        self.options_windowPath = ASSETS["guiMenu"]["allMenu"]["window"]
+        self.options_loadWindow = pg.image.load(self.options_windowPath).convert_alpha()
+        options_window = Image.open(self.options_windowPath)
+        window_w, window_h = options_window.size
+        self.options_windowRect = pg.Rect((self.engine.wW - window_w)/2, (self.engine.wH - window_h)/2, window_w, window_h)
+        self.options_loadWindow = pg.transform.scale(self.options_loadWindow, (window_w, window_h))
+        self.engine.surface.blit(self.options_loadWindow,self.options_windowRect)
+
+
+        optionsTitle_w = window_w * 0.75
+        optionsTitle_h = window_h * 0.1
+        optionsTitle_x = (self.engine.wW - window_w)/2 + (window_w - optionsTitle_w)/2
+        optionsTitle_y = (self.engine.wH - window_h)/2 + (self.engine.wH * 0.15)
+
+        self.optionsTitle = Text(optionsTitle_x, optionsTitle_y, optionsTitle_w, optionsTitle_h, ("menu", "options", "title"), 45, self.engine, self.optionsText)
+
+        optionsLangTxt_x = (self.engine.wW - window_w)/2 + window_w * 0.1
+        optionsLangTxt_y = optionsTitle_y + optionsTitle_h * 1.5
+        self.optionsLangTxt = Text(optionsLangTxt_x, optionsLangTxt_y, window_w * 0.5, optionsTitle_h, ("menu", "options", "lang"), 45, self.engine, self.optionsText)
+
+        self.optionsLangBtn = Button(optionsLangTxt_x + window_w * 0.45, optionsLangTxt_y + (optionsTitle_h - window_h * 0.05)/2, window_h * 0.05, ("menu", "options", "langSelect"), main_txtsize, self.engine, self.options_buttons, ["guiMenu", "main", "playButton", "normal"])
+        self.optionsBackBtn = Button((self.engine.wW - window_w)/2 + (self.engine.wW * 0.2), (self.engine.wH - window_h)/2 + window_h - (self.engine.wH * 0.15), window_h * 0.05, ("menu", "options", "back"), main_txtsize, self.engine, self.options_buttons, ["guiMenu", "main", "exitButton", "normal"])
+
+
+        #----------------Quest menu-------------------
+        #Background Filter
+        self.quest_BackgroundPath = ASSETS["guiMenu"]["quest"]["demo"]
+        self.quest_loadBackground = pg.image.load(self.quest_BackgroundPath).convert_alpha()
+        self.quest_BackgroundRect = pg.Rect(0, 0, self.engine.wW, self.engine.wH)
+        self.quest_loadBackground = pg.transform.scale(self.quest_loadBackground, (self.engine.wW,self.engine.wH))
+        self.engine.surface.blit(self.quest_loadBackground,self.quest_BackgroundRect)
+
+
         #key
         self.keyPressed = False
-
-
-        # #----------------Option menu-------------------
-        # self.option_backB = Button(self.engine.wW * 0.02, self.engine.wH * 0.02, button_w, button_h, ("menu", "option", "back_btn") , 45, self.engine,self.option_buttons)
-
-        # self.option_frB = Button(button_x - button_w / 2, btn1_y, button_w, button_h, ("menu", "option", "fr_btn"), 45, self.engine,self.option_buttons)
-        # self.option_enB = Button(button_x + button_w / 2, btn1_y, button_w, button_h, ("menu", "option", "en_btn"), 45, self.engine,self.option_buttons)
+        self.mousePressed = False
     
 
     #-------Main Menu fonction---------
@@ -156,6 +230,11 @@ class Menu:
     
     def pause_not_hover(self):
         for x in self.pause_buttons:
+            x.jsonPath[3] = "normal"
+            x.update()
+
+    def options_not_hover(self):
+        for x in self.options_buttons:
             x.jsonPath[3] = "normal"
             x.update()
 
@@ -186,15 +265,11 @@ class Menu:
     def pause_hover(self, button):
         button.jsonPath[3] = "hover"
 
+    def options_hover(self, button):
+        button.jsonPath[3] = "hover"
+
 
     #-------Global Menu Fonction--------
-    def txt_btn_update(self):
-        for x in self.pause_buttons:
-            x.text = self.engine.Dialog[x.path_txt[0]][x.path_txt[1]][x.path_txt[2]]
-            x.update()
-        for x in self.option_buttons:
-            x.text = self.engine.Dialog[x.path_txt[0]][x.path_txt[1]][x.path_txt[2]]
-            x.update()
     
     def switchOn(self):
         if self.onoff == "off":
@@ -253,13 +328,13 @@ class Menu:
                     pass
 
                 elif self.main_leaderboard.rect.collidepoint(mousePos) and mouse[0]:
-                    pass
+                    self.statut = "quest"
 
                 elif self.main_saves.rect.collidepoint(mousePos) and mouse[0]:
                     pass
 
                 elif self.main_options.rect.collidepoint(mousePos) and mouse[0]:
-                    pass #self.statut = "options"
+                    self.statut = "options"
 
                 elif self.main_exit.rectTexture.collidepoint(mousePos) and mouse[0]:
                     self.engine.run = False
@@ -302,36 +377,42 @@ class Menu:
                 if self.pause_exit.rectTexture.collidepoint(mousePos):
                     self.pause_hover(self.pause_exit)
                     
-                
                 self.pause_buttons.update()
                 self.pause_buttons.draw(self.engine.surface)
             
-            # elif self.statut == "options":
+            elif self.statut == "options":
 
-            #     if self.option_backB.rect.collidepoint(mousePos) and mouse[0]:
-            #         self.statut = "pause"
+                self.engine.surface.blit(self.options_loadBgFilter,self.options_BgFilterRect)
+                self.engine.surface.blit(self.options_loadWindow,self.options_windowRect)
 
-            #     elif self.option_frB.rect.collidepoint(mousePos) and mouse[0]:
-            #         if self.engine.Ln != "fr":
-            #             self.engine.Ln = "fr"
-            #             self.engine.Dialog = loadDialog("fr")
-            #             self.txt_btn_update()
-                        
+                if self.optionsLangBtn.rectTexture.collidepoint(mousePos) and mouse[0] and self.mousePressed == False:
+                    self.engine.selectLang = (self.engine.selectLang + 1) % 2
+                    self.engine.Dialog = loadDialog(self.engine.allLangs[self.engine.selectLang])
+                    self.mousePressed = True
 
-            #     elif self.option_enB.rect.collidepoint(mousePos) and mouse[0]:
-            #         if self.engine.Ln != "en":
-            #             self.engine.Ln = "en"
-            #             self.engine.Dialog = loadDialog("en")
-            #             self.txt_btn_update()
+                elif not mouse[0] and self.mousePressed == True:
+                    self.mousePressed = False
 
-            #     if self.option_backB.rect.collidepoint(mousePos):
-            #         self.hover()
-            #     elif self.option_frB.rect.collidepoint(mousePos):
-            #         self.hover()
-            #     elif self.option_enB.rect.collidepoint(mousePos):
-            #         self.hover()
-            #     else:
-            #         self.not_hover()
+                if self.optionsBackBtn.rectTexture.collidepoint(mousePos) and mouse[0]:
+                    self.statut = "main"
 
-            #     self.option_buttons.update()
-            #     self.option_buttons.draw(self.engine.surface)
+                self.options_not_hover()
+                if self.optionsLangBtn.rectTexture.collidepoint(mousePos):
+                    self.options_hover(self.optionsLangBtn)
+                if self.optionsBackBtn.rectTexture.collidepoint(mousePos):
+                    self.options_hover(self.optionsBackBtn)
+                
+                self.options_buttons.update()
+                self.options_buttons.draw(self.engine.surface)
+                self.optionsText.update()
+                self.optionsText.draw(self.engine.surface)
+
+
+            elif self.statut == "quest":
+
+                self.engine.surface.blit(self.quest_loadBackground,self.quest_BackgroundRect)
+
+                if keys[pg.K_ESCAPE]:
+                    self.statut = "main"
+                
+                
