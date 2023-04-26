@@ -22,9 +22,9 @@ FORWARD = glm.vec3(0, 0, 1)
 class Engine:
     Instance = None
     @staticmethod
-    def CreateInstance(wW = 1920, wH = 1080, lang = "fr"):
+    def CreateInstance(wW = 1920, wH = 1080, Lang = "fr"):
         if(Engine.Instance != None) : return
-        Engine.Instance = Engine(wW, wH)
+        Engine.Instance = Engine(wW, wH, Lang)
 
     def __init__(self, wW = 1920, wH = 1080, Lang = "fr"):
         if(Engine.Instance != None) : return
@@ -34,6 +34,9 @@ class Engine:
 
         self.gameObjects = {}
         self.objectsCount = 0
+
+        self.allLangs = ["fr","en"]
+        self.selectLang = 0
 
         pg.init()
         self.window = pg.display.set_mode((wW,wH))
@@ -50,7 +53,7 @@ class Engine:
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
 
-        self.MasterVolume = {"master": 100, "music": 100, "vfx": 100}
+        self.MasterVolume = Playlist.Instance.masterVolume
 
         self.lang = Lang
         self.Dialog = loadDialog(self.lang)

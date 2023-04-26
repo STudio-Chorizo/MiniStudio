@@ -1,4 +1,6 @@
 def main():
+    Playlist.CreateInstance()
+
     Engine.CreateInstance()
     Engine.Instance.LoadScene("test")
 
