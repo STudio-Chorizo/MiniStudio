@@ -156,7 +156,7 @@ class Player(Entities):
             self.cheatLifeDown = 0
         #Cheat code start
         if keys[pg.K_a]:
-            self.position = glm.vec3([0, 0, 0])
+            self.position.z = 0
             self.rotation = glm.vec3([0, 0, 0])
         else:
         #Cheat code end
@@ -174,6 +174,16 @@ class Player(Entities):
                 elif(self.rotation[2] < -3 and keys[pg.K_q] == False) : rotZ += 1
 
             self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
+        
+        if self.position.x >= 100:
+            self.position.x = 100
+        elif self.position.x <= -100:
+            self.position.x = -100
+        
+        if self.position.y >= 100:
+            self.position.y = 100
+        elif self.position.y <= -100:
+            self.position.y = -100
 
         eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
