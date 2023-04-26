@@ -309,11 +309,11 @@ class Menu:
         mouse = pg.mouse.get_pressed()
         mousePos = pg.mouse.get_pos()
 
-        if keys[pg.K_ESCAPE] and self.keyDown == False and self.statut == "pause":
+        if (keys[pg.K_ESCAPE] or self.engine.joystick.get_button(7)) and self.keyDown == False and self.statut == "pause":
             self.switchOnOff()
             self.keyDown = True
             self.keyPressed = "Escape"
-        elif not keys[pg.K_ESCAPE] and self.keyDown == True and self.keyPressed == "Escape" and self.statut == "pause":
+        elif not (keys[pg.K_ESCAPE] or self.engine.joystick.get_button(7)) and self.keyDown == True and self.keyPressed == "Escape" and self.statut == "pause":
             self.keyDown = False
 
         if (self.onoff == "on"):
@@ -322,45 +322,44 @@ class Menu:
 
                 self.engine.surface.blit(self.main_loadBackground,self.main_backgroudRect)
 
-                if (self.main_play.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_play.id and keys[pg.K_b] and self.keyDown == False):
+                if (self.main_play.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_play.id and self.engine.joystick.get_button(0) and self.keyDown == False):
                     self.switchOnOff()
                     self.statut = "pause"
 
-                elif (self.main_leaderboard.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_leaderboard.id and keys[pg.K_b] and self.keyDown == False):
-                    
+                elif (self.main_leaderboard.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_leaderboard.id and self.engine.joystick.get_button(0) and self.keyDown == False):
                     self.statut = "quest"
                     self.keyDown == True
                     self.keyPressed == "main_leaderboard"
-                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "main_leaderboard":
+                elif not mouse[0] and not self.engine.joystick.get_button(0) and self.keyDown == True and self.keyPressed == "main_leaderboard":
                     self.keyDown = False
 
-                elif (self.main_options.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_options.id and keys[pg.K_b] and self.keyDown == False):
+                elif (self.main_options.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_options.id and self.engine.joystick.get_button(0) and self.keyDown == False):
                     self.statut = "options"
                     self.keyDown == True
                     self.keyPressed == "main_options"
-                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "main_options":
+                elif not mouse[0] and not self.engine.joystick.get_button(0) and self.keyDown == True and self.keyPressed == "main_options":
                     self.keyDown = False
 
-                elif (self.main_exit.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_exit.id and keys[pg.K_b] and self.keyDown == False):
+                elif (self.main_exit.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_exit.id and self.engine.joystick.get_button(0) and self.keyDown == False):
                     self.engine.run = False
 
-                elif (mouse[0] or keys[pg.K_b]) and self.keyDown == False:
+                elif (mouse[0] or self.engine.joystick.get_button(0)) and self.keyDown == False:
                     self.keyDown = True
                     self.keyPressed = "debug"
-                elif (not mouse[0] or not keys[pg.K_b]) and self.keyDown == True and self.keyPressed == "debug":
+                elif (not mouse[0] or not self.engine.joystick.get_button(0)) and self.keyDown == True and self.keyPressed == "debug":
                     self.keyDown = False
 
-                if keys[pg.K_z] and self.keyDown == False:
+                if self.engine.joystick.get_axis(1) < -0.1 and self.keyDown == False:
                     self.selected = (self.selected - 1) % 6
                     self.keyDown = True
                     self.keyPressed = "z"
-                elif not(keys[pg.K_z]) and self.keyDown == True and self.keyPressed == "z":
+                elif not self.engine.joystick.get_axis(1) < -0.1 and self.keyDown == True and self.keyPressed == "z":
                     self.keyDown = False
-                elif keys[pg.K_s] and self.keyDown == False:
+                elif self.engine.joystick.get_axis(1) > 0.1 and self.keyDown == False:
                     self.selected = (self.selected + 1) % 6
                     self.keyDown = True
                     self.keyPressed = "s"
-                elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                elif not self.engine.joystick.get_axis(1) > 0.1 and self.keyDown == True and self.keyPressed == "s":
                     self.keyDown = False
 
                 if self.main_play.rectTexture.collidepoint(mousePos):
@@ -388,45 +387,42 @@ class Menu:
                 self.engine.surface.blit(self.pause_loadBgFilter,self.pause_BgFilterRect)
                 self.engine.surface.blit(self.pause_loadWindow,self.pause_windowRect)
 
-                if (self.pause_resume.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_resume.id and keys[pg.K_b] and self.keyDown == False):
+                if (self.pause_resume.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_resume.id and self.engine.joystick.get_button(0)) or (self.engine.joystick.get_button(1) and self.keyDown == False):
                     self.switchOnOff()
-                    self.keyDown == True
                     self.keyPressed == "pause_resume"
-                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "pause_resume":
-                    self.keyDown = False
 
-                elif (self.pause_menu.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_menu.id and keys[pg.K_b] and self.keyDown == False):
+                elif (self.pause_menu.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_menu.id and self.engine.joystick.get_button(0) and self.keyDown == False):
                     self.statut = "quest"
                     self.keyDown == True
                     self.keyPressed == "pause_menu"
-                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "pause_menu":
+                elif not mouse[0] and not self.engine.joystick.get_button(0) and self.keyDown == True and self.keyPressed == "pause_menu":
                     self.keyDown = False
 
-                elif (self.pause_exit.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_exit.id and keys[pg.K_b] and self.keyDown == False):
+                elif (self.pause_exit.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_exit.id and self.engine.joystick.get_button(0) and self.keyDown == False):
                     self.selected = 9
                     self.statut = "main"
                     self.keyDown == True
                     self.keyPressed == "pause_exit"
-                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "pause_exit":
+                elif not mouse[0] and not self.engine.joystick.get_button(0) and self.keyDown == True and self.keyPressed == "pause_exit":
                     self.keyDown = False
 
-                if keys[pg.K_z] and self.keyDown == False:
+                if self.engine.joystick.get_axis(1) < -0.1 and self.keyDown == False:
                     self.selected = (self.selected - 1) % 3
                     self.keyDown = True
                     self.keyPressed = "z"
-                elif not(keys[pg.K_z]) and self.keyDown == True and self.keyPressed == "z":
+                elif not self.engine.joystick.get_axis(1) < -0.1 and self.keyDown == True and self.keyPressed == "z":
                     self.keyDown = False
-                elif keys[pg.K_s] and self.keyDown == False:
+                elif self.engine.joystick.get_axis(1) > 0.1 and self.keyDown == False:
                     self.selected = (self.selected + 1) % 3
                     self.keyDown = True
                     self.keyPressed = "s"
-                elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                elif not self.engine.joystick.get_axis(1) > 0.1 and self.keyDown == True and self.keyPressed == "s":
                     self.keyDown = False
 
-                elif (mouse[0] or keys[pg.K_b]) and self.keyDown == False:
+                elif (mouse[0] or self.engine.joystick.get_button(0)) and self.keyDown == False:
                     self.keyDown = True
                     self.keyPressed = "debug"
-                elif (not mouse[0] or not keys[pg.K_b]) and self.keyDown == True and self.keyPressed == "debug":
+                elif (not mouse[0] or not self.engine.joystick.get_button(0)) and self.keyDown == True and self.keyPressed == "debug":
                     self.keyDown = False
 
                 if self.pause_resume.rectTexture.collidepoint(mousePos):
@@ -449,34 +445,34 @@ class Menu:
                 self.engine.surface.blit(self.options_loadBgFilter,self.options_BgFilterRect)
                 self.engine.surface.blit(self.options_loadWindow,self.options_windowRect)
 
-                if (self.optionsLangBtn.rectTexture.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.optionsLangBtn.id and keys[pg.K_b] and self.keyDown == False):
+                if (self.optionsLangBtn.rectTexture.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.optionsLangBtn.id and self.engine.joystick.get_button(0) and self.keyDown == False):
                     self.keyPressed = "ClickLang"
                     self.engine.selectLang = (self.engine.selectLang + 1) % 2
                     self.engine.Dialog = loadDialog(self.engine.allLangs[self.engine.selectLang])
                     self.keyDown = True
-                elif not mouse[0] and not keys[pg.K_b] and self.keyDown == True and self.keyPressed == "ClickLang":
+                elif not mouse[0] and not self.engine.joystick.get_button(0) and self.keyDown == True and self.keyPressed == "ClickLang":
                     self.keyDown = False
 
-                if (self.optionsBackBtn.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.optionsBackBtn.id and keys[pg.K_b] and self.keyDown == False):
+                if (self.optionsBackBtn.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.optionsBackBtn.id and self.engine.joystick.get_button(0) and self.keyDown == False) or (self.engine.joystick.get_button(1) and self.keyDown == False):
                     self.statut = "main"
 
-                if keys[pg.K_z] and self.keyDown == False:
+                if self.engine.joystick.get_axis(1) < -0.1 and self.keyDown == False:
                     self.selected = (self.selected - 1) % 2
                     self.keyDown = True
                     self.keyPressed = "z"
-                elif not(keys[pg.K_z]) and self.keyDown == True and self.keyPressed == "z":
+                elif not self.engine.joystick.get_axis(1) < -0.1 and self.keyDown == True and self.keyPressed == "z":
                     self.keyDown = False
-                elif keys[pg.K_s] and self.keyDown == False:
+                elif self.engine.joystick.get_axis(1) > 0.1 and self.keyDown == False:
                     self.selected = (self.selected + 1) % 2
                     self.keyDown = True
                     self.keyPressed = "s"
-                elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                elif not self.engine.joystick.get_axis(1) > 0.1 and self.keyDown == True and self.keyPressed == "s":
                     self.keyDown = False
 
-                elif (mouse[0] or keys[pg.K_b]) and self.keyDown == False:
+                elif (mouse[0] or self.engine.joystick.get_button(0)) and self.keyDown == False:
                     self.keyDown = True
                     self.keyPressed = "debug"
-                elif (not mouse[0] or not keys[pg.K_b]) and self.keyDown == True and self.keyPressed == "debug":
+                elif (not mouse[0] or not self.engine.joystick.get_button(0)) and self.keyDown == True and self.keyPressed == "debug":
                     self.keyDown = False
 
                 if self.optionsLangBtn.rectTexture.collidepoint(mousePos):
@@ -499,7 +495,7 @@ class Menu:
 
                 self.engine.surface.blit(self.quest_loadBackground,self.quest_BackgroundRect)
 
-                if keys[pg.K_ESCAPE]:
+                if keys[pg.K_ESCAPE] or self.engine.joystick.get_button(1):
                     self.statut = "main"
                 
                 
