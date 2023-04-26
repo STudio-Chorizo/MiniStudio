@@ -78,8 +78,6 @@ class Engine:
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
-
-        print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
 

@@ -36,17 +36,23 @@ class BaseModel:
 
 
 class ExtendedBaseModel(BaseModel):
-    def __init__(self, app, vao_name, tex_id, pos, rot, scale, metalic = False):
+    def __init__(self, app, vao_name, tex_id, pos, rot, scale):
         super().__init__(app, vao_name, tex_id, pos, rot, scale)
-        self.metalic = metalic
         self.on_init()
         self.name = vao_name
+        self.metal = None
+        self.rough = None
+        self.normal = None
 
     def update(self):
         self.texture.use(location=0)
-        if(self.metalic == True):
-            self.noise.use(location=8)
-            self.iridescence.use(location=9)
+        if(self.normal != None):
+            self.normal.use(location=7)
+        if(self.metal != None):
+            self.metal.use(location=8)
+        if(self.rough != None):
+            self.rough.use(location=9)
+
         self.program['camPos'].write(self.camera.position)
         self.program['m_view'].write(self.camera.m_view)
         self.program['m_model'].write(self.m_model)
@@ -73,16 +79,25 @@ class ExtendedBaseModel(BaseModel):
         self.shadow_program['m_view_light'].write(self.app.light.m_view_light)
         self.shadow_program['m_model'].write(self.m_model)
         # texture
-        self.texture = self.app.mesh.texture.textures[self.tex_id]
+        text = self.app.mesh.texture.textures[self.tex_id]
+        self.texture = text["texture"]
         self.program['u_texture_0'] = 0
         self.texture.use(location=0)
-        if(self.metalic == True):
-            self.noise = self.app.mesh.texture.textures["noise"]
-            self.program['texture_noise'] = 8
-            self.noise.use(location=8)
-            self.iridescence = self.app.mesh.texture.textures["iridescence"]
-            self.program['texture_iridescence'] = 9
-            self.iridescence.use(location=9)
+
+        if("normal" in text):
+            self.normal = text["normal"]
+            self.program['texture_normal'] = 7
+            self.normal.use(location=7)
+
+        if("metal" in text):
+            self.metal = text["metal"]
+            self.program['texture_metal'] = 8
+            self.metal.use(location=8)
+
+        if("rough" in text):
+            self.rough = text["rough"]
+            self.program['texture_rough'] = 9
+            self.rough.use(location=9)
         # mvp
         self.program['m_proj'].write(self.camera.m_proj)
         self.program['m_view'].write(self.camera.m_view)

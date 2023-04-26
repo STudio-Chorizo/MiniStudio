@@ -11,13 +11,20 @@ class Texture:
         self.textures = {}
         self.textures['skybox'] = self.get_texture_cube(dir_path=ASSETS["skybox"]["dir"], ext=ASSETS["skybox"]["ext"])
         self.textures['depth_texture'] = self.get_depth_texture()
-        self.textures['noise'] = self.get_texture(ASSETS["noise"]["dir"])
-        self.textures['iridescence'] = self.get_texture(ASSETS["iridescence"]["dir"])
         self.textureCount = 3
 
     def AddTexture(self, name):
         self.textureCount +=1
-        self.textures[self.textureCount] = self.get_texture(path=ASSETS[name]["texture"])
+        textures = {}
+        if(ASSETS[name]["texture"] != None):
+            textures["texture"] = self.get_texture(path=ASSETS[name]["texture"])
+        if(ASSETS[name]["metal"] != None):
+            textures["metal"] = self.get_texture(path=ASSETS[name]["metal"])
+        if(ASSETS[name]["rough"] != None):
+            textures["rough"] = self.get_texture(path=ASSETS[name]["rough"])
+        if(ASSETS[name]["normal"] != None):
+            textures["normal"] = self.get_texture(path=ASSETS[name]["normal"])
+        self.textures[self.textureCount] = textures
         return self.textureCount
 
     def get_depth_texture(self):
