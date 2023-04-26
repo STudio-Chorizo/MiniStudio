@@ -49,7 +49,7 @@ class GraphicsEngine:
 
         self.pgTexture.swizzle = 'BGRA'
 
-        # Let's make a custom texture shader rendering the surface
+        # Shader UI
         self.texture_program = self.ctx.program(
             vertex_shader="""
                 #version 330

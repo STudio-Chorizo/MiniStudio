@@ -81,7 +81,7 @@ class ExtendedBaseModel(BaseModel):
         # texture
         text = self.app.mesh.texture.textures[self.tex_id]
         self.texture = text["texture"]
-        self.program['u_texture_0'] = 0
+        self.program['base_color'] = 0
         self.texture.use(location=0)
 
         if("normal" in text):
