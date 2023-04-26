@@ -8,6 +8,7 @@ from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.music.music_control import Playlist
 from dependencies.scripts.entities.entities import Player
+import dependencies.scripts.utilitaries.joystick as js
 import numpy
 import time
 
@@ -51,7 +52,20 @@ class Engine:
         self.MasterVolume = {"master": 0, "music": 100, "vfx": 100}
 
         pg.joystick.init()
-        self.joystick = pg.joystick.Joystick(0)
+        self.numJoystick = 0
+        self.joystick = js.MyJoysitck()
+        self.joystick.init()
+        self.JoystickInit()
+
+    def JoystickInit(self):
+        if pg.joystick.get_count() > self.numJoystick :
+            print("new joystick detected, the active joystick is: " + pg.joystick.Joystick(0).get_name())
+        elif pg.joystick.get_count() < self.numJoystick :
+            print("joystick disconnected")
+        else: return
+
+        self.numJoystick = pg.joystick.get_count()
+        self.joystick = js.MyJoysitck()
         self.joystick.init()
     
     def LoadScene(self, sceneName):
@@ -126,6 +140,8 @@ class Engine:
             self.Update()
 
     def Update(self):
+        self.JoystickInit()
+
         self.time = pg.time.get_ticks()
         self.deltaTime = self.time - self.lastTime
         self.lastTime = pg.time.get_ticks()
