@@ -11,10 +11,12 @@ options_buttons = pg.sprite.Group()
 optionsText = pg.sprite.Group()
 
 class Button(pg.sprite.Sprite):
-            def __init__(self, x, y, h, path_txt, txtSize, Engine, list, jsonPath):
+            def __init__(self, x, y, h, path_txt, txtSize, Engine, list, jsonPath, id):
                 super().__init__()
 
                 self.engine = Engine
+
+                self.id = id
 
                 self.x = x
                 self.y = y
@@ -103,7 +105,6 @@ class Text(pg.sprite.Sprite):
                 
 
 
-
 class Menu:
 
     def __init__(self, engine):
@@ -136,12 +137,12 @@ class Menu:
         
         self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 0
 
-        self.main_play = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 0, main_button_h, ("menu", "main", "play_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "playButton", "normal"])
-        self.main_newGame = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 1, main_button_h, ("menu", "main", "newGame_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "newGameButton", "normal"])
-        self.main_leaderboard = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 2, main_button_h, ("menu", "main", "leaderboard_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "leaderboardButton", "normal"])
-        self.main_saves = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 3, main_button_h, ("menu", "main", "saves_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "savesButton", "normal"])
-        self.main_options = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 4, main_button_h, ("menu", "main", "options_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "optionsButton", "normal"])
-        self.main_exit = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 5, main_button_h, ("menu", "main", "exit_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "exitButton", "normal"])
+        self.main_play = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 0, main_button_h, ("menu", "main", "play_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "playButton", "normal"],0)
+        self.main_newGame = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 1, main_button_h, ("menu", "main", "newGame_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "newGameButton", "normal"],1)
+        self.main_leaderboard = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 2, main_button_h, ("menu", "main", "leaderboard_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "leaderboardButton", "normal"],2)
+        self.main_saves = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 3, main_button_h, ("menu", "main", "saves_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "savesButton", "normal"],3)
+        self.main_options = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 4, main_button_h, ("menu", "main", "options_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "optionsButton", "normal"],4)
+        self.main_exit = Button(main_button_x, self.engine.wH * main_topmarge + main_spaceBetween + (main_button_h + main_spaceBetween)* 5, main_button_h, ("menu", "main", "exit_btn"), main_txtsize, self.engine, self.main_buttons, ["guiMenu", "main", "exitButton", "normal"],5)
 
         #----------------Pause menu-------------------
         #Background Filter
@@ -170,10 +171,9 @@ class Menu:
 
         pause_spaceBetween = ((window_h - (pauseBtn_h * 3)) / 4) - window_h * 0.1
 
-        self.pause_resume = Button(pauseBtn_x + self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.04)*3 + (pauseBtn_h + pause_spaceBetween)* 0, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "resumeButton", "normal"])
-        self.pause_menu = Button(pauseBtn_x + self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.04)*3 + (pauseBtn_h + pause_spaceBetween)* 1, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "menuButton", "normal"])
-        self.pause_exit = Button(pauseBtn_x +  self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.04)*3 + (pauseBtn_h + pause_spaceBetween)* 2, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "exitButton", "normal"])
-
+        self.pause_resume = Button(pauseBtn_x + self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.075)*3 + (pauseBtn_h + pause_spaceBetween)* 0, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "resumeButton", "normal"],0)
+        self.pause_menu = Button(pauseBtn_x + self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.075)*3 + (pauseBtn_h + pause_spaceBetween)* 1, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "menuButton", "normal"],1)
+        self.pause_exit = Button(pauseBtn_x +  self.engine.wW * 0.015, (self.engine.wH - window_h)/2 + pause_spaceBetween + (window_h * 0.075)*3 + (pauseBtn_h + pause_spaceBetween)* 2, pauseBtn_h, "", main_txtsize, self.engine, self.pause_buttons, ["guiMenu", "pause", "exitButton", "normal"],2)
 
         #----------------options menu-------------------
         #Background Filter
@@ -204,12 +204,12 @@ class Menu:
         optionsLangTxt_y = optionsTitle_y + optionsTitle_h * 1.5
         self.optionsLangTxt = Text(optionsLangTxt_x, optionsLangTxt_y, window_w * 0.5, optionsTitle_h, ("menu", "options", "lang"), 45, self.engine, self.optionsText)
 
-        self.optionsLangBtn = Button(optionsLangTxt_x + window_w * 0.45, optionsLangTxt_y + (optionsTitle_h - window_h * 0.05)/2, window_h * 0.05, ("menu", "options", "langSelect"), main_txtsize, self.engine, self.options_buttons, ["guiMenu", "main", "playButton", "normal"])
-        self.optionsBackBtn = Button((self.engine.wW - window_w)/2 + (self.engine.wW * 0.2), (self.engine.wH - window_h)/2 + window_h - (self.engine.wH * 0.15), window_h * 0.05, ("menu", "options", "back"), main_txtsize, self.engine, self.options_buttons, ["guiMenu", "main", "exitButton", "normal"])
+        self.optionsLangBtn = Button(optionsLangTxt_x + window_w * 0.45, optionsLangTxt_y + (optionsTitle_h - window_h * 0.05)/2, window_h * 0.05, ("menu", "options", "langSelect"), main_txtsize, self.engine, self.options_buttons, ["guiMenu", "main", "playButton", "normal"],0)
+        self.optionsBackBtn = Button((self.engine.wW - window_w)/2 + (self.engine.wW * 0.2), (self.engine.wH - window_h)/2 + window_h - (self.engine.wH * 0.15), window_h * 0.05, ("menu", "options", "back"), main_txtsize, self.engine, self.options_buttons, ["guiMenu", "main", "exitButton", "normal"],1)
 
 
         #----------------Quest menu-------------------
-        #Background Filter
+        #Background
         self.quest_BackgroundPath = ASSETS["guiMenu"]["quest"]["demo"]
         self.quest_loadBackground = pg.image.load(self.quest_BackgroundPath).convert_alpha()
         self.quest_BackgroundRect = pg.Rect(0, 0, self.engine.wW, self.engine.wH)
@@ -218,25 +218,26 @@ class Menu:
 
 
         #key
-        self.keyPressed = False
-        self.mousePressed = False
+        self.keyDown = False
+        self.keyPressed = ""
+        self.buttonPressed = ""
+
+
+        self.selected = 0
     
 
-    #-------Main Menu fonction---------
-    def main_not_hover(self):
-        for x in self.main_buttons:
-            x.jsonPath[3] = "normal"
-            x.update()
+    #-------Menu fonction---------
+    def main_not_hover(self, button):
+        button.jsonPath[3] = "normal"
+        button.update()
     
-    def pause_not_hover(self):
-        for x in self.pause_buttons:
-            x.jsonPath[3] = "normal"
-            x.update()
+    def pause_not_hover(self, button):
+        button.jsonPath[3] = "normal"
+        button.update()
 
-    def options_not_hover(self):
-        for x in self.options_buttons:
-            x.jsonPath[3] = "normal"
-            x.update()
+    def options_not_hover(self, button):
+        button.jsonPath[3] = "normal"
+        button.update()
 
     def main_hover(self, button):
         button.jsonPath[3] = "hover"
@@ -308,11 +309,14 @@ class Menu:
         keys = pg.key.get_pressed()
         mouse = pg.mouse.get_pressed()
         mousePos = pg.mouse.get_pos()
-        if keys[pg.K_ESCAPE] and self.keyPressed == False and self.statut == "pause":
+
+        if keys[pg.K_ESCAPE] and self.keyDown == False and self.statut == "pause":
+            print("test")
             self.switchOnOff()
-            self.keyPressed = True
-        elif not keys[pg.K_ESCAPE] and self.keyPressed == True and self.statut == "pause":
-            self.keyPressed = False
+            self.keyDown = True
+            self.keyPressed = "Escape"
+        elif not keys[pg.K_ESCAPE] and self.keyDown == True and self.keyPressed == "Escape" and self.statut == "pause":
+            self.keyDown = False
 
         if (self.onoff == "on"):
 
@@ -320,39 +324,55 @@ class Menu:
 
                 self.engine.surface.blit(self.main_loadBackground,self.main_backgroudRect)
 
-                if self.main_play.rect.collidepoint(mousePos) and mouse[0]:
+                if (self.main_play.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_play.id and keys[pg.K_b] and self.keyDown == False):
                     self.switchOnOff()
                     self.statut = "pause"
-                
-                elif self.main_newGame.rect.collidepoint(mousePos) and mouse[0]:
-                    pass
 
-                elif self.main_leaderboard.rect.collidepoint(mousePos) and mouse[0]:
+                elif (self.main_leaderboard.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_leaderboard.id and keys[pg.K_b] and self.keyDown == False):
                     self.statut = "quest"
 
-                elif self.main_saves.rect.collidepoint(mousePos) and mouse[0]:
-                    pass
-
-                elif self.main_options.rect.collidepoint(mousePos) and mouse[0]:
+                elif (self.main_options.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_options.id and keys[pg.K_b] and self.keyDown == False):
                     self.statut = "options"
 
-                elif self.main_exit.rectTexture.collidepoint(mousePos) and mouse[0]:
+                elif (self.main_exit.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_exit.id and keys[pg.K_b] and self.keyDown == False):
                     self.engine.run = False
 
-                self.main_not_hover()
+                elif mouse[0] and self.keyDown == False:
+                    self.keyDown = True
+                    self.keyPressed = "debug"
+                elif not mouse[0] and self.keyDown == True and self.keyPressed == "debug":
+                    self.keyDown = False
+
+                if keys[pg.K_z] and self.keyDown == False:
+                    self.selected = (self.selected - 1) % 6
+                    self.keyDown = True
+                    self.keyPressed = "z"
+                elif not(keys[pg.K_z]) and self.keyDown == True and self.keyPressed == "z":
+                    self.keyDown = False
+                elif keys[pg.K_s] and self.keyDown == False:
+                    self.selected = (self.selected + 1) % 6
+                    self.keyDown = True
+                    self.keyPressed = "s"
+                elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                    self.keyDown = False
 
                 if self.main_play.rectTexture.collidepoint(mousePos):
-                    self.main_hover(self.main_play)
+                    self.selected = 0
                 if self.main_newGame.rectTexture.collidepoint(mousePos):
-                    self.main_hover(self.main_newGame)
+                    self.selected = 1
                 if self.main_leaderboard.rectTexture.collidepoint(mousePos):
-                    self.main_hover(self.main_leaderboard)
+                    self.selected = 2
                 if self.main_saves.rectTexture.collidepoint(mousePos):
-                    self.main_hover(self.main_saves)
+                    self.selected = 3
                 if self.main_options.rectTexture.collidepoint(mousePos):
-                    self.main_hover(self.main_options)
+                    self.selected = 4
                 if self.main_exit.rectTexture.collidepoint(mousePos):
-                    self.main_hover(self.main_exit)
+                    self.selected = 5
+                
+                for x in main_buttons:
+                    if x.id == self.selected:
+                        self.main_hover(x)
+                    else : self.main_not_hover(x)
                 
                 self.main_buttons.update()
                 self.main_buttons.draw(self.engine.surface)
@@ -361,21 +381,37 @@ class Menu:
                 self.engine.surface.blit(self.pause_loadBgFilter,self.pause_BgFilterRect)
                 self.engine.surface.blit(self.pause_loadWindow,self.pause_windowRect)
 
-                self.pause_not_hover()
-
-                if self.pause_resume.rectTexture.collidepoint(mousePos) and mouse[0]:
+                if (self.pause_resume.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_resume.id and keys[pg.K_b] and self.keyDown == False):
                     self.switchOnOff()
-                if self.pause_menu.rectTexture.collidepoint(mousePos) and mouse[0]:
-                    pass
-                if self.pause_exit.rectTexture.collidepoint(mousePos) and mouse[0]:
+                if (self.pause_menu.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_menu.id and keys[pg.K_b] and self.keyDown == False):
+                    self.statut = "quest"
+                if (self.pause_exit.rectTexture.collidepoint(mousePos) and mouse[0]) or (self.selected == self.pause_exit.id and keys[pg.K_b] and self.keyDown == False):
                     self.statut = "main"
 
+                if keys[pg.K_z] and self.keyDown == False:
+                    self.selected = (self.selected - 1) % 3
+                    self.keyDown = True
+                    self.keyPressed = "z"
+                elif not(keys[pg.K_z]) and self.keyDown == True and self.keyPressed == "z":
+                    self.keyDown = False
+                elif keys[pg.K_s] and self.keyDown == False:
+                    self.selected = (self.selected + 1) % 3
+                    self.keyDown = True
+                    self.keyPressed = "s"
+                elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                    self.keyDown = False
+
                 if self.pause_resume.rectTexture.collidepoint(mousePos):
-                    self.pause_hover(self.pause_resume)
+                    self.selected = 0
                 if self.pause_menu.rectTexture.collidepoint(mousePos):
-                    self.pause_hover(self.pause_menu)
+                    self.selected = 1
                 if self.pause_exit.rectTexture.collidepoint(mousePos):
-                    self.pause_hover(self.pause_exit)
+                    self.selected = 2
+                
+                for x in pause_buttons:
+                    if x.id == self.selected:
+                        self.pause_hover(x)
+                    else : self.pause_not_hover(x)
                     
                 self.pause_buttons.update()
                 self.pause_buttons.draw(self.engine.surface)
@@ -385,22 +421,39 @@ class Menu:
                 self.engine.surface.blit(self.options_loadBgFilter,self.options_BgFilterRect)
                 self.engine.surface.blit(self.options_loadWindow,self.options_windowRect)
 
-                if self.optionsLangBtn.rectTexture.collidepoint(mousePos) and mouse[0] and self.mousePressed == False:
+                if (self.optionsLangBtn.rectTexture.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.optionsLangBtn.id and keys[pg.K_b] and self.keyDown == False):
+                    self.keyPressed = "ClickLang"
                     self.engine.selectLang = (self.engine.selectLang + 1) % 2
                     self.engine.Dialog = loadDialog(self.engine.allLangs[self.engine.selectLang])
-                    self.mousePressed = True
+                    self.keyDown = True
+                elif not mouse[0] and self.keyDown == True and self.keyPressed == "ClickLang":
+                    self.keyDown = False
 
-                elif not mouse[0] and self.mousePressed == True:
-                    self.mousePressed = False
-
-                if self.optionsBackBtn.rectTexture.collidepoint(mousePos) and mouse[0]:
+                if (self.optionsBackBtn.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.optionsBackBtn.id and keys[pg.K_b] and self.keyDown == False):
                     self.statut = "main"
 
-                self.options_not_hover()
+                if keys[pg.K_z] and self.keyDown == False:
+                    self.selected = (self.selected - 1) % 2
+                    self.keyDown = True
+                    self.keyPressed = "z"
+                elif not(keys[pg.K_z]) and self.keyDown == True and self.keyPressed == "z":
+                    self.keyDown = False
+                elif keys[pg.K_s] and self.keyDown == False:
+                    self.selected = (self.selected + 1) % 2
+                    self.keyDown = True
+                    self.keyPressed = "s"
+                elif not keys[pg.K_s] and self.keyDown == True and self.keyPressed == "s":
+                    self.keyDown = False
+
                 if self.optionsLangBtn.rectTexture.collidepoint(mousePos):
-                    self.options_hover(self.optionsLangBtn)
+                    self.selected = 0
                 if self.optionsBackBtn.rectTexture.collidepoint(mousePos):
-                    self.options_hover(self.optionsBackBtn)
+                    self.selected = 1
+                
+                for x in options_buttons:
+                    if x.id == self.selected:
+                        self.options_hover(x)
+                    else : self.options_not_hover(x)
                 
                 self.options_buttons.update()
                 self.options_buttons.draw(self.engine.surface)
