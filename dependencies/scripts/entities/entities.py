@@ -26,11 +26,12 @@ class Entities(GameObject):
     
     def Atk(self):
         if(self.lastAtk + self.reload > eng.Engine.Instance.time) : return
+        print("atk", self.lastAtk, "reload", self.reload, "time", eng.Engine.Instance.time)
         self.UpdateLocalAxis()
         hit = self.Raycast(eng.FORWARD * self.forward, self.atkDistance)
+        self.lastAtk = eng.Engine.Instance.time
         if(hit == False or Entities.IsEntities(hit[0]) == False) : return
         hit[0].Dmg(self.atk)
-        self.lastAtk = eng.Engine.Instance.time
         
     def Dmg(self, dmg):
         self.life -= dmg
@@ -122,7 +123,6 @@ class Player(Entities):
         #Attaque
         if keys[pg.K_SPACE] or self.joystick.get_button(0):
             self.Atk()
-            print("atk")
         #Position
         if keys[pg.K_z]:
             self.Move(eng.UP * self.speed * eng.Engine.Instance.deltaTime)
