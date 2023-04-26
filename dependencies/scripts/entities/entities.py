@@ -57,7 +57,7 @@ class Player(Entities):
 
         self.life = 3
         self.Maxlife = self.life
-        self.mun = 20
+        self.mun = 6
         self.guiplayer = eng.Guiplayer()
 
     def SetRotCamera(self, camOrientation: tuple = (0, 0, 0), local = True) -> None:
@@ -80,8 +80,15 @@ class Player(Entities):
         rotX = 0
         rotY = 0
         rotZ = 0
+        #attaque
         if keys[pg.K_SPACE]:
-            self.Atk()
+            if self.mun > 0 :
+                self.Atk()
+                self.mun -= 1
+        #rechargement
+        if keys[pg.K_r]:
+            if self.mun < 6 and self.mun >= 0:
+                self.mun = 6
         #Position
         if keys[pg.K_z]:
             self.Move(eng.UP * self.speed * eng.Engine.Instance.deltaTime)

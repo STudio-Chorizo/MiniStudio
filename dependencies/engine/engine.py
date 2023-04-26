@@ -17,14 +17,14 @@ RIGHT = glm.vec3(1, 0, 0)
 UP = glm.vec3(0, 1, 0)
 FORWARD = glm.vec3(0, 0, 1)
 
-class Engine:
+class Engine: 
     Instance = None
     @staticmethod
-    def CreateInstance(wW = 1200, wH = 800):
+    def CreateInstance(wW = 1600, wH = 900):
         if(Engine.Instance != None) : return
         Engine.Instance = Engine(wW, wH)
 
-    def __init__(self, wW = 1200, wH = 800):
+    def __init__(self, wW = 1600, wH = 900):
         if(Engine.Instance != None) : return
         self.player = GameObject()
         self.wW = wW
@@ -43,7 +43,6 @@ class Engine:
         self.lastTime = 0
         self.deltaTime = 0.0
         
-        self.infoplayer = Guiplayer()
         self.pool = {}
         
         self.graphicEngine = loadgl.GraphicsEngine((wW, wH))
@@ -141,24 +140,49 @@ class Engine:
             
 class Guiplayer():
     def __init__(self):
-        self.wW = 1200
-        self.wH = 800
+        self.wW = Engine.Instance.wW
+        self.wH = Engine.Instance.wH
         self.life = -1
         self.mun = -1
         self.maxlife = -1
-        self.sizeBar = 0.3*self.wW
-
-        self.RespwH = -1
-        self.RespwW = -1
-        self.RespSize = -1
-        print("4 5NORAMELEMENT -1",self.life)
+        self.sizeBar = 0.51*self.wW
+        self.RespwHmun = -1
+        self.RespwHmunpos = -1
+        self.RespwHlifebar = -1
+        self.RespwWlifebar = -1
+        self.RespSizelife = -1
+        self.RespwHSizelife = -1
     def LifePlayer(self,life = -2,mun = -2,maxlife = -2):
         self.life = life
         self.mun = mun
-        self.RespwH = self.wH*0.0625
-        self.RespwW = self.wW*0.025
+        self.RespwHlifebar = Engine.Instance.wH*(6.71/9)
+        self.RespwWlifebar = Engine.Instance.wW*(0.67/16)
+        self.RespwHgg = Engine.Instance.wH *(7.95/9)
+        self.RespwWgg = Engine.Instance.wW *(2.95/16)
+        self.RespwWmun = Engine.Instance.wW *(1/160)
+        self.RespwHmun = Engine.Instance.wH *(222.5/900)
+        self.RespwHSizelife = self.wH*0.212
         self.maxlife = maxlife
-        self.RespSize = int((self.sizeBar / self.maxlife) * self.maxlife) 
-        self.RespLife = int(self.RespSize -((self.maxlife-self.life)*(self.sizeBar/self.maxlife)))
-        pg.draw.rect(Engine.Instance.surface, (100, 100, 100), pg.rect.Rect(self.RespwW, self.RespwH, self.RespSize, self.RespwH))
-        pg.draw.rect(Engine.Instance.surface, (0, 255, 0), pg.rect.Rect(self.RespwW, self.RespwH, self.RespLife, self.RespwH))
+        self.RespwHmunpos = self.RespwHlifebar + self.RespwHlifebar*0.025
+        self.RespSizelife = int((Engine.Instance.wW*0.352 / self.maxlife) * self.maxlife) 
+        self.RespLife = int(self.RespSizelife -((self.maxlife-self.life)*(Engine.Instance.wW*0.352/self.maxlife)))
+        ScreenBorder = pg.image.load(ASSETS["guiplayer"]["ScreenBorder"]).convert_alpha()
+        ScreenBorder = pg.transform.scale(ScreenBorder, (self.wW, self.wH))
+        Engine.Instance.surface.blit(ScreenBorder, (0, 0))
+
+        AimUiLightBlueWhite = pg.image.load(ASSETS["guiplayer"]["AimUiLightBlueWhite"]).convert_alpha()
+        AimUiLightBlueWhite = pg.transform.scale(AimUiLightBlueWhite, (Engine.Instance.wW*0.062, Engine.Instance.wH*0.111))
+        Engine.Instance.surface.blit(AimUiLightBlueWhite, (Engine.Instance.wW*0.5-((Engine.Instance.wW*0.062)/2), Engine.Instance.wH*0.5-((Engine.Instance.wH*0.111)/2)))
+        EnergyBarre = pg.image.load(ASSETS["magazine"][str(self.mun)]).convert_alpha()
+        EnergyBarre = pg.transform.scale(EnergyBarre, (Engine.Instance.wW*0.09, Engine.Instance.wH*0.451))
+        Engine.Instance.surface.blit(EnergyBarre, (self.RespwWmun, self.RespwHmun))
+
+        HealthBarCounters = pg.image.load(ASSETS["guiplayer"]["HealthBarCounters"]).convert_alpha()
+        HealthBarCounters = pg.transform.scale(HealthBarCounters, (Engine.Instance.wW*0.495, Engine.Instance.wH*0.234))
+        Engine.Instance.surface.blit(HealthBarCounters, (self.RespwWlifebar, self.RespwHlifebar))
+        DroneHealthBarNegative = pg.image.load(ASSETS["guiplayer"]["DroneHealthBarNegative"]).convert_alpha()
+        DroneHealthBarNegative = pg.transform.scale(DroneHealthBarNegative, (Engine.Instance.wW*0.352, Engine.Instance.wH*0.042))
+        Engine.Instance.surface.blit(DroneHealthBarNegative, (self.RespwWgg,self.RespwHgg))
+        DroneHealthBarPositive = pg.image.load(ASSETS["guiplayer"]["DroneHealthBarPositive"]).convert_alpha()
+        DroneHealthBarPositive = pg.transform.scale(DroneHealthBarPositive, (self.RespLife, Engine.Instance.wH*0.042))
+        Engine.Instance.surface.blit(DroneHealthBarPositive, (self.RespwWgg,self.RespwHgg))
