@@ -3,8 +3,6 @@ def main():
 
     Engine.CreateInstance()
     Engine.Instance.LoadScene("test")
-
-    Playlist.CreateInstance(Engine.Instance.MasterVolume)
     
     Engine.Instance.Start()
 
