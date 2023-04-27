@@ -48,6 +48,7 @@ class Engine:
         self.lastTime = 0
         self.deltaTime = 0.0
         self.speedTime = 0
+        self.restart = False
 
         
         self.pool = {}
@@ -90,7 +91,7 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(obj["name"], 1, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(obj["name"], 0.2, obj["pos"], obj["rot"], obj["scale"])
                         self.player = gameObject
                     case "GameObject":
                         gameObject = GameObject(obj["name"], obj["pos"], obj["rot"], obj["scale"])
