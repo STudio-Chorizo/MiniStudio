@@ -61,7 +61,7 @@ class Player(Entities):
         self.cheatLifeDown = 0
         self.lastTimeVueSwitch = 0
         self.rotSpeed = 0.1
-        self.scrollSpeed = 0.01
+        self.scrollSpeed = 0.1
         self.breakWing = choice([-1,1])
         self.wingIsBroken = False
         self.keepWing = GameObject("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing", pos=(0, 0, 0), rot=(135, 0, 0), scale=(1, 1, 1))
