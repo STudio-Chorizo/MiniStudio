@@ -56,7 +56,15 @@ class Player(Entities):
         self.rotSpeed = 0.1
         self.scrollSpeed = 0.01
         self.breakWing = choice([-1,1])
+        self.wingIsBroken = False
+        self.keepWing = GameObject("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1))
+        self.keepWing.SetModel("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing")
+        self.lostWing = GameObject("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1))
+        self.keepWing.SetModel("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing")
+
         super().__init__(name, reloadTime, pos, rot, scale)
+        self.keepWing.position = self.position
+        self.lostWing.position = self.position
         self.cameraOffset = glm.vec3([0, 0.15, -0.26])
         self.SetRotCamera((-10, 90, 0))
 
@@ -190,5 +198,19 @@ class Player(Entities):
         eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
         self.guiPlayer.LifePlayer(self.life, self.mun, self.Maxlife)
+
+        if self.life < 3 and not self.wingIsBroken:
+            try:
+                eng.Engine.Instance.pool["wing"].Add(self.lostWing)
+            except:
+                eng.Engine.Instance.pool["wing"] = Pool()
+                eng.Engine.Instance.pool["wing"].Add(self.lostWing)
+            self.wingIsBroken = True
+        if self.life > 2 and self.wingIsBroken:
+            try:
+                eng.Engine.Instance.pool["wing"].Get(self.lostWing)
+            except:
+                pass
+            self.wingIsBroken = False
 
         super().Update()
