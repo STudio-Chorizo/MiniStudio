@@ -1,5 +1,3 @@
-import moderngl as mgl
-import numpy as np
 import glm
 
 
@@ -36,17 +34,13 @@ class BaseModel:
 
 
 class ExtendedBaseModel(BaseModel):
-    def __init__(self, app, vao_name, tex_id, pos, rot, scale, metalic = False):
+    def __init__(self, app, vao_name, tex_id, pos, rot, scale):
         super().__init__(app, vao_name, tex_id, pos, rot, scale)
-        self.metalic = metalic
         self.on_init()
         self.name = vao_name
 
     def update(self):
         self.texture.use(location=0)
-        if(self.metalic == True):
-            self.noise.use(location=8)
-            self.iridescence.use(location=9)
         self.program['camPos'].write(self.camera.position)
         self.program['m_view'].write(self.camera.m_view)
         self.program['m_model'].write(self.m_model)
@@ -74,15 +68,9 @@ class ExtendedBaseModel(BaseModel):
         self.shadow_program['m_model'].write(self.m_model)
         # texture
         self.texture = self.app.mesh.texture.textures[self.tex_id]
-        self.program['u_texture_0'] = 0
+        self.program['base_color'] = 0
         self.texture.use(location=0)
-        if(self.metalic == True):
-            self.noise = self.app.mesh.texture.textures["noise"]
-            self.program['texture_noise'] = 8
-            self.noise.use(location=8)
-            self.iridescence = self.app.mesh.texture.textures["iridescence"]
-            self.program['texture_iridescence'] = 9
-            self.iridescence.use(location=9)
+
         # mvp
         self.program['m_proj'].write(self.camera.m_proj)
         self.program['m_view'].write(self.camera.m_view)

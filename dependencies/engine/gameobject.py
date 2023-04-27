@@ -8,12 +8,13 @@ from dependencies.moderngl.model import ExtendedBaseModel
 
 
 class GameObject:
-    def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
+    def __init__(self, name, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
         self.rotation = glm.vec3(rot)
         self.scale = scale
         self.UID = "-1"
         self.isActive = True
+        self.name = name
 
         self.isCollide = False
         self.collideBox = NULL
@@ -33,8 +34,7 @@ class GameObject:
         text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name, shader)
-        metalic = shader == "metal"
-        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale, metalic)
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
         eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     def SetCollider(self, size):
@@ -42,10 +42,16 @@ class GameObject:
         self.collideBox = size
 
     def OnCollide(self, colider):
-        self.Destroy()
+        eng.Engine.Instance.Destroy(self.UID)
 
     def Destroy(self):
-        self.position = glm.vec3([-100000, -100000, -100000])
+        try:
+            eng.Engine.Instance.gameObjects[self.UID].model.position = glm.vec3(0, 0, -500)
+            eng.Engine.Instance.gameObjects[self.UID].model.m_model = eng.Engine.Instance.gameObjects[self.UID].model.get_model_matrix()
+            eng.Engine.Instance.pool[self.name].Add(self)
+            return False
+        except:
+            return True
 
     def Raycast(self, dir, max = 150):
         """Envoie un rayon depuis l'objet.
@@ -122,7 +128,7 @@ class GameObject:
         mTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
         if(mTarget == 0) : return
         
-        angle = -(self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (mForward * mTarget)
+        angle = min(-(self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (mForward * mTarget), 1)
         angle = math.acos(angle)
         angle = math.degrees(angle)
         axis = glm.vec3(0, 0, 0)
@@ -132,12 +138,11 @@ class GameObject:
                     ,self.forward[0] * posTarget[1] - self.forward[1] * posTarget[0])
             axis /= math.sqrt(axis[0] ** 2 + axis[1] ** 2 + axis[2] ** 2)
             
-        print(angle)
-        print(axis)
         self.Rotate(angle, axis)
         self.lookConstraint = True
 
     def Update(self):
+        if(self.isActive == False) : return False
         self.UpdateLocalAxis()
         if(self.model != None) : 
             self.model.pos = self.position
