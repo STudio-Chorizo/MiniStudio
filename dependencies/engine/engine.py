@@ -82,7 +82,9 @@ class Engine:
     
     def LoadScene(self, sceneName):
         i = 0
-        j = len(SCENES[sceneName])
+        j = 0
+        for i in range(len(SCENES[sceneName])):
+            j += SCENES[sceneName][i]["nb"] +1
         for obj in SCENES[sceneName]:
             if(obj["nb"] != 1) : self.pool[obj["name"]] = Pool()
             for k in range(obj["nb"]) :

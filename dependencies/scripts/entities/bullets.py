@@ -8,15 +8,15 @@ import dependencies.scripts.entities.entities as ent
 class Bullet(GameObject):
     def __init__(self, name, pos=..., rot=..., scale=...):
         super().__init__(name, pos, rot, scale)
-        self.speed = 0
+        self.speed = 0.2
         self.ally = None
         self.start = 0
     
     def Shoot(self, ally, start, rot):
         self.speed = 0.02
         self.ally = ally
-        self.position = glm.vec3(start)
-        self.start = glm.vec3(start)
+        self.position = start
+        self.start = start
         self.rotation = glm.vec3(rot)
 
     def OnCollide(self, colider):

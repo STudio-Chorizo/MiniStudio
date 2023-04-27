@@ -38,7 +38,7 @@ class Entities(GameObject):
         self.mun -= 1
         self.lastReload = eng.Engine.Instance.time
         if(bullet == False) : return
-        bullet.Shoot(self.UID, self.position, self.rotation)
+        bullet.Shoot(self.UID, glm.vec3(self.position.x, self.position.y, self.position.z), self.rotation)
         
     def Dmg(self, dmg):
         self.life -= dmg
