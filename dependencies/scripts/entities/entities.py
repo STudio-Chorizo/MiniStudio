@@ -62,7 +62,8 @@ class Player(Entities):
 
         self.life = 3
         self.Maxlife = self.life
-        self.mun = 20
+        self.mun = 6
+        self.guiplayer = eng.Guiplayer()
         self.modelRotation = glm.vec3([0, 180, 0])
 
         self.joystick = eng.Engine.Instance.joystick
@@ -127,9 +128,12 @@ class Player(Entities):
                 nausea = pg.transform.scale(nausea, (eng.Engine.Instance.wW, eng.Engine.Instance.wH))
                 eng.Engine.Instance.surface.blit(nausea, (0, 0))
         #Attaque
-
         if keys[pg.K_SPACE] or self.joystick.get_button(0):
             self.Atk()
+        #rechargement
+        if keys[pg.K_r]:
+            if self.mun < 6 and self.mun >= 0:
+                self.mun = 6
         #Position
         if keys[pg.K_z]:
             self.Move(eng.UP * self.speed * eng.Engine.Instance.deltaTime)
