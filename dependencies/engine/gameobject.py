@@ -130,7 +130,7 @@ class GameObject:
         mTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
         if(mTarget == 0) : return
         
-        angle = -(self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (mForward * mTarget)
+        angle = min(-(self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (mForward * mTarget), 1)
         angle = math.acos(angle)
         angle = math.degrees(angle)
         axis = glm.vec3(0, 0, 0)
