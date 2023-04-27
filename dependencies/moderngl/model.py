@@ -1,5 +1,3 @@
-import moderngl as mgl
-import numpy as np
 import glm
 
 

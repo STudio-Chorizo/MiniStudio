@@ -1,5 +1,4 @@
 import pygame as pg
-import sys
 from PIL import Image
 from dependencies.engine.gameobject import *
 from dependencies.parsejson.parse import *

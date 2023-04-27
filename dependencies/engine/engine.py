@@ -1,4 +1,3 @@
-import moderngl
 import pygame as pg
 from dependencies.engine.Untils.pool import Pool
 import dependencies.moderngl.main as loadgl
@@ -11,8 +10,6 @@ from dependencies.scripts.entities.entities import Player
 from dependencies.scripts.entities.bullets import Bullet
 from dependencies.scripts.gui.menu import Menu
 import dependencies.scripts.utilitaries.joystick as js
-import numpy
-import time
 
 from dependencies.scripts.spawn import Spawn
 
