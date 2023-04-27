@@ -30,9 +30,10 @@ class Engine:
 
     def __init__(self, wW = 1920, wH = 1080, Lang = "fr"):
         if(Engine.Instance != None) : return
-        self.player = GameObject("player")
         self.wW = wW
         self.wH = wH
+        self.guiPlayer = Guiplayer(wW, wH)
+        self.player = GameObject("player")
 
         self.gameObjects = {}
         self.objectsCount = 0
@@ -68,6 +69,7 @@ class Engine:
         self.joystick = js.MyJoysitck()
         self.joystick.init()
         self.JoystickInit()
+
 
     def JoystickInit(self):
         if pg.joystick.get_count() > self.numJoystick :
@@ -183,9 +185,9 @@ class Engine:
         self.graphicEngine.delta_time = self.graphicEngine.clock.tick(60)
             
 class Guiplayer():
-    def __init__(self):
-        self.wW = Engine.Instance.wW
-        self.wH = Engine.Instance.wH
+    def __init__(self, wW, wH):
+        self.wW = wW
+        self.wH = wH
         self.life = -1
         self.mun = -1
         self.maxlife = -1
@@ -228,5 +230,5 @@ class Guiplayer():
         DroneHealthBarNegative = pg.transform.scale(DroneHealthBarNegative, (Engine.Instance.wW*0.352, Engine.Instance.wH*0.042))
         Engine.Instance.surface.blit(DroneHealthBarNegative, (self.RespwWgg,self.RespwHgg))
         DroneHealthBarPositive = pg.image.load(ASSETS["guiplayer"]["DroneHealthBarPositive"]).convert_alpha()
-        DroneHealthBarPositive = pg.transform.scale(DroneHealthBarPositive, (self.RespLife, Engine.Instance.wH*0.042))
+        DroneHealthBarPositive = pg.transform.scale(DroneHealthBarPositive, (abs(self.RespLife), Engine.Instance.wH*0.042))
         Engine.Instance.surface.blit(DroneHealthBarPositive, (self.RespwWgg,self.RespwHgg))

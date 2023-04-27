@@ -63,7 +63,7 @@ class Player(Entities):
         self.life = 3
         self.Maxlife = self.life
         self.mun = 6
-        self.guiplayer = eng.Guiplayer()
+        self.guiPlayer = eng.Engine.Instance.guiPlayer
         self.modelRotation = glm.vec3([0, 180, 0])
 
         self.joystick = eng.Engine.Instance.joystick
@@ -84,22 +84,6 @@ class Player(Entities):
 
         # Annonce de la mort du joueur
         print("Vous êtes mort")
-    
-    def drawLifePlayer(self):
-        sizeBar = int(eng.Engine.Instance.wW * 0.3)
-
-        RespwH = int(eng.Engine.Instance.wH *0.8875)
-        RespwW = int(eng.Engine.Instance.wW *0.025)
-        
-        RespSize = int((sizeBar / self.Maxlife) * self.Maxlife)
-        RespLife = int(RespSize -((self.Maxlife-self.life)*(sizeBar/self.Maxlife)))
-        RespHeight = int(eng.Engine.Instance.wW * 0.05)
-
-        background = pg.Rect(RespwW, RespwH, RespSize, RespHeight)
-        lifebar = pg.Rect(RespwW, RespwH, RespLife, RespHeight)
-
-        pg.draw.rect(eng.Engine.Instance.surface, (100, 100, 100), background)
-        pg.draw.rect(eng.Engine.Instance.surface, (0, 255, 0), lifebar)
 
     def OnCollide(self, colider):
         if(type(colider) == Bullet) : return False
@@ -205,6 +189,6 @@ class Player(Entities):
 
         eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
-        self.drawLifePlayer()
+        self.guiPlayer.LifePlayer(self.life, self.mun)
 
         super().Update()
