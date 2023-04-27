@@ -7,7 +7,7 @@ import pygame as pg
 from dependencies.parsejson.parse import *
 
 class Entities(GameObject):
-    def __init__(self, name, reloadTime = 1, pos=..., rot=..., scale=...):
+    def __init__(self, name, reloadTime = 0.2, pos=..., rot=..., scale=...):
         super().__init__(name, pos, rot, scale)
         self.speed = 0.01
         self.rotSpeed = 0.3
@@ -16,7 +16,8 @@ class Entities(GameObject):
         self.atkDistance = 100
         self.atk = 1
         self.reload = reloadTime * 1000
-        self.lastAtk = 0
+        self.lastReload = 0
+        self.mun = 0
 
     def OnCollide(self, colider):
         if(type(colider) == Bullet) : return False
@@ -24,14 +25,19 @@ class Entities(GameObject):
         super().OnCollide(colider)
     
     def Update(self):
+        if self.mun < 6 and self.lastReload * eng.Engine.Instance.speedTime + self.reload * 3 < eng.Engine.Instance.time * eng.Engine.Instance.speedTime:
+            self.mun += 1
+            self.lastReload = eng.Engine.Instance.time
+        self.mun = min(self.mun, 6)
         return super().Update()
     
     def Atk(self):
-        if(self.lastAtk + self.reload > eng.Engine.Instance.time) : return
+        if(self.mun <= 0 or self.lastReload + self.reload > eng.Engine.Instance.time) : return
         bullet = eng.Engine.Instance.pool["bullet"].Get()
+        self.mun -= 1
+        self.lastReload = eng.Engine.Instance.time
         if(bullet == False) : return
         bullet.Shoot(self.UID, self.position, self.rotation)
-        self.lastAtk = eng.Engine.Instance.time
         
     def Dmg(self, dmg):
         self.life -= dmg
@@ -48,7 +54,7 @@ class Entities(GameObject):
 
 
 class Player(Entities):
-    def __init__(self, name, reloadTime = 1, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
+    def __init__(self, name, reloadTime = 0.2, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         self.vue = 0
         self.cheatLifeUp = 0
         self.cheatLifeDown = 0
@@ -70,7 +76,6 @@ class Player(Entities):
 
         self.life = 3
         self.Maxlife = self.life
-        self.mun = 6
         self.guiPlayer = eng.Engine.Instance.guiPlayer
         self.modelRotation = glm.vec3([0, 180, 0])
 

@@ -120,7 +120,8 @@ class Menu:
         self.optionsText = optionsText
 
         #----------------Main menu-------------------
-        Playlist.Instance.miscs["menu"].play(2**15)
+        self.switchOnOff()
+        self.switchOnOff()
 
         self.backgroundPath = ASSETS["guiMenu"]["main"]["background"]
         self.loadBackground = pg.image.load(self.backgroundPath).convert_alpha()
