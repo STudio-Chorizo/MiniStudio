@@ -167,27 +167,21 @@ class Player(Entities):
             self.cheatLifeDown = 1
         elif keys[pg.K_m] == False and self.cheatLifeDown == 1:
             self.cheatLifeDown = 0
-        #Cheat code start
-        if keys[pg.K_a]:
+        #Move
+        self.Move(eng.FORWARD * self.scrollSpeed * eng.Engine.Instance.deltaTime)
+        
+        maxAngle = 25
+        if(self.rotation[0] > maxAngle or self.rotation[0] < -maxAngle) : rotX = 0
+        if(self.rotation[2] > maxAngle or self.rotation[2] < -maxAngle) : rotZ = 0
+        
+        if(rotX == 0):
+            if(self.rotation[0] > 3 and keys[pg.K_z] == False and self.joystick.get_axis(1) > -0.1) :rotX += -1
+            elif(self.rotation[0] < -3 and keys[pg.K_s] == False and self.joystick.get_axis(1) < 0.1) : rotX += 1
+        if(rotZ == 0):
+            if(self.rotation[2] > 3 and keys[pg.K_d] == False and self.joystick.get_axis(0) < 0.1) : rotZ += -1
+            elif(self.rotation[2] < -3 and keys[pg.K_q] == False and self.joystick.get_axis(0) > -0.1) : rotZ += 1
 
-            self.position.z = 0
-            self.rotation = glm.vec3([0, 0, 0])
-        else:
-        #Cheat code end
-            self.Move(eng.FORWARD * self.scrollSpeed * eng.Engine.Instance.deltaTime)
-            
-            maxAngle = 25
-            if(self.rotation[0] > maxAngle or self.rotation[0] < -maxAngle) : rotX = 0
-            if(self.rotation[2] > maxAngle or self.rotation[2] < -maxAngle) : rotZ = 0
-            
-            if(rotX == 0):
-                if(self.rotation[0] > 3 and keys[pg.K_z] == False and self.joystick.get_axis(1) > -0.1) :rotX += -1
-                elif(self.rotation[0] < -3 and keys[pg.K_s] == False and self.joystick.get_axis(1) < 0.1) : rotX += 1
-            if(rotZ == 0):
-                if(self.rotation[2] > 3 and keys[pg.K_d] == False and self.joystick.get_axis(0) < 0.1) : rotZ += -1
-                elif(self.rotation[2] < -3 and keys[pg.K_q] == False and self.joystick.get_axis(0) > -0.1) : rotZ += 1
-
-            self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
+        self.Rotate(self.rotSpeed * eng.Engine.Instance.deltaTime, glm.vec3([rotX, rotY, rotZ]))
         
         if self.position.x >= 100:
             self.position.x = 100
