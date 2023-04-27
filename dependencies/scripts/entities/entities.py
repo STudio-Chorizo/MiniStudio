@@ -209,6 +209,7 @@ class Player(Entities):
         if self.life > 2 and self.wingIsBroken:
             try:
                 eng.Engine.Instance.pool["wing"].Get(self.lostWing)
+                self.lostWing.position = self.position
             except:
                 pass
             self.wingIsBroken = False
