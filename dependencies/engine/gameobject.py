@@ -1,6 +1,7 @@
 from asyncio.windows_events import NULL
 from dependencies.engine.Untils.vector import Magnitude
 import dependencies.engine.engine as eng
+from dependencies.engine.Untils.pool import Pool
 import glm
 import math
 
@@ -8,26 +9,25 @@ from dependencies.moderngl.model import ExtendedBaseModel
 
 
 class GameObject:
-    def __init__(self, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
+    def __init__(self, name, pos = (0, 0, 0), rot = (0, 0, 0), scale = (1, 1, 1)):
         self.position = glm.vec3(pos)
         self.rotation = glm.vec3(rot)
         self.scale = scale
         self.UID = "-1"
         self.isActive = True
-
-        self.forward = glm.vec3(0, 0, 1)
-        self.right = glm.vec3(1, 0, 0)
-        self.up = glm.vec3(0, 1, 0)
+        self.name = name
 
         self.isCollide = False
         self.collideBox = NULL
         self.velocity =  (0, 0, 0)
 
+        self.lookConstraint = False
         self.forward = glm.vec3(0, 0, 1)
         self.right = glm.vec3(1, 0, 0)
         self.up = glm.vec3(0, 1, 0)
         self.UpdateLocalAxis()
         self.model = NULL
+        self.modelRotation = glm.vec3(0, 0, 0)
 
     def SetModel(self, name, shader = "default"):
         if(eng.Engine.Instance == NULL) : return
@@ -44,7 +44,16 @@ class GameObject:
         self.collideBox = size
 
     def OnCollide(self, colider):
-        pass
+        eng.Engine.Instance.Destroy(self.UID)
+
+    def Destroy(self):
+        try:
+            eng.Engine.Instance.gameObjects[self.UID].model.position = glm.vec3(0, 0, -500)
+            eng.Engine.Instance.gameObjects[self.UID].model.m_model = eng.Engine.Instance.gameObjects[self.UID].model.get_model_matrix()
+            eng.Engine.Instance.pool[self.name].Add(self)
+            return False
+        except:
+            return True
 
     def Raycast(self, dir, max = 150):
         """Envoie un rayon depuis l'objet.
@@ -71,8 +80,8 @@ class GameObject:
                 for k in range(3):
                     pos2 = o.position[k] + o.collideBox[k]
                     posn2 = o.position[k] - o.collideBox[k]
-                    #if(point[i] > posn2 and point[i] < pos2 or point[i] > posn2 and point[i] < pos2 or
-                    #pos2 > point[i] and pos2 < point[i] or posn2 > point[i] and posn2 < point[i] ) : axisIn += 1
+                    #if(point[k] > posn2 and point[k] < pos2 or point[k] > posn2 and point[k] < pos2 or
+                    #pos2 > point[k] and pos2 < point[k] or posn2 > point[k] and posn2 < point[k] ) : axisIn += 1
                     if(point[k] > posn2 and point[k] < pos2) : axisIn += 1
                 if(axisIn >= 3) : return (o, point)
                 
@@ -81,12 +90,24 @@ class GameObject:
 
     def UpdateLocalAxis(self):
         pitch, yaw, roll = glm.radians(self.rotation[0]), glm.radians(self.rotation[1]), glm.radians(self.rotation[2])
+        
 
-        self.forward = (-glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), glm.cos(yaw) * glm.cos(pitch))
+        self.forward.z = glm.cos(yaw) * glm.cos(pitch)
+        self.forward.y = glm.sin(pitch)
+        self.forward.x = glm.sin(yaw) * glm.cos(pitch)
 
         self.forward = glm.normalize(self.forward)
         self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
         self.up = glm.normalize(glm.cross(self.right, self.forward))
+
+
+        #self.forward = glm.vec3(-glm.sin(yaw), glm.sin(pitch), glm.cos(yaw))
+
+        #self.forward = (-glm.sin(yaw) * glm.cos(pitch), glm.sin(pitch), glm.cos(yaw) * glm.cos(pitch))
+
+        #self.forward = glm.normalize(self.forward)
+        #self.right = glm.normalize(glm.cross(self.forward, glm.vec3(glm.sin(-roll), glm.cos(-roll), 0)))
+        #self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     # Utiliser cette fonction pour avoir les collision
     def Move(self, translation: tuple) -> None:
@@ -101,9 +122,34 @@ class GameObject:
         orientation: (x, y, z) orientation de l'objet"""
         self.rotation += angle * axis
     
-    def Update(self):
+    def LookAt(self, target):
+        self.UpdateLocalAxis()
+
+        mForward = math.sqrt(self.forward[0] ** 2 + self.forward[1] ** 2 + self.forward[2] ** 2)
+        posTarget = target - self.position
+        mTarget = math.sqrt(posTarget[0] ** 2 + posTarget[1] ** 2 + posTarget[2] ** 2)
+        if(mTarget == 0) : return
         
-        if(self.model != NULL) : 
+        angle = min(-(self.forward[0] * posTarget[0] + self.forward[1] * posTarget[1] + self.forward[2] * posTarget[2]) / (mForward * mTarget), 1)
+        angle = math.acos(angle)
+        angle = math.degrees(angle)
+        axis = glm.vec3(0, 0, 0)
+        if(angle != 180 and angle != 0 and angle != -180):
+            axis = glm.vec3(self.forward[1] * posTarget[2] - self.forward[2] * posTarget[1]
+                    ,-(self.forward[2] * posTarget[0] - self.forward[0] * posTarget[2])
+                    ,self.forward[0] * posTarget[1] - self.forward[1] * posTarget[0])
+            axis /= math.sqrt(axis[0] ** 2 + axis[1] ** 2 + axis[2] ** 2)
+            
+        self.Rotate(angle, axis)
+        self.lookConstraint = True
+
+    def Update(self):
+        if(self.isActive == False) : return False
+        self.UpdateLocalAxis()
+        if(self.model != None) : 
             self.model.pos = self.position
-            self.model.rot = self.rotation / 180 * math.pi
+            self.model.rot = glm.radians(self.rotation + self.modelRotation)
+            if(self.lookConstraint == True) : 
+                self.model.rot.x *= -1
+                self.lookConstraint = False
             self.model.m_model = self.model.get_model_matrix()
