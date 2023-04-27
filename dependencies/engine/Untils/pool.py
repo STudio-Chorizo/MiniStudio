@@ -1,3 +1,4 @@
+import glm
 
 class Pool:
     def __init__(self):
@@ -5,6 +6,8 @@ class Pool:
 
     def Add(self, obj):
         obj.isActive = False
+        obj.position = glm.vec3([-1000, -1000, -1000])
+        obj.Update()
         self.pool.append(obj)
 
     def Get(self):

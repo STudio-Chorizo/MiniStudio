@@ -8,6 +8,7 @@ from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.ennemie import Ennemie
 from dependencies.music.music_control import Playlist
 from dependencies.scripts.entities.entities import Player
+from dependencies.scripts.entities.bullets import Bullet
 from dependencies.scripts.gui.menu import Menu
 import dependencies.scripts.utilitaries.joystick as js
 import numpy
@@ -31,7 +32,7 @@ class Engine:
     def __init__(self, wW = 1920, wH = 1080, Lang = "fr"):
 
         if(Engine.Instance != None) : return
-        self.player = GameObject()
+        self.player = GameObject("player")
         self.wW = wW
         self.wH = wH
 
@@ -92,16 +93,17 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(1, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(obj["name"], 1, obj["pos"], obj["rot"], obj["scale"])
                         self.player = gameObject
                     case "GameObject":
-                        gameObject = GameObject(obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = GameObject(obj["name"], obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
                         gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(2, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(obj["name"], 2, obj["pos"], obj["rot"], obj["scale"])
+                    case "Bullet":
+                        gameObject = Bullet(obj["name"], obj["pos"], obj["rot"], obj["scale"])
                 
-                print(gameObject.forward)
                 if(gameObject == None) : continue
                 if(obj["obj"] != None) : gameObject.SetModel(obj["obj"])
                 if(obj["collider"] != None) : gameObject.SetCollider(obj["collider"])
@@ -113,14 +115,15 @@ class Engine:
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
-
-        print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
 
     def Destroy(self, UID):
-        self.gameObjects[UID].Destroy()
-        del self.gameObjects[UID]
+        if(UID in self.gameObjects and self.gameObjects[UID].Destroy() == True):
+            self.gameObjects[UID].position = glm.vec3(0, 0, -100)
+            self.gameObjects[UID].Update()
+            self.gameObjects[UID].isActive = False
+            del self.gameObjects[UID]
     
     def IsCollide(self, col1, col2):
         if(col1.UID == col2.UID) : return False
@@ -140,12 +143,9 @@ class Engine:
         for col in self.gameObjects:
             if(self.gameObjects[col].isCollide == False or self.IsCollide(obj, self.gameObjects[col]) == False) : 
                 continue
-            obj.Move(-3 * obj.velocity)
             obj.OnCollide(self.gameObjects[col])
-
             self.gameObjects[col].OnCollide(obj)
             break
-        obj.velocity = (0, 0, 0)
 
     def Start(self):
         self.lastTime = pg.time.get_ticks()
@@ -167,11 +167,13 @@ class Engine:
         
         self.surface.fill((0, 0, 0, 0))
 
-        for obj in self.gameObjects:
-            if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
+        object = dict(self.gameObjects)
+        for obj in object:
+            if(object[obj].isActive == True) : object[obj].Update()
             
-        for o in self.gameObjects:
-            if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
+        for o in object:
+            if(object[o].isActive == True and object[o].isCollide == True) : self.TestCollider(object[o])
+        self.gameObjects = object
 
         self.graphicEngine.get_time()
         self.graphicEngine.check_events()
