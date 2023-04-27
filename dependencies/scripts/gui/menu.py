@@ -291,7 +291,7 @@ class Menu:
         Playlist.Instance.miscs["menu"].smooth_volume(0)
 
         self.onoff = "off"
-        self.engine.speedTime = 1.0
+        self.engine.speedTime = 0.5
 
         pg.event.set_grab(True)
         pg.mouse.set_visible(False)

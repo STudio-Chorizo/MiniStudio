@@ -1,4 +1,5 @@
 from random import *
+from dependencies.engine.Untils.pool import Pool
 from dependencies.engine.gameobject import *
 from dependencies.scripts.entities.bullets import Bullet
 import dependencies.scripts.entities.ennemie as enm
@@ -57,14 +58,14 @@ class Player(Entities):
         self.scrollSpeed = 0.01
         self.breakWing = choice([-1,1])
         self.wingIsBroken = False
-        self.keepWing = GameObject("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1))
+        self.keepWing = GameObject("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing", pos=(0, 0, 0), rot=(135, 0, 0), scale=(1, 1, 1))
         self.keepWing.SetModel("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing")
-        self.lostWing = GameObject("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1))
+        self.lostWing = GameObject("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing", pos=(0, 0, 0), rot=(135, 0, 0), scale=(1, 1, 1))
         self.lostWing.SetModel("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing")
 
         super().__init__(name, reloadTime, pos, rot, scale)
-        self.keepWing.position = self.position
-        self.lostWing.position = self.position
+        self.keepWing.rotation = self.rotation
+        self.lostWing.rotation = self.rotation
         self.cameraOffset = glm.vec3([0, 0.15, -0.26])
         self.SetRotCamera((-10, 90, 0))
 
@@ -149,7 +150,7 @@ class Player(Entities):
                 self.vue = 1
             #3ème personne
             elif (self.vue == 1):
-                self.cameraOffset = glm.vec3([0, 0.2, -0.5])
+                self.cameraOffset = glm.vec3([0, 0.15, -0.26])
                 self.SetRotCamera((-10, 90,0), False)
                 self.vue = 0
         #Cheat code life
@@ -208,11 +209,14 @@ class Player(Entities):
             self.wingIsBroken = True
         if self.life > 2 and self.wingIsBroken:
             try:
-                eng.Engine.Instance.pool["wing"].Get(self.lostWing)
+                eng.Engine.Instance.pool["wing"].Get()
                 self.lostWing.position = self.position
             except:
                 pass
             self.wingIsBroken = False
 
-
+        self.keepWing.position = self.position + glm.vec3(0.01, 0, 0.048)
+        self.lostWing.position = self.position + glm.vec3(-0.01, 0, 0.048)
+        self.keepWing.Update()
+        self.lostWing.Update()
         super().Update()
