@@ -1,5 +1,4 @@
 import pygame as pg
-import sys
 from PIL import Image
 from dependencies.engine.gameobject import *
 from dependencies.parsejson.parse import *
@@ -122,6 +121,12 @@ class Menu:
         #----------------Main menu-------------------
         self.switchOnOff()
         self.switchOnOff()
+
+        self.main_demobackgroundPath = ASSETS["guiMenu"]["main"]["demoBG"]
+        self.main_loadDemoBackground = pg.image.load(self.main_demobackgroundPath).convert_alpha()
+        self.main_DemoBackgroudRect = pg.Rect(0, 0, self.engine.wW, self.engine.wH)
+        self.main_loadDemoBackground = pg.transform.scale(self.main_loadDemoBackground, (self.engine.wW,self.engine.wH))
+        self.engine.surface.blit(self.main_loadDemoBackground,self.main_DemoBackgroudRect)
 
         self.backgroundPath = ASSETS["guiMenu"]["main"]["background"]
         self.loadBackground = pg.image.load(self.backgroundPath).convert_alpha()
@@ -320,7 +325,8 @@ class Menu:
         if (self.onoff == "on"):
 
             if self.statut == "main":
-
+                
+                self.engine.surface.blit(self.main_loadDemoBackground,self.main_DemoBackgroudRect)
                 self.engine.surface.blit(self.main_loadBackground,self.main_backgroudRect)
 
                 if (self.main_play.rect.collidepoint(mousePos) and mouse[0] and self.keyDown == False) or (self.selected == self.main_play.id and self.engine.joystick.get_button(0) and self.keyDown == False):

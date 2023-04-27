@@ -2,7 +2,6 @@ import glm
 from dependencies.engine.Untils.vector import Magnitude
 from dependencies.engine.gameobject import GameObject
 import dependencies.engine.engine as eng
-import pygame as pg
 from dependencies.parsejson.parse import *
 import dependencies.scripts.entities.entities as ent
 

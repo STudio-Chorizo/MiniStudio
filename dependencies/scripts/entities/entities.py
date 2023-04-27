@@ -66,7 +66,7 @@ class Player(Entities):
         self.keepWing = GameObject("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1))
         self.keepWing.SetModel("eagle_right_wing" if self.breakWing == 1 else "eagle_left_wing")
         self.lostWing = GameObject("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing", pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1))
-        self.keepWing.SetModel("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing")
+        self.lostWing.SetModel("eagle_left_wing" if self.breakWing == 1 else "eagle_right_wing")
 
         super().__init__(name, reloadTime, pos, rot, scale)
         self.keepWing.position = self.position
@@ -218,5 +218,6 @@ class Player(Entities):
             except:
                 pass
             self.wingIsBroken = False
+
 
         super().Update()

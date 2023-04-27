@@ -1,5 +1,3 @@
-import moderngl as mgl
-import numpy as np
 import glm
 
 
@@ -36,7 +34,7 @@ class BaseModel:
 
 
 class ExtendedBaseModel(BaseModel):
-    def __init__(self, app, vao_name, tex_id, pos, rot, scale, metalic = False):
+    def __init__(self, app, vao_name, tex_id, pos, rot, scale):
         super().__init__(app, vao_name, tex_id, pos, rot, scale)
         self.on_init()
         self.name = vao_name

@@ -1,6 +1,5 @@
 import dependencies.engine.engine as eng
 from dependencies.engine.gameobject import GameObject
-from dependencies.scripts.entities.ennemie import Ennemie
 
 
 class Spawn(GameObject):
