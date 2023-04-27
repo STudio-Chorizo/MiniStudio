@@ -22,6 +22,8 @@ class Music:
         self.next_vol = 100
         self.masterVolume = masterVolume
 
+        self.smoothSpeed = 50
+
         self.played = False
         self.autoPause = [autoPause, False]
         self.lastUpdate = time.time()
@@ -86,9 +88,10 @@ class Music:
         self.lastUpdate = time.time()
         if self.vol != self.next_vol:
             if self.vol > self.next_vol:
-                self.vol -= updateTime * 20
+                self.vol -= updateTime * self.smoothSpeed
             else:
-                self.vol += updateTime * 20
+                self.vol += updateTime * self.smoothSpeed
+
         if abs(self.vol - self.next_vol) < 1:
             self.vol = self.next_vol
         self.channel.set_volume(self.vol / 100 * self.masterVolume["master"] / 100 * self.masterVolume[self.typeSound] / 100)
@@ -107,19 +110,23 @@ class Music:
 class Playlist:
     Instance = None
     @staticmethod
-    def CreateInstance(MasterVolume):
+
+    def CreateInstance():
         """Initialisation de l'instance de la playlist"""
         if(Playlist.Instance != None) : return
-        Playlist.Instance = Playlist(MasterVolume)
+        Playlist.Instance = Playlist()
     
-    def __init__(self, MasterVolume) -> None:
+    def __init__(self) -> None:
+
         """INTERDICTION D'APPELLER CETTE FONCTION !!!\n
         Utiliser CreateInstance() a la place\n
         ======\n
         Initialisation de la playlist"""
         pg.mixer.init()
         pg.mixer.set_num_channels(len(ASSETS["playlist"]))
-        self.masterVolume = MasterVolume
+
+        self.masterVolume = {"master": 100, "music": 100, "vfx": 100}
+
 
         self.miscs = {}
         for path in ASSETS["playlist"]:
