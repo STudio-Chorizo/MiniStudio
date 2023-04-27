@@ -80,14 +80,14 @@ class Engine:
                 gameObject = None
                 match obj["type"]:
                     case "Player":
-                        gameObject = Player(1, obj["name"], obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Player(obj["name"], 1, obj["pos"], obj["rot"], obj["scale"])
                         self.player = gameObject
                     case "GameObject":
                         gameObject = GameObject(obj["name"], obj["pos"], obj["rot"], obj["scale"])
                     case "Spawn":
-                        gameObject = Spawn(obj["name"], obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Spawn(obj["name"], 10, obj["pos"], obj["rot"], obj["scale"])
                     case "Ennemie":
-                        gameObject = Ennemie(2, obj["name"], obj["pos"], obj["rot"], obj["scale"])
+                        gameObject = Ennemie(obj["name"], 2, obj["pos"], obj["rot"], obj["scale"])
                     case "Bullet":
                         gameObject = Bullet(obj["name"], obj["pos"], obj["rot"], obj["scale"])
                 
@@ -102,14 +102,15 @@ class Engine:
     
     def AddGameObject(self, gameObject):
         gameObject.UID = self.objectsCount.__str__()
-
-        print(gameObject.UID)
         self.gameObjects[gameObject.UID] = gameObject
         self.objectsCount += 1
 
     def Destroy(self, UID):
-        self.gameObjects[UID].Destroy()
-        del self.gameObjects[UID]
+        if(UID in self.gameObjects and self.gameObjects[UID].Destroy() == True):
+            self.gameObjects[UID].position = glm.vec3(0, 0, -100)
+            self.gameObjects[UID].Update()
+            self.gameObjects[UID].isActive = False
+            del self.gameObjects[UID]
     
     def IsCollide(self, col1, col2):
         if(col1.UID == col2.UID) : return False
@@ -129,12 +130,9 @@ class Engine:
         for col in self.gameObjects:
             if(self.gameObjects[col].isCollide == False or self.IsCollide(obj, self.gameObjects[col]) == False) : 
                 continue
-            obj.Move(-3 * obj.velocity)
             obj.OnCollide(self.gameObjects[col])
-
             self.gameObjects[col].OnCollide(obj)
             break
-        obj.velocity = (0, 0, 0)
 
     def Start(self):
         self.lastTime = pg.time.get_ticks()
@@ -154,11 +152,13 @@ class Engine:
         
         self.surface.fill((0, 0, 0, 0))
 
-        for obj in self.gameObjects:
-            if(self.gameObjects[obj].isActive == True) : self.gameObjects[obj].Update()
+        object = dict(self.gameObjects)
+        for obj in object:
+            if(object[obj].isActive == True) : object[obj].Update()
             
-        for o in self.gameObjects:
-            if(self.gameObjects[o].isCollide == True) : self.TestCollider(self.gameObjects[o])
+        for o in object:
+            if(object[o].isActive == True and object[o].isCollide == True) : self.TestCollider(object[o])
+        self.gameObjects = object
 
         self.graphicEngine.get_time()
         self.graphicEngine.check_events()

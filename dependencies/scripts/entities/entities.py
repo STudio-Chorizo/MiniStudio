@@ -1,5 +1,6 @@
 from random import *
 from dependencies.engine.gameobject import *
+from dependencies.scripts.entities.bullets import Bullet
 import dependencies.scripts.entities.ennemie as enm
 import dependencies.engine.engine as eng
 import pygame as pg
@@ -11,27 +12,30 @@ class Entities(GameObject):
         self.speed = 0.01
         self.rotSpeed = 0.3
         self.life = 1
+        self.Maxlife = self.life
         self.atkDistance = 100
         self.atk = 1
         self.reload = reloadTime * 1000
         self.lastAtk = 0
 
     def OnCollide(self, colider):
+        if(type(colider) == Bullet) : return False
         self.Dmg(1)
+        super().OnCollide(colider)
     
     def Update(self):
-        if self.life == 0:
-            self.Die()
         return super().Update()
     
     def Atk(self):
         if(self.lastAtk + self.reload > eng.Engine.Instance.time) : return
-        print("atk", self.lastAtk, "reload", self.reload, "time", eng.Engine.Instance.time)
-        eng.Engine.Instance.gameObjects["bullet"].Get().position = self.position + glm.vec3([0, 0, 0.1])
+        bullet = eng.Engine.Instance.pool["bullet"].Get()
+        if(bullet == False) : return
+        bullet.Shoot(self.UID, self.position, self.rotation)
+        self.lastAtk = eng.Engine.Instance.time
         
     def Dmg(self, dmg):
         self.life -= dmg
-        print("pv of entity n°" + str(self.UID) + ": " + str(self.life) + "/" + str(self.Maxlife))
+        print("pv of entity " + self.name + " n°" + str(self.UID) + ": " + str(self.life) + "/" + str(self.Maxlife))
         if(self.life <= 0) : self.Die()
     
     def Die(self):
@@ -49,9 +53,8 @@ class Player(Entities):
         self.cheatLifeUp = 0
         self.cheatLifeDown = 0
         self.lastTimeVueSwitch = 0
-        self.speed = 0.01
         self.rotSpeed = 0.1
-        self.scrollSpeed = 0.03
+        self.scrollSpeed = 0.01
         self.breakWing = choice([-1,1])
         super().__init__(name, reloadTime, pos, rot, scale)
         self.cameraOffset = glm.vec3([0, 0.15, -0.26])
@@ -80,7 +83,6 @@ class Player(Entities):
         # Annonce de la mort du joueur
         print("Vous êtes mort")
     
-    
     def drawLifePlayer(self):
         sizeBar = int(eng.Engine.Instance.wW * 0.3)
 
@@ -96,6 +98,11 @@ class Player(Entities):
 
         pg.draw.rect(eng.Engine.Instance.surface, (100, 100, 100), background)
         pg.draw.rect(eng.Engine.Instance.surface, (0, 255, 0), lifebar)
+
+    def OnCollide(self, colider):
+        if(type(colider) == Bullet) : return False
+        print("Touch by: " + colider.name)
+        self.Dmg(1)
 
     def Update(self):
         if self.life == 0: return
