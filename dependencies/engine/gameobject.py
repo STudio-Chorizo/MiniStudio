@@ -35,8 +35,7 @@ class GameObject:
         text_id = eng.Engine.Instance.graphicEngine.mesh.texture.AddTexture(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.vbo.AddVBO(name)
         eng.Engine.Instance.graphicEngine.mesh.vao.AddVAO(name, shader)
-        metalic = shader == "metal"
-        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale, metalic)
+        self.model = ExtendedBaseModel(eng.Engine.Instance.graphicEngine, name, text_id, self.position, glm.radians(self.rotation), self.scale)
         eng.Engine.Instance.graphicEngine.scene.AddObject(self.model)
         
     def SetCollider(self, size):
