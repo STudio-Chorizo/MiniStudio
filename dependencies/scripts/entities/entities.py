@@ -90,11 +90,9 @@ class Player(Entities):
         cam.roll = rot[2]
     
     def Die(self):
-        # dernière mise à jour de la GUI
-        self.life = math.exp(-16)
-        self.Update()
-        self.life = 0
-
+        eng.Engine.Instance.run = False
+        eng.Engine.Instance.restart = True
+        
         # Annonce de la mort du joueur
         print("Vous êtes mort")
 

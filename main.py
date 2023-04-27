@@ -5,6 +5,14 @@ def main():
     Engine.Instance.LoadScene("test")
     
     Engine.Instance.Start()
+    
+    while Engine.Instance.restart:
+        Engine.Instance = None
+
+        Engine.CreateInstance()
+        Engine.Instance.LoadScene("test")
+
+        Engine.Instance.Start()
 
 #################################################
 

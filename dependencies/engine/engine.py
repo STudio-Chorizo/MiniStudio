@@ -48,6 +48,7 @@ class Engine:
         self.lastTime = 0
         self.deltaTime = 0.0
         self.speedTime = 0
+        self.restart = False
 
         
         self.pool = {}
