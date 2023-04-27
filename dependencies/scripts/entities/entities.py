@@ -189,6 +189,6 @@ class Player(Entities):
 
         eng.Engine.Instance.graphicEngine.camera.position = self.position + self.cameraOffset
         if(self.vue == 1) : self.SetRotCamera((0, 90, 0))
-        self.guiPlayer.LifePlayer(self.life, self.mun)
+        self.guiPlayer.LifePlayer(self.life, self.mun, self.Maxlife)
 
         super().Update()

@@ -201,34 +201,34 @@ class Guiplayer():
     def LifePlayer(self,life = -2,mun = -2,maxlife = -2):
         self.life = life
         self.mun = mun
-        self.RespwHlifebar = Engine.Instance.wH*(6.71/9)
-        self.RespwWlifebar = Engine.Instance.wW*(0.67/16)
-        self.RespwHgg = Engine.Instance.wH *(7.95/9)
-        self.RespwWgg = Engine.Instance.wW *(2.95/16)
-        self.RespwWmun = Engine.Instance.wW *(1/160)
-        self.RespwHmun = Engine.Instance.wH *(222.5/900)
+        self.RespwHlifebar = self.wH*(6.71/9)
+        self.RespwWlifebar = self.wW*(0.67/16)
+        self.RespwHgg = self.wH *(7.95/9)
+        self.RespwWgg = self.wW *(2.95/16)
+        self.RespwWmun = self.wW *(1/160)
+        self.RespwHmun = self.wH *(222.5/900)
         self.RespwHSizelife = self.wH*0.212
         self.maxlife = maxlife
         self.RespwHmunpos = self.RespwHlifebar + self.RespwHlifebar*0.025
-        self.RespSizelife = int((Engine.Instance.wW*0.352 / self.maxlife) * self.maxlife) 
-        self.RespLife = int(self.RespSizelife -((self.maxlife-self.life)*(Engine.Instance.wW*0.352/self.maxlife)))
+        self.RespSizelife = int((self.wW*0.352 / self.maxlife) * self.maxlife) 
+        self.RespLife = int(self.RespSizelife -((self.maxlife-self.life)*(self.wW*0.352/self.maxlife)))
         ScreenBorder = pg.image.load(ASSETS["guiplayer"]["ScreenBorder"]).convert_alpha()
         ScreenBorder = pg.transform.scale(ScreenBorder, (self.wW, self.wH))
         Engine.Instance.surface.blit(ScreenBorder, (0, 0))
 
         AimUiLightBlueWhite = pg.image.load(ASSETS["guiplayer"]["AimUiLightBlueWhite"]).convert_alpha()
-        AimUiLightBlueWhite = pg.transform.scale(AimUiLightBlueWhite, (Engine.Instance.wW*0.062, Engine.Instance.wH*0.111))
-        Engine.Instance.surface.blit(AimUiLightBlueWhite, (Engine.Instance.wW*0.5-((Engine.Instance.wW*0.062)/2), Engine.Instance.wH*0.5-((Engine.Instance.wH*0.111)/2)))
+        AimUiLightBlueWhite = pg.transform.scale(AimUiLightBlueWhite, (self.wW*0.062, self.wH*0.111))
+        Engine.Instance.surface.blit(AimUiLightBlueWhite, (self.wW*0.5-((self.wW*0.062)/2), self.wH*0.5-((self.wH*0.111)/2)))
         EnergyBarre = pg.image.load(ASSETS["magazine"][str(self.mun)]).convert_alpha()
-        EnergyBarre = pg.transform.scale(EnergyBarre, (Engine.Instance.wW*0.09, Engine.Instance.wH*0.451))
+        EnergyBarre = pg.transform.scale(EnergyBarre, (self.wW*0.09, self.wH*0.451))
         Engine.Instance.surface.blit(EnergyBarre, (self.RespwWmun, self.RespwHmun))
 
         HealthBarCounters = pg.image.load(ASSETS["guiplayer"]["HealthBarCounters"]).convert_alpha()
-        HealthBarCounters = pg.transform.scale(HealthBarCounters, (Engine.Instance.wW*0.495, Engine.Instance.wH*0.234))
+        HealthBarCounters = pg.transform.scale(HealthBarCounters, (self.wW*0.495, self.wH*0.234))
         Engine.Instance.surface.blit(HealthBarCounters, (self.RespwWlifebar, self.RespwHlifebar))
         DroneHealthBarNegative = pg.image.load(ASSETS["guiplayer"]["DroneHealthBarNegative"]).convert_alpha()
-        DroneHealthBarNegative = pg.transform.scale(DroneHealthBarNegative, (Engine.Instance.wW*0.352, Engine.Instance.wH*0.042))
+        DroneHealthBarNegative = pg.transform.scale(DroneHealthBarNegative, (self.wW*0.352, self.wH*0.042))
         Engine.Instance.surface.blit(DroneHealthBarNegative, (self.RespwWgg,self.RespwHgg))
         DroneHealthBarPositive = pg.image.load(ASSETS["guiplayer"]["DroneHealthBarPositive"]).convert_alpha()
-        DroneHealthBarPositive = pg.transform.scale(DroneHealthBarPositive, (abs(self.RespLife), Engine.Instance.wH*0.042))
+        DroneHealthBarPositive = pg.transform.scale(DroneHealthBarPositive, (abs(self.RespLife), self.wH*0.042))
         Engine.Instance.surface.blit(DroneHealthBarPositive, (self.RespwWgg,self.RespwHgg))
